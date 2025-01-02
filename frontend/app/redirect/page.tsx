@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, Suspense, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -17,19 +17,14 @@ function RedirectComponent() {
 
   const setToken = useUserStore((state) => state.setToken);
   const setUserData = useUserStore((state) => state.setUserData);
-  const setDiscordConnected = useUserStore(
-    (state) => state.setDiscordConnected
-  );
+  const setDiscordConnected = useUserStore((state) => state.setDiscordConnected);
   const setDiscordDisconnected = useUserStore(
     (state) => state.setDiscordDisconnected
   );
 
   const searchParams = useSearchParams();
 
-  const handleCodeCallback = async (
-    code: string,
-    searchParams: URLSearchParams
-  ) => {
+  const handleCodeCallback = async (code: string, searchParams: URLSearchParams) => {
     if (callbackHandled) return;
 
     const state = searchParams.get("state") as string;
@@ -42,9 +37,7 @@ function RedirectComponent() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Discord API error:", errorData);
-        throw new Error(
-          `Discord API error: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -55,8 +48,9 @@ function RedirectComponent() {
         localStorage.setItem("discordToken", data.token);
         localStorage.setItem("guilds", JSON.stringify(data.guilds));
         setUserData(data);
-      } else if (state) localStorage.setItem('state', state);
-      router.push(state ? `${state}?code=${code}` : '/servers');
+      } else if (state) localStorage.setItem("state", state);
+
+      router.push(state ? `${state}?code=${code}` : "/servers");
     } catch (error) {
       console.error("Error in handleCodeCallback:", error);
       setDiscordDisconnected(true);
@@ -74,6 +68,7 @@ function RedirectComponent() {
     }
   }, [searchParams, callbackHandled]);
 
+  // Handle the timeout logic for redirection after 5 minutes
   useEffect(() => {
     const timer = setTimeout(() => {
       router.push("/servers");
@@ -182,9 +177,7 @@ function RedirectComponent() {
         </motion.div>
       </div>
 
-      <Suspense fallback={<OverlaySpinner />}>
-        <OverlaySpinner />
-      </Suspense>
+      <OverlaySpinner /> {/* Simplified - no need for Suspense */}
     </div>
   );
 }

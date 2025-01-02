@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Redirect from "./redirect";
+import Redirect from "../redirect/page";
 
 export default function InstallBot() {
   const router = useRouter();
@@ -26,7 +26,5 @@ export default function InstallBot() {
     }
   }, [router]);
 
-  return (
-    <Redirect />
-  );
+  return <Redirect />; // Ensure the Redirect component is working correctly
 }

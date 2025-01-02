@@ -38,19 +38,19 @@ export default function Servers() {
   useEffect(() => {
     if (discordConnected) {
       fetchGuilds();
-      return;
+    } else {
+      const guilds = localStorage.getItem("guilds");
+      if (guilds) {
+        try {
+          setGuilds(
+            JSON.parse(guilds).sort((a: any, b: any) => a.name.localeCompare(b.name))
+          );
+        } catch (error) {
+          console.error("Failed to parse guilds from localStorage", error);
+        }
+      }
+      handleConnectDiscord();
     }
-
-    const guilds = localStorage.getItem("guilds");
-    if (guilds?.length) {
-      setGuilds(
-        JSON.parse(guilds).sort((a: any, b: any) => a.name.localeCompare(b.name))
-      );
-      setIsFetchingGuilds(false);
-      return;
-    }
-
-    handleConnectDiscord();
   }, [discordConnected]);
 
   const fetchGuilds = async () => {
@@ -72,20 +72,25 @@ export default function Servers() {
       useUserStore.getState().token || localStorage.getItem("discordToken");
     localStorage.setItem('selectedGuild', JSON.stringify({ guildId, guildName, guildImage }));
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${guildId}`,
-      { headers: { Authorization: `Bearer ${token}` }, }
-    );
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${guildId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await response.json();
 
-    const data = await response.json();
-    if (response.status === 401) {
-      handleConnectDiscord();
-    }
+      if (response.status === 401) {
+        handleConnectDiscord();
+      }
 
-    if (data?.guild?.id) {
-      router.push(`/servers/${guildId}/configure`);
-    } else {
-      router.push(`/servers/${guildId}/create`);
+      if (data?.guild?.id) {
+        router.push(`/servers/${guildId}/configure`);
+      } else {
+        router.push(`/servers/${guildId}/create`);
+      }
+    } catch (error) {
+      console.error("Failed to fetch server details:", error);
+      setLoading((prev) => ({ ...prev, [guildId]: false }));
     }
   };
 

@@ -32,7 +32,7 @@ export function SpotlightCard({
   className,
   ...props
 }: SpotlightCardProps) {
-  const container = useRef(null);
+  const container = useRef<HTMLDivElement | null>(null);
 
   const { elX, elY, elW, elH } = useMouse(container);
 
@@ -45,8 +45,7 @@ export function SpotlightCard({
       return `hsl(${hue} 80% 70%),transparent`;
     }
 
-    // Default to transparent when 'via' is null
-    return [from, via || "", to].join(",");
+    return [from, via, to].filter((value) => !!value).join(",");
   }, [hsl, hslMax, hslMin, from, via, to, elY, elX, elH, elW]);
 
   const classes =

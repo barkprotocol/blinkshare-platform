@@ -21,7 +21,7 @@ app.use(helmet());
 app.use(
   actionCorsMiddleware({
     chainId: BLOCKCHAIN_IDS.mainnet,
-    actionVersion: '2', // Uncommented to specify the version of actions
+    actionVersion: '2', // Specify the version of actions
   })
 );
 
@@ -54,14 +54,19 @@ app.use('/blinks', blinksRouter);
 app.use('/discord', discordRouter);
 
 // Global error handler to catch any unhandled errors
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  // Check for specific error types or validate them here
   console.error('Unexpected Error:', err);
-  res.status(500).json({
+
+  // If the error has a status code, use it; otherwise, default to 500
+  const statusCode = err.statusCode || 500;
+
+  res.status(statusCode).json({
     error: 'Internal Server Error',
     message: err.message || 'An unexpected error occurred.',
   });
 });
 
 // Start server
-const PORT = env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

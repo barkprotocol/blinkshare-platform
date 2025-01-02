@@ -22,12 +22,15 @@ export const handleDiscordRoleToggle = (
 ) => {
   const role = roleData.roles.find((role) => role.id === roleId);
 
-  if (!role) return;
+  if (!role) {
+    toast.error("Role not found.");
+    return;
+  }
 
   // Ensure the role position is valid
   if (roleData.blinkShareRolePosition <= (role.position || 0)) {
-    console.log(role.position, roleData.blinkShareRolePosition);
     setRoleErrors((prev) => ({ ...prev, [roleId]: true }));
+    toast.error("Cannot toggle this role as its position is too high.");
     return;
   }
 
@@ -48,6 +51,7 @@ export const handleDiscordRoleToggle = (
     }));
 
   setFormData((prev) => ({ ...prev, roles: enabledRoles }));
+  toast.success(`${role.name} role toggled successfully.`);
 };
 
 // Handle changing the price of a Discord role
@@ -73,6 +77,7 @@ export const handleDiscordRolePriceChange = (
     }));
 
   setFormData((prev) => ({ ...prev, roles: enabledRoles }));
+  toast.success(`${roleId} price updated to ${price}.`);
 };
 
 // Refresh roles from the server
@@ -86,6 +91,12 @@ export const refreshRoles = async (
   setIsRefreshingRoles(true);
   try {
     const allRoles = await fetchRoles(formDataId);
+
+    if (!allRoles.roles || allRoles.roles.length === 0) {
+      toast.error("No roles found.");
+      return;
+    }
+
     const mergedRoles = allRoles.roles.map((role) => {
       const selectedRole = roleData.roles.find((r) => r.id === role.id);
       return selectedRole
@@ -101,10 +112,10 @@ export const refreshRoles = async (
     });
 
     setRoleErrors({});
-    toast.success("Roles refreshed successfully");
+    toast.success("Roles refreshed successfully.");
   } catch (error) {
     console.error("Error refreshing roles", error);
-    toast.error("Failed to refresh roles");
+    toast.error("Failed to refresh roles. Please try again.");
   } finally {
     setIsRefreshingRoles(false);
   }
