@@ -30,10 +30,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { fetchRoles } from "@/lib/actions/discord.actions";
+import { fetchRoles } from "@/lib/actions/discord-actions";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import MySubscriptions from "./subscriptions";
+import MySubscriptions from "../subscriptions";
 
 export default function ConfigureServerPage() {
   const { serverId } = useParams<{ serverId: string }>();
@@ -42,7 +42,7 @@ export default function ConfigureServerPage() {
   const [guildName, setGuildName] = useState("");
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
-  const [roleData, setRoleData] = useState<RoleData>({ blinkshareRolePosition: -1, roles: [] });
+  const [roleData, setRoleData] = useState<RoleData>({ blinkShareRolePosition: -1, roles: [] });
   const [customUrl, setCustomUrl] = useState("");
   const wallet = useWallet();
 
@@ -229,7 +229,7 @@ export default function ConfigureServerPage() {
           <CardContent className="flex flex-col items-center">
             <div className="mb-6 flex justify-center">
               <img
-                src="/bueno.png"
+                src="/bark.png"
                 alt="No BlinkShare Guild Selected"
                 width={200}
                 height={200}

@@ -239,8 +239,8 @@ export default function SuccessPage() {
                   whileHover={{ scale: 1.05 }}
                 >
                   <Image
-                    src="/jumping.png"
-                    alt="Illustration"
+                    src="/success.png"
+                    alt="Success Icon"
                     width={150}
                     height={150}
                     className="rounded-lg"

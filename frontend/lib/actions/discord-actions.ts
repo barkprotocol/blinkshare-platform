@@ -4,7 +4,9 @@ import { DiscordRole } from "@/lib/types";
 // Fetch roles for a given guild
 export const fetchRoles = async (
   guildId: string
-): Promise<{ roles: DiscordRole[]; blinkShareRolePosition: number }> => {
+): Promise<{
+  [x: string]: number; roles: DiscordRole[]; blinkShareRolePosition: number 
+}> => {
   const token =
     useUserStore.getState().token || localStorage.getItem("discordToken");
 

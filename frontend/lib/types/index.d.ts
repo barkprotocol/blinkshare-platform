@@ -128,7 +128,10 @@ declare type PatchGuild = (
 ) => Promise<DiscordServer>;
 
 // Role data structured for clarity in role-based actions
-type RoleData = { blinkshareRolePosition: number; roles: DiscordRole[] };
+type RoleData = {
+  [x: string]: any;
+  [x: string]: number; blinkshareRolePosition: number; roles: DiscordRole[] 
+};
 
 // User types extending SupabaseUser for better database interaction
 declare type ServerOwner = SupabaseUser & {

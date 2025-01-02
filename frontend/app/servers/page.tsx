@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import LoadingSpinner, { SpinnerSvg } from "@/components/ui/loading";
+import LoadingSpinner, { SpinnerSvg } from "@/components/loading";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { CoinPattern } from "@/components/ui/coin-pattern";
+import { GridPattern } from "@/components/ui/grid-pattern";
 import { ThemeContext } from "@/lib/contexts/theme-provider";
-import { handleConnectDiscord } from "@/components/ui/get-started-button";
+import handleConnectDiscord from "@/components/common/get-started-button";
 
 interface Guild {
   id: string;
@@ -25,7 +25,6 @@ interface Guild {
 export default function Servers() {
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [isFetchingGuilds, setIsFetchingGuilds] = useState(false);
-  const [error, setError] = useState<string | null>(null); // Track errors
   const router = useRouter();
   const discordConnected = useUserStore((state) => state.discordConnected);
   const { isDark } = useContext(ThemeContext);
@@ -39,32 +38,29 @@ export default function Servers() {
   useEffect(() => {
     if (discordConnected) {
       fetchGuilds();
-    } else {
-      const storedGuilds = localStorage.getItem("guilds");
-      if (storedGuilds) {
-        setGuilds(JSON.parse(storedGuilds).sort((a: any, b: any) => a.name.localeCompare(b.name)));
-        setIsFetchingGuilds(false);
-      } else {
-        handleConnectDiscord();
-      }
+      return;
     }
-  }, [discordConnected, router]);
+
+    const guilds = localStorage.getItem("guilds");
+    if (guilds?.length) {
+      setGuilds(
+        JSON.parse(guilds).sort((a: any, b: any) => a.name.localeCompare(b.name))
+      );
+      setIsFetchingGuilds(false);
+      return;
+    }
+
+    handleConnectDiscord();
+  }, [discordConnected]);
 
   const fetchGuilds = async () => {
-    try {
-      setIsFetchingGuilds(true);
-      const userData = useUserStore.getState().userData;
+    setIsFetchingGuilds(true);
+    const userData = useUserStore.getState().userData;
 
-      if (userData?.guilds) {
-        setGuilds(userData.guilds.sort((a: any, b: any) => a.name.localeCompare(b.name)));
-      } else {
-        setError("No guilds found. Please check your Discord connection.");
-      }
-    } catch (err) {
-      setError("Failed to fetch guilds. Please try again.");
-    } finally {
-      setIsFetchingGuilds(false);
+    if (userData?.guilds) {
+      setGuilds(userData.guilds.sort((a: any, b: any) => a.name.localeCompare(b.name)));
     }
+    setIsFetchingGuilds(false);
   };
 
   const handleServerSelect = async (
@@ -76,24 +72,20 @@ export default function Servers() {
       useUserStore.getState().token || localStorage.getItem("discordToken");
     localStorage.setItem('selectedGuild', JSON.stringify({ guildId, guildName, guildImage }));
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${guildId}`,
-        { headers: { Authorization: `Bearer ${token}` }, }
-      );
-      const data = await response.json();
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${guildId}`,
+      { headers: { Authorization: `Bearer ${token}` }, }
+    );
 
-      if (response.status === 401) {
-        return handleConnectDiscord();
-      }
+    const data = await response.json();
+    if (response.status === 401) {
+      handleConnectDiscord();
+    }
 
-      if (data?.guild?.id) {
-        router.push(`/servers/${guildId}/configure`);
-      } else {
-        router.push(`/servers/${guildId}/create`);
-      }
-    } catch (error) {
-      setError("An error occurred while processing your request.");
+    if (data?.guild?.id) {
+      router.push(`/servers/${guildId}/configure`);
+    } else {
+      router.push(`/servers/${guildId}/create`);
     }
   };
 
@@ -143,7 +135,7 @@ export default function Servers() {
         from="rgba(255,255,255,0.20)"
         mode="after"
         size={400}
-        className={`group w-72 rounded-2xl border-2 ${isDark ? "border-gray-700 bg-zinc-100" : "border-gray-200 bg-white"}`}
+        className={`group w-72 rounded-2xl border-2 ${isDark ? "border-gray-700 bg-zinc-900" : "border-gray-200 bg-white"}`}
       >
         <div className={`absolute inset-px rounded-[calc(var(--radius)-1px)] ${isDark ? "bg-black/10" : "bg-white"}`} />
 
@@ -157,24 +149,20 @@ export default function Servers() {
               className="opacity-80 blur-sm rounded"
             />
           ) : (
-            <>
-              <div className="w-full h-full bg-gray-100 rounded" />
-              <span className="absolute inset-x-0 z-1 bottom-0 h-2  bg-gray-200" />
-            </>
+            <div className="w-full h-full bg-gray-100 rounded" />
           )}
           <div className="absolute inset-0 bg-black bg-opacity-40 rounded" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="absolute inset-x-0 z-1 bottom-0 h-2  bg-gray-100" />
             {guild.image ? (
               <Image
                 src={guild.image}
                 alt={guild.name}
                 width={64}
                 height={64}
-                className="rounded-mdborder-2 border-gray-200 shadow-md"
+                className="rounded-full border-2 border-neon-cyan shadow-md"
               />
             ) : (
-              <div className="w-16 h-16 rounded-md bg-gray-900 flex items-center justify-center text-white text-2xl font-bold border-2 border-white shadow-md">
+              <div className="w-16 h-16 rounded-full bg-gray-500 flex items-center justify-center text-white text-2xl font-bold border-2 border-white shadow-md">
                 {guild.name.charAt(0)}
               </div>
             )}
@@ -202,7 +190,7 @@ export default function Servers() {
               <h2 className={`text-xl font-semibold ${isDark ? "text-white" : ""}`}>
                 {guild.name}
               </h2>
-              <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+              <p className={`text-sm ${isDark ? "text-gray-300" : "text-gray-500"}`}>
                 {guild.hasBot ? "Bot Added" : ""}
               </p>
             </div>
@@ -211,8 +199,8 @@ export default function Servers() {
             <Button
               variant="secondary"
               className={`py-2 px-4 text-sm font-semibold transition-all duration-300 ${guild.hasBot
-                ? `bg-cyan-400 hover:bg-cyan-600 text-black`
-                : "bg-purple-500 hover:bg-purple-600 text-white"
+                ? `bg-gray-100 hover:bg-gray-200 text-black`
+                : "bg-gray-900 hover:bg-gray-950 text-white"
                 }`}
               onClick={() =>
                 guild.hasBot
@@ -230,20 +218,48 @@ export default function Servers() {
   );
 
   return (
-    <section className="pb-16">
-      {isFetchingGuilds ? (
-        <LoadingSpinner />
-      ) : error ? (
-        <div className="text-center text-red-500">{error}</div>
-      ) : (
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {guilds.length > 0 ? (
-            guilds.map((guild, index) => renderGuildCard(guild, index))
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow">
+        <div className="container mx-auto px-4 py-12">
+          <motion.h1
+            className="text-5xl font-bold text-center mb-16"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Select a server
+            {guilds?.length ? (
+              <>
+                <p className="text-sm text-muted-foreground text-center mt-4">
+                  Please choose a server you want to create a blink for.
+                </p>
+                <p className="text-sm text-muted-foreground text-center mt-4">
+                  The BlinkShare Bot will be added to your server in order to assign roles to your members.
+                </p>
+              </>
+            ) : (
+              <p className="text-center text-lg text-muted-foreground mt-4">
+                You are not an owner or admin of any guild. Please check your Discord permissions or create a new server.
+              </p>
+            )}
+          </motion.h1>
+
+          {isFetchingGuilds ? (
+            <LoadingSpinner />
           ) : (
-            <p>No guilds found.</p>
+            guilds?.length > 0 && (
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full justify-center text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                {guilds.map((guild, index) => renderGuildCard(guild, index))}
+              </motion.div>
+            )
           )}
         </div>
-      )}
-    </section>
+      </div>
+    </div>
   );
 }

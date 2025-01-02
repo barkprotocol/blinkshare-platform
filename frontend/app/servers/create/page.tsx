@@ -14,7 +14,7 @@ import { fetchRoles } from "@/lib/actions/discord-actions";
 import { defaultSchema, ServerFormData, serverFormSchema } from "@/lib/zod-validation";
 import { MotionCard, MotionCardContent } from "@/components/motion";
 import ServerForm from "@/components/form";
-import OverlaySpinner from "@/components/overlay-spinner";
+import OverlaySpinner from "@/components/ui/overlay-spinner";
 
 export default function CreateServerPage() {
   const { serverId } = useParams<{ serverId: string }>();
@@ -26,7 +26,8 @@ export default function CreateServerPage() {
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ServerFormData, string>> >({});
   const [isLoading, setIsLoading] = useState(true);
   const [channels, setChannels] = useState<{ name: string; id: string }[]>([]);
-  
+  const [channelsLoading, setChannelsLoading] = useState(false);
+
   const router = useRouter();
   const wallet = useWallet();
   const token = useUserStore((state) => state.token) || localStorage.getItem("discordToken");
@@ -47,7 +48,8 @@ export default function CreateServerPage() {
       if (serverId && token) {
         try {
           setIsLoading(true);
-          
+
+          // Fetch roles data
           const rolesData = await fetchRoles(serverId);
           setRoleData({
             ...rolesData,
@@ -56,9 +58,11 @@ export default function CreateServerPage() {
               price: '',
               enabled: false,
             })),
+            blinkshareRolePosition: rolesData.blinkshareRolePosition || -1, // Ensure this is included
           });
 
           // Fetch channels
+          setChannelsLoading(true);
           const channelsResponse = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverId}/channels`,
             { headers: { Authorization: `Bearer ${token}` } }
@@ -76,6 +80,7 @@ export default function CreateServerPage() {
           toast.error("Failed to fetch server roles or channels.");
         } finally {
           setIsLoading(false);
+          setChannelsLoading(false); // Set loading state to false after fetching channels
         }
       }
     };
@@ -185,6 +190,7 @@ export default function CreateServerPage() {
               onSubmit={handleSubmit}
               isLoading={isLoading}
               channels={channels}
+              channelsLoading={channelsLoading}
             />
           </MotionCardContent>
         </MotionCard>

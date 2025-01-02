@@ -4,12 +4,9 @@ import { Input, InputNumber } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-// Export animated versions of the components
-export const MotionComponents = {
-  Card: motion(Card),
-  CardContent: motion(CardContent),
-  Input: motion(Input),
-  InputNumber: motion(InputNumber),
-  Textarea: motion(Textarea),
-  Button: motion(Button),
-};
+export const MotionCard = motion(Card);
+export const MotionCardContent = motion(CardContent);
+export const MotionInput = motion(Input);
+export const MotionNumberInput = motion(InputNumber);
+export const MotionTextarea = motion(Textarea);
+export const MotionButton = motion(Button);
