@@ -1,9 +1,12 @@
-import * as React from "react"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
+// Type definition for InputProps
+type InputProps = React.ComponentProps<"input"> & {
+};
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type = "text", ...props }, ref) => {
     return (
       <input
         type={type}
@@ -14,9 +17,24 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
         ref={ref}
         {...props}
       />
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = "Input";
 
-export { Input }
+// InputNumber component for numeric inputs
+const InputNumber = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <Input
+        type="number"
+        className={cn("appearance-none", className)}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+InputNumber.displayName = "InputNumber";
+
+export { Input, InputNumber };

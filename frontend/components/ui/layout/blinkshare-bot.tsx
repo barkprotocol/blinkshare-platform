@@ -67,8 +67,8 @@ const BlinkShareBot = () => {
             src={blinkImage}
             alt="BlinkShare Bot in action"
             className="rounded-lg shadow-lg"
-            width={500} // Adjust the width as needed
-            height={350} // Adjust the height as needed
+            width={500} 
+            height={350}
           />
         </div>
       </div>

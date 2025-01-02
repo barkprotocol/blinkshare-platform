@@ -36,7 +36,7 @@ export function Header() {
           <Link href="/features" className="text-white/80 hover:text-white flex items-center space-x-2">
             <FaCogs /> <span>Features</span>
           </Link>
-          <Link href="https://discord.gg/invite/" className="text-white/80 hover:text-white flex items-center space-x-2">
+          <Link href="https://discord.gg/invite/BxQUSECy" className="text-white/80 hover:text-white flex items-center space-x-2">
             <FaDiscord /> <span>Discord</span>
           </Link>
           <Link href="/my-blinks" className="text-white/80 hover:text-white flex items-center space-x-2">
@@ -81,7 +81,7 @@ export function Header() {
           <Link href="/features" className="block flex items-center space-x-2">
             <FaCogs /> <span>Features</span>
           </Link>
-          <Link href="https://discord.gg/invite/" className="block flex items-center space-x-2">
+          <Link href="https://discord.gg/invite/BxQUSECy" className="block flex items-center space-x-2">
             <FaDiscord /> <span>Discord</span>
           </Link>
           <Link href="/my-blinks" className="block flex items-center space-x-2">
