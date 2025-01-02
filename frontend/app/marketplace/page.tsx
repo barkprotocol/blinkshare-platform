@@ -8,7 +8,7 @@ import OverlaySpinner from '@/components/ui/overlay-spinner';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from "sonner";
-import CoinPatternBg from "@/components/common/coin-pattern-bg";
+import { CoinPatternBg } from "@/components/common/coin-pattern-bg";
 
 const onConnect = async (owner: boolean) => {
   try {
@@ -69,10 +69,7 @@ const BlinkMarketplaceComponent = () => {
     <div className="flex flex-col min-h-screen bg-gray-800 text-white">
       <div className="flex-grow">
         <section className="py-16 relative">
-          <CoinPatternBg
-            gridBlocks={[]}
-            className="absolute top-0 left-0 right-0 bottom-0 z-0 opacity-20"
-          />
+          <CoinPatternBg /> {/* Coin pattern background component */}
           <div className="container mx-auto px-6 sm:px-12 relative z-10 text-center">
             <h1 className="text-4xl font-extrabold text-white mb-8 mt-16 bg-black bg-opacity-60 p-4 rounded-xl shadow-xl">
               BlinkShare Marketplace - {blinks.length} blinks

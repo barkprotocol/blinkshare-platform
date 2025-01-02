@@ -29,12 +29,12 @@ const OverlaySpinner: React.FC<OverlaySpinnerProps> = ({
           fill="currentFill"
         />
       </svg>
-      <p className="mt-4 text-black dark:text-white font-excon">{text}...👀</p>
+      <p className="mt-4 text-black dark:text-white font-exo">{text}...👀</p>
       {error && (
         <Link href="/servers">
-          <a className="mt-4 px-6 py-3 bg-red-500 dark:bg-red-600 text-white rounded-lg shadow-md hover:bg-red-600 dark:hover:bg-red-700 transform transition duration-300 ease-in-out">
+          <button className="mt-4 px-6 py-3 bg-red-500 dark:bg-red-600 text-white rounded-lg shadow-md hover:bg-red-600 dark:hover:bg-red-700 transform transition duration-300 ease-in-out">
             Back to Servers
-          </a>
+          </button>
         </Link>
       )}
     </div>
