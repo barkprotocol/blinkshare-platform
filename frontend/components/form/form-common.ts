@@ -97,6 +97,7 @@ export const refreshRoles = async (
       return;
     }
 
+    // Merge the roles while ensuring blinkShareRolePosition is included in the updated data
     const mergedRoles = allRoles.roles.map((role) => {
       const selectedRole = roleData.roles.find((r) => r.id === role.id);
       return selectedRole
@@ -104,11 +105,11 @@ export const refreshRoles = async (
         : role;
     });
 
-    // Ensure blinkShareRolePosition is included in the updated role data
+    // Ensure blinkShareRolePosition is included, and provide a fallback if it's missing
     setRoleData({
-      ...allRoles,
+      ...roleData,
       roles: mergedRoles,
-      blinkShareRolePosition: roleData.blinkShareRolePosition,
+      blinkShareRolePosition: roleData.blinkShareRolePosition ?? 0, // Fallback value if undefined
     });
 
     setRoleErrors({});

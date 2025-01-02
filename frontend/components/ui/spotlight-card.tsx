@@ -32,7 +32,8 @@ export function SpotlightCard({
   className,
   ...props
 }: SpotlightCardProps) {
-  const container = useRef<HTMLDivElement | null>(null);
+  // Ref with a fallback to undefined for compatibility with useMouse
+  const container = useRef<Element>(null as any);
 
   const { elX, elY, elW, elH } = useMouse(container);
 

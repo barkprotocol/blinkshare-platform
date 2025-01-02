@@ -190,7 +190,6 @@ export default function CreateServerPage() {
               onSubmit={handleSubmit}
               isLoading={isLoading}
               channels={channels}
-              channelsLoading={channelsLoading}
             />
           </MotionCardContent>
         </MotionCard>
