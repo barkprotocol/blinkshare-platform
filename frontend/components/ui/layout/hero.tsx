@@ -23,14 +23,23 @@ export default function Hero() {
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 drop-shadow-2xl">
           Welcome to BlinkShare
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl mb-10 max-w-3xl mx-auto drop-shadow-lg">
+        <p className="text-lg sm:text-xl md:text-2xl mb-10 max-w-2xl mx-auto drop-shadow-lg">
           Empower your Discord communities with seamless Solana-based transactions. Create, share, engage, and grow with blockchain integration.
         </p>
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-          <Button asChild size="lg" className="shadow-lg hover:shadow-2xl transition-shadow bg-primary text-white hover:bg-primary/90 border-2 border-transparent hover:border-white/30">
+          <Button 
+            asChild 
+            size="lg" 
+            className="shadow-lg hover:shadow-2xl transition-shadow bg-primary text-white hover:bg-primary/90 border-1 border-transparent hover:border-white/30 px-6 py-3 text-md"
+          >
             <Link href="/get-started">Get Started</Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="shadow-lg hover:shadow-2xl transition-shadow border-2 border-white text-black hover:bg-white/20">
+          <Button 
+            asChild 
+            variant="outline" 
+            size="lg" 
+            className="shadow-lg hover:shadow-2xl transition-shadow border-1 border-white text-black hover:bg-white/20 px-6 py-3 text-md"
+          >
             <Link href="/learn-more">Learn More</Link>
           </Button>
         </div>

@@ -10,39 +10,39 @@ import { FaCogs, FaDiscord, FaQuestionCircle, FaUserAlt } from 'react-icons/fa'
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
   return (
-    <header className="w-full py-4 px-6 bg-background/80 backdrop-blur-sm fixed top-0 z-50">
+    <header className="w-full py-4 px-6 fixed top-0 z-50 bg-transparent">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo and Title */}
         <div className="flex items-center space-x-2">
           <Image
             src="https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"
             alt="BARK Logo"
-            width={32}
-            height={32}
+            width={40}
+            height={40}
             className="rounded-full"
             role="img"
             aria-label="BARK Logo"
           />
-          <h2 className="text-xl font-bold">Blink<span className="font-light">Share</span></h2>
+          <h1 className="text-xl font-bold text-white">
+            Blink<span className="font-light">Share</span>
+          </h1>
         </div>
 
         {/* Navbar (Desktop) */}
-        <nav className="hidden md:flex flex-grow justify-center space-x-4">
-          <Link href="/features" className="text-foreground/80 hover:text-foreground flex items-center space-x-2">
+        <nav className="hidden md:flex flex-grow justify-center space-x-6">
+          <Link href="/features" className="text-white/80 hover:text-white flex items-center space-x-2">
             <FaCogs /> <span>Features</span>
           </Link>
-          <Link href="https://discord.gg/invite/" className="text-foreground/80 hover:text-foreground flex items-center space-x-2">
+          <Link href="https://discord.gg/invite/" className="text-white/80 hover:text-white flex items-center space-x-2">
             <FaDiscord /> <span>Discord</span>
           </Link>
-          <Link href="/my-blinks" className="text-foreground/80 hover:text-foreground flex items-center space-x-2">
+          <Link href="/my-blinks" className="text-white/80 hover:text-white flex items-center space-x-2">
             <FaUserAlt /> <span>My Blinks</span>
           </Link>
-          <Link href="/faq" className="text-foreground/80 hover:text-foreground flex items-center space-x-2">
+          <Link href="/faq" className="text-white/80 hover:text-white flex items-center space-x-2">
             <FaQuestionCircle /> <span>FAQ</span>
           </Link>
         </nav>
@@ -66,10 +66,10 @@ export function Header() {
           </button>
         </div>
 
-        {/* Actions (Wallet Button, Create Blink) */}
+        {/* Actions */}
         <div className="flex items-center space-x-4">
           <WalletButton />
-          <Button asChild>
+          <Button asChild className="text-white bg-primary hover:bg-primary/90">
             <Link href="/create-blink">Create a Blink</Link>
           </Button>
         </div>
@@ -77,7 +77,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-black/80 text-white p-4 space-y-4">
+        <div className="md:hidden bg-black/90 text-white p-4 space-y-4">
           <Link href="/features" className="block flex items-center space-x-2">
             <FaCogs /> <span>Features</span>
           </Link>
