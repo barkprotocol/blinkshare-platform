@@ -1,7 +1,9 @@
 # BlinkShare Platform (MVP)
 
+![BlinkShare Hero Image](../public/assets/hero.png)
+
 ## Overview
-**Blink**Share is a platform designed to enable seamless blockchain interactions within social media communities, such as Discord. Built on **Next.js** and **TypeScript**, BlinkShare integrates **Solana web3.js**, **Shadcn/UI**, and **Supabase**, offering an advanced ecosystem for managing community roles and transactions using Solana Blinks.
+**BlinkShare** is a platform designed to enable seamless blockchain interactions within social media communities, such as Discord. Built on **Next.js** and **TypeScript**, BlinkShare integrates **Solana web3.js**, **Shadcn/UI**, and **Supabase**, offering an advanced ecosystem for managing community roles and transactions using Solana Blinks.
 
 ## Key Features
 - **Dialect Blinks**: Leverages Dialect for dynamic messaging and notifications in Solana transactions.
@@ -98,8 +100,3 @@ We welcome contributions! To get started:
 
 ## License
 BlinkShare is open-source under the [MIT License](LICENSE).
-
----
-
-## Support
-If you encounter any issues or have questions, please contact us at [support@blinkshare.com](mailto:support@blinkshare.fun).
