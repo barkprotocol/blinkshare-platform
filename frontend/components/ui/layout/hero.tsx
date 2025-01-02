@@ -40,7 +40,7 @@ export default function Hero() {
             size="lg" 
             className="shadow-lg hover:shadow-2xl transition-shadow border-1 border-white text-black hover:bg-white/20 px-6 py-3 text-md"
           >
-            <Link href="/learn-more">Learn More</Link>
+            <Link href="https://docs.blinkshare.fun">Documents</Link>
           </Button>
         </div>
       </div>
