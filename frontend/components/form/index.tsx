@@ -174,7 +174,9 @@ function ServerForm({
               {/* Notification Channel */}
               <div className="flex-1">
                 <div className="flex items-center">
-                  <Label htmlFor="notificationChannelId" className="mr-2">Notifications Channel (optional)</Label>
+                  <Label htmlFor="notificationChannelId" className="mr-2">
+                    Notifications Channel (optional)
+                  </Label>
                   {HelpTooltip("Notifications for new role purchases will be sent to this channel on your Discord server")}
                 </div>
                 <select
@@ -207,7 +209,9 @@ function ServerForm({
             {/* Pay in $USDC Toggle */}
             <div className="flex flex-col w-1/4">
               <div className="flex items-center">
-                <Label htmlFor="useUsdc" className="mr-1">Pay in $USDC</Label>
+                <Label htmlFor="useUsdc" className="mr-1">
+                  Pay in $USDC
+                </Label>
                 {HelpTooltip("Use $USDC token for payments instead of SOL")}
               </div>
 
@@ -224,7 +228,9 @@ function ServerForm({
             {/* Limited Time Roles Toggle */}
             <div className="flex flex-col w-1/4">
               <div className="flex items-center">
-                <Label htmlFor="limitedTimeRoles" className="mr-2">Limited Time</Label>
+                <Label htmlFor="limitedTimeRoles" className="mr-2">
+                  Limited Time
+                </Label>
                 {HelpTooltip("If toggled on, roles will be available to members for a limited time only and will be automatically removed afterwards.")}
               </div>
               <Switch
@@ -241,7 +247,9 @@ function ServerForm({
             {formData.limitedTimeRoles && (
               <>
                 <div className="flex flex-col w-1/4">
-                  <Label htmlFor="limitedTimeQuantity" className="mb-2">Amount</Label>
+                  <Label htmlFor="limitedTimeQuantity" className="mb-2">
+                    Amount
+                  </Label>
                   <select
                     id="limitedTimeQuantity"
                     value={formData.limitedTimeQuantity}
@@ -251,13 +259,17 @@ function ServerForm({
                     className="border rounded p-2 w-full bg-white text-black dark:bg-gray-800 dark:text-white dark:border-gray-600"
                   >
                     {Array.from({ length: 30 }, (_, i) => i + 1).map((num) => (
-                      <option key={num} value={`${num}`}>{num}</option>
+                      <option key={num} value={`${num}`}>
+                        {num}
+                      </option>
                     ))}
                   </select>
                 </div>
 
                 <div className="flex flex-col w-1/4">
-                  <Label htmlFor="limitedTimeUnit" className="mb-2">Unit</Label>
+                  <Label htmlFor="limitedTimeUnit" className="mb-2">
+                    Unit
+                  </Label>
                   <select
                     id="limitedTimeUnit"
                     value={formData.limitedTimeUnit}

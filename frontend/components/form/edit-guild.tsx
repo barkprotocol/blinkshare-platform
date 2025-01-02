@@ -28,11 +28,15 @@ import {
 import { HelpTooltip } from "../ui/tooltip";
 import { SpinnerSvg } from "../loading";
 
+// Dynamically load WalletMultiButton for client-side rendering
 const WalletMultiButtonDynamic = dynamic(
-  async () =>
-    (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
+  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
   { ssr: false }
 );
+
+function ErrorText({ message }: { message: string }) {
+  return <p className="text-red-500 text-sm">{message}</p>;
+}
 
 function ServerFormEdit({
   formData,
