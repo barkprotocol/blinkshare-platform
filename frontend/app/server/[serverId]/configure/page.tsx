@@ -42,7 +42,7 @@ export default function ConfigureServerPage() {
   const [guildName, setGuildName] = useState("");
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
-  const [roleData, setRoleData] = useState<RoleData>({ blinkordRolePosition: -1, roles: [] });
+  const [roleData, setRoleData] = useState<RoleData>({ blinkshareRolePosition: -1, roles: [] });
   const [customUrl, setCustomUrl] = useState("");
   const wallet = useWallet();
 

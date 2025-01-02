@@ -115,7 +115,7 @@ export default function BlinkPage() {
                         <Alert className="mb-4">
                           <AlertTitle> <InfoIcon className="h-7 w-7 mr-2" style={{ display: 'inline' }} />Discord Connection Required</AlertTitle>
                           <AlertDescription className="mt-2">
-                            Please connect your Discord to proceed. Blinkord requires you to connect your Discord in order to assign you the purchased role
+                            Please connect your Discord to proceed. blinkshare requires you to connect your Discord in order to assign you the purchased role
                           </AlertDescription>
                         </Alert>
                         <Button

@@ -32,8 +32,8 @@ declare type DiscordServer = {
   ownerWallet: string; // Wallet address of the server owner
 };
 
-// Define more specific interface for Blinkord server settings
-declare type BlinkordServerSettings = {
+// Define more specific interface for blinkshare server settings
+declare type blinkshareServerSettings = {
   guildId: string;
   customTitle?: string;
   customIcon?: string;
@@ -78,7 +78,7 @@ declare type TransactionDetails = {
 };
 
 // General API response format with better error handling
-declare type BlinkordApiResponse<T> = {
+declare type blinkshareApiResponse<T> = {
   success: boolean;
   data?: T;
   error?: {
@@ -90,9 +90,9 @@ declare type BlinkordApiResponse<T> = {
 
 // API request and response types
 
-declare type CreateBlinkRequest = BlinkordServerSettings;
+declare type CreateBlinkRequest = blinkshareServerSettings;
 
-declare type CreateBlinkResponse = BlinkordApiResponse<{ blinkUrl: string }>;
+declare type CreateBlinkResponse = blinkshareApiResponse<{ blinkUrl: string }>;
 
 // Handle Discord OAuth callback and fetch related user info
 declare type HandleDiscordCallback = (code: string) => Promise<{
@@ -106,11 +106,11 @@ declare type HandleDiscordCallback = (code: string) => Promise<{
 declare type GetGuildRoles = (
   guildId: string,
   token: string
-) => Promise<{ blinkordRolePosition: number; roles: DiscordRole[] }>;
+) => Promise<{ blinkshareRolePosition: number; roles: DiscordRole[] }>;
 
 // Create or edit guild settings with better description
 declare type CreateOrEditGuild = (
-  guildData: BlinkordServerSettings,
+  guildData: blinkshareServerSettings,
   address: string,
   message: string,
   signature: string,
@@ -120,7 +120,7 @@ declare type CreateOrEditGuild = (
 // Patch guild data with better parameters
 declare type PatchGuild = (
   guildId: string,
-  guildData: BlinkordServerSettings,
+  guildData: blinkshareServerSettings,
   address: string,
   message: string,
   signature: string,
@@ -128,7 +128,7 @@ declare type PatchGuild = (
 ) => Promise<DiscordServer>;
 
 // Role data structured for clarity in role-based actions
-type RoleData = { blinkordRolePosition: number; roles: DiscordRole[] };
+type RoleData = { blinkshareRolePosition: number; roles: DiscordRole[] };
 
 // User types extending SupabaseUser for better database interaction
 declare type ServerOwner = SupabaseUser & {
@@ -180,11 +180,11 @@ declare type HandleDiscordCallback = (code: string) => Promise<{
 declare type GetGuildRoles = (
   guildId: string,
   token: string
-) => Promise<{ blinkordRolePosition: number; roles: DiscordRole[] }>;
+) => Promise<{ blinkshareRolePosition: number; roles: DiscordRole[] }>;
 
 // Updated types for creating or editing guild with clear parameters
 declare type CreateOrEditGuild = (
-  guildData: BlinkordServerSettings,
+  guildData: blinkshareServerSettings,
   address: string,
   message: string,
   signature: string,

@@ -22,7 +22,7 @@ export default function CreateServerPage() {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [formData, setFormData] = useState<ServerFormData>({ ...defaultSchema, id: serverId });
-  const [roleData, setRoleData] = useState<RoleData>({ blinkordRolePosition: -1, roles: [] });
+  const [roleData, setRoleData] = useState<RoleData>({ blinkshareRolePosition: -1, roles: [] });
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ServerFormData, string>> >({});
   const [isLoading, setIsLoading] = useState(true);
   const [channels, setChannels] = useState<{ name: string; id: string }[]>([]);

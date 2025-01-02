@@ -17,11 +17,14 @@ export const handleConnectDiscord = async () => {
 
     const data = await response.json();
     if (data.url) {
+      // Redirect the user to the Discord login URL
       window.location.href = data.url;
+    } else {
+      throw new Error("No URL returned from server.");
     }
   } catch (error) {
     console.error("Failed to connect Discord", error);
-    alert("Failed to connect to Discord. Please try again later.");
+    alert("There was an issue connecting to Discord. Please try again later.");
   }
 };
 
@@ -34,15 +37,21 @@ export default function GetStartedButton({
 
   const handleGetStartedClick = async () => {
     setLoading(true);
-    await handleConnectDiscord();
-    setLoading(false);
+    try {
+      await handleConnectDiscord();
+    } catch (error) {
+      // We handled the error in the handleConnectDiscord function already.
+      // This is just to ensure state is reset if needed.
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Button
       onClick={handleGetStartedClick}
       className={cn(
-        "w-fit bg-grey-900 hover:bg-gray-950 text-black font-bold px-6 py-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-opacity-50",
+        "w-fit bg-gray-900 hover:bg-gray-950 text-black font-bold px-6 py-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-opacity-50",
         {
           "opacity-30": loading,
         },
