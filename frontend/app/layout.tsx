@@ -3,7 +3,6 @@ import { ThemeProvider } from "next-themes";
 import "./styles/globals.css";
 import { Header } from '@/components/ui/layout/header';
 import Footer from "@/components/ui/layout/footer";
-import { WalletContextProvider } from '@/components/ui/wallet-provider';
 import { metadata } from './metadata';
 import Head from 'next/head';
 
@@ -47,13 +46,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <WalletContextProvider>
             <Header />
             <main className="flex-grow w-full p-0 sm:p-0 md:p-0">
               {children}
             </main>
             <Footer />
-          </WalletContextProvider>
         </ThemeProvider>
       </body>
     </html>

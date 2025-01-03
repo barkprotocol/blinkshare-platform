@@ -1,42 +1,59 @@
-"use client";
+'use client';
 
-import { FC, ReactNode, useMemo } from 'react';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { FC, ReactNode, useState } from 'react';
+import { ConnectionProvider, WalletProvider as SolanaWalletProvider, useWallet } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { clusterApiUrl } from '@solana/web3.js';
+import { Button } from '@/components/ui/button';
 
-// Import default styles for wallet modal
-require('@solana/wallet-adapter-react-ui/styles.css');
+const network = process.env.NEXT_PUBLIC_SOLANA_NETWORK || WalletAdapterNetwork.Devnet;
 
-interface WalletContextProviderProps {
+const wallets = [
+  new PhantomWalletAdapter(),
+  new SolflareWalletAdapter(),
+];
+
+interface WalletProviderProps {
   children: ReactNode;
 }
 
-export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => {
-  // Define the network (devnet, testnet, or mainnet-beta)
-  const network = WalletAdapterNetwork.Devnet;
-
-  // Provide the RPC endpoint for the specified network
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-
-  // Initialize wallet adapters for Phantom and Solflare
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-    ],
-    [network]
+export const WalletProviderComponent: FC<WalletProviderProps> = ({ children }) => {
+  return (
+    <ConnectionProvider endpoint={process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'}>
+      <SolanaWalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>{children}</WalletModalProvider>
+      </SolanaWalletProvider>
+    </ConnectionProvider>
   );
+};
+
+export const WalletButton = () => {
+  const { connected, wallet, connect, disconnect } = useWallet();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleWalletAction = async () => {
+    setIsLoading(true);
+    try {
+      if (connected) {
+        await disconnect();
+      } else {
+        await connect();
+      }
+    } catch (error) {
+      console.error(`Failed to ${connected ? 'disconnect' : 'connect'} wallet:`, error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          {children}
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
+    <Button
+      onClick={handleWalletAction}
+      disabled={isLoading}
+      className={`text-white bg-black border border-white hover:bg-gray-900 hover:text-gray-100 ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
+    >
+      {isLoading ? 'Connecting...' : connected ? `Disconnect from ${wallet?.adapter.name}` : 'Connect Wallet'}
+    </Button>
   );
 };

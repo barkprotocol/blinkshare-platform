@@ -19,7 +19,6 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     try {
-      // Return headers for all routes to improve security and privacy
       return [
         {
           source: '/(.*)', // Applies to all routes
@@ -40,24 +39,34 @@ const nextConfig: NextConfig = {
               key: 'Strict-Transport-Security',
               value: 'max-age=31536000; includeSubDomains; preload', // Enforce HTTPS across all subdomains
             },
+            {
+              key: 'Content-Security-Policy',
+              value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';", // Safer content security
+            },
           ],
         },
       ];
     } catch (error) {
       console.error("Error configuring headers:", error);
-      // If an error occurs, return an empty array as a fallback
-      return [];
+      return []; // Return empty array if error occurs
     }
   },
-  // Enabling TypeScript build error tolerance
   typescript: {
-    ignoreBuildErrors: true, // Ignore TypeScript build errors during build
+    ignoreBuildErrors: process.env.NODE_ENV === "production",
   },
-  // Enabling experimental features (if required)
   experimental: {
-    optimizeCss: false, // Disable CSS optimization (for development or debugging)
-    scrollRestoration: false, // Disable scroll restoration on navigation
+    optimizeCss: false,
+    scrollRestoration: false,
   },
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      config.cache = {
+        type: 'filesystem',
+      };
+    }
+    return config;
+  },
+  reactStrictMode: true,
 };
 
 export default nextConfig;

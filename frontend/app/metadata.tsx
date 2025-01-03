@@ -1,8 +1,8 @@
-import { Metadata } from 'next'
+import { Metadata } from 'next';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : "https://blinkshare.fun"
+  : "https://blinkshare.fun";
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
@@ -32,5 +32,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-}
+};
 
+export default metadata;

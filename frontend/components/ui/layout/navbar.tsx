@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { WalletButton } from '@/components/ui/wallet-button';
@@ -7,7 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { FaCogs, FaDiscord, FaQuestionCircle, FaUserAlt } from 'react-icons/fa';
 
-export function Navbar() {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
