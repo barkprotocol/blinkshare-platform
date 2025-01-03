@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { Button } from "@/components/ui/button";
 import NotFound from "../not-found";
+import Spinner from "@/components/ui/spinner";
 
 export default function BlinkPage() {
   const router = useRouter();
