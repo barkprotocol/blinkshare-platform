@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, Suspense } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import { useUserStore } from '@/lib/contexts/zustand/user-store';
 import { useSearchParams } from 'next/navigation';
 import { ThemeContext } from '@/lib/contexts/theme-provider';
 
-function RedirectComponent() {
+const RedirectComponent = () => {
   const router = useRouter();
   const controls = useAnimation();
   const [callbackHandled, setCallbackHandled] = useState(false);
@@ -111,71 +111,73 @@ function RedirectComponent() {
   const textColor = isDark ? 'text-white' : 'text-gray-900';
 
   return (
-    <div className={`relative flex h-screen flex-col ${bgColor}`}>
-      <div className={`grid h-screen place-content-center px-4 ${bgColor}`}>
-        <motion.div
-          className="absolute inset-0 -z-10 flex justify-center items-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate={controls}
-        >
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className={`relative flex h-screen flex-col ${bgColor}`}>
+        <div className={`grid h-screen place-content-center px-4 ${bgColor}`}>
           <motion.div
-            className="absolute top-32 -right-0 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-700 -z-50"
-            variants={shapeVariants}
-          />
-          <motion.div
-            className="absolute top-0 left-10 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-200 z-1"
-            variants={shapeVariants}
-          />
-          <motion.div
-            className="absolute top-10 left-20 w-64 h-36 bg-gray-600 z-1"
-            variants={shapeVariants}
-          />
-        </motion.div>
-
-        <motion.div
-          className="text-center relative z-10"
-          variants={containerVariants}
-          initial="hidden"
-          animate={controls}
-        >
-          <motion.div
-            className="mt-6 flex flex-col items-center justify-center"
-            variants={itemVariants}
+            className="absolute inset-0 -z-10 flex justify-center items-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate={controls}
           >
             <motion.div
-              className="mt-6 flex items-center justify-center space-x-4"
-              variants={itemVariants}
-            >
-              <Image
-                src="/coffee.png"
-                alt="First Image"
-                className="h-auto w-auto"
-                priority
-                width={200}
-                height={200}
-              />
-              <Image
-                src="/bark.png"
-                alt="Second Image"
-                className="h-auto w-auto"
-                priority
-                width={200}
-                height={200}
-              />
-            </motion.div>
+              className="absolute top-32 -right-0 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-700 -z-50"
+              variants={shapeVariants}
+            />
+            <motion.div
+              className="absolute top-0 left-10 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-200 z-1"
+              variants={shapeVariants}
+            />
+            <motion.div
+              className="absolute top-10 left-20 w-64 h-36 bg-gray-600 z-1"
+              variants={shapeVariants}
+            />
           </motion.div>
 
-          <motion.h1
-            className={`mt-6 text-2xl font-bold tracking-tight sm:text-4xl space-y-4 ${textColor}`}
-            variants={itemVariants}
+          <motion.div
+            className="text-center relative z-10"
+            variants={containerVariants}
+            initial="hidden"
+            animate={controls}
           >
-            We are getting your Discord account connected...
-          </motion.h1>
-        </motion.div>
+            <motion.div
+              className="mt-6 flex flex-col items-center justify-center"
+              variants={itemVariants}
+            >
+              <motion.div
+                className="mt-6 flex items-center justify-center space-x-4"
+                variants={itemVariants}
+              >
+                <Image
+                  src="/coffee.png"
+                  alt="First Image"
+                  className="h-auto w-auto"
+                  priority
+                  width={200}
+                  height={200}
+                />
+                <Image
+                  src="/bark.png"
+                  alt="Second Image"
+                  className="h-auto w-auto"
+                  priority
+                  width={200}
+                  height={200}
+                />
+              </motion.div>
+            </motion.div>
+
+            <motion.h1
+              className={`mt-6 text-2xl font-bold tracking-tight sm:text-4xl space-y-4 ${textColor}`}
+              variants={itemVariants}
+            >
+              We are getting your Discord account connected...
+            </motion.h1>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
-}
+};
 
 export default RedirectComponent;
