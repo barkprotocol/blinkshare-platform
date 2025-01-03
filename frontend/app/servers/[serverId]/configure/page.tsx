@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CopyIcon, SquareArrowOutUpRight } from "lucide-react";
+import { CopyIcon, SquareArrowOutUpRight } from 'lucide-react';
 import { useWalletActions } from "@/hooks/use-wallet-actions";
 import { DiscordRole, RoleData } from "@/lib/types";
 import {
@@ -46,7 +46,6 @@ export default function ConfigureServerPage() {
   const [customUrl, setCustomUrl] = useState("");
   const wallet = useWallet();
 
-  // Form data is set later when guild is fetched
   const [formData, setFormData] = useState<ServerFormData>({ ...defaultSchema, id: serverId });
   const [channels, setChannels] = useState<{ name: string; id: string }[]>([]);
 
@@ -74,10 +73,8 @@ export default function ConfigureServerPage() {
 
           if (guild) {
             setFormData({ ...guild });
-
             setGuildName(guild.name);
 
-            // Map out the pre-selected roles to enable toggles
             const allRoles = await fetchRoles(serverIdStr)
 
             const mergedRoles = allRoles.roles.map((role: DiscordRole) => {
@@ -87,25 +84,22 @@ export default function ConfigureServerPage() {
 
             setRoleData({ ...allRoles, roles: mergedRoles });
 
-            setGuildFound(true); // Guild was found and data populated
-            // Generate the custom URL
+            setGuildFound(true);
             const generatedUrl = `${window.location.origin}/${guild.id}`;
             setCustomUrl(generatedUrl);
           } else {
-            setGuildFound(false); // Guild data was not found
+            setGuildFound(false);
           }
         } else {
-          setGuildFound(false); // Failed to fetch guild data
+          setGuildFound(false);
         }
 
-        // Fetch channels
         const channelsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}/channels`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (channelsResponse.ok) {
           const channels = await channelsResponse.json();
-          // Assuming channels is an array of channel objects with id and name
           setChannels(channels);
         } else {
           console.error("Failed to fetch channels");
@@ -208,7 +202,6 @@ export default function ConfigureServerPage() {
     window.open(customUrl, '_blank');
   }
 
-  // Delay rendering until loading is complete and guildFound is determined
   if (isLoading) {
     return (
       <div>
@@ -380,3 +373,4 @@ export default function ConfigureServerPage() {
     </motion.div>
   );
 }
+

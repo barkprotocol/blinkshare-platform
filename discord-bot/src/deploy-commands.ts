@@ -9,13 +9,13 @@ const applicationCommandsArray = [
   new SlashCommandBuilder()
     .setName('blinkshare')
     .setDescription('blinkshare commands')
-    .addSubcommand((subcommand) => subcommand.setName('start').setDescription('Get started with blinkshare bot'))
+    .addSubcommand((subcommand) => subcommand.setName('start').setDescription('Get started with BlinkShare bot'))
 
     .addSubcommand((subcommand) =>
       subcommand.setName('export').setDescription('Export the private keys to your wallet'),
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName('info').setDescription('Display information about the blinkshare Bot'),
+      subcommand.setName('info').setDescription('Display information about the BlinkShare Bot'),
     ),
 
   new SlashCommandBuilder()

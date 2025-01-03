@@ -55,6 +55,7 @@
     "Typography": "link:@mui/material/Typography",
     "autoprefixer": "10.4.20",
     "axios": "^1.7.9",
+    "beasties": "link:@/types/beasties",
     "bs58": "^6.0.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",

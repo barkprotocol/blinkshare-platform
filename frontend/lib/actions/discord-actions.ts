@@ -1,12 +1,14 @@
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import { DiscordRole } from "@/lib/types";
 
+interface RolesResponse {
+  roles: DiscordRole[];
+  blinkShareRolePosition: number;
+  [key: string]: any;
+}
+
 // Fetch roles for a given guild
-export const fetchRoles = async (
-  guildId: string
-): Promise<{
-  [x: string]: number; roles: DiscordRole[]; blinkShareRolePosition: number 
-}> => {
+export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
   const token =
     useUserStore.getState().token || localStorage.getItem("discordToken");
 
@@ -18,17 +20,19 @@ export const fetchRoles = async (
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${guildId}/roles`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      { 
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        } 
+      }
     );
 
     if (!response.ok) {
-      console.error(
-        `Failed to fetch roles for guild ${guildId}: ${response.statusText}`
-      );
-      return { roles: [], blinkShareRolePosition: -1 };
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data: RolesResponse = await response.json();
     return data;
   } catch (error) {
     console.error(`Error fetching roles for guild ${guildId}:`, error);
@@ -36,12 +40,17 @@ export const fetchRoles = async (
   }
 };
 
+interface EmbeddedWalletResponse {
+  success: boolean;
+  error?: string;
+}
+
 // Create an embedded wallet for a Discord user
 export const createEmbeddedWallet = async (
   accessToken: string,
   discordUserId: string,
   address: string
-): Promise<{ success: boolean; error?: string }> => {
+): Promise<EmbeddedWalletResponse> => {
   if (!accessToken || !discordUserId || !address) {
     return { success: false, error: "Missing required parameters" };
   }
@@ -61,16 +70,16 @@ export const createEmbeddedWallet = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error(
-        `Failed to create embedded wallet for user ${discordUserId}: ${response.statusText}`,
-        errorData
-      );
-      return { success: false, error: errorData.error };
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
     }
 
     return { success: true };
   } catch (error) {
     console.error(`Error creating embedded wallet for user ${discordUserId}:`, error);
-    return { success: false, error: `${error}` };
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : String(error)
+    };
   }
 };
+

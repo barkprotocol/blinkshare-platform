@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import clsx from "clsx";
 
 interface OverlaySpinnerProps {
   text?: string;
@@ -10,12 +11,21 @@ const OverlaySpinner: React.FC<OverlaySpinnerProps> = ({
   text = "Loading",
   error = false,
 }) => (
-  <div className="animate-in fade-in-0 fixed inset-0 z-50 bg-white/90 dark:bg-black/80 flex items-center justify-center">
+  <div
+    className="animate-in fade-in-0 fixed inset-0 z-50 bg-white/90 dark:bg-black/80 flex items-center justify-center"
+    aria-live="polite"
+  >
     <div className="flex flex-col items-center">
       <svg
         aria-hidden="true"
-        className={`animate-spin h-20 w-20 fill-neutral-600 text-neutral-200 dark:fill-neutral-400 dark:text-neutral-800 ${error ? "text-red-500 dark:text-red-400" : ""
-          }`}
+        className={clsx(
+          "animate-spin h-20 w-20",
+          {
+            "fill-neutral-600 text-neutral-200 dark:fill-neutral-400 dark:text-neutral-800":
+              !error,
+            "text-red-500 dark:text-red-400": error,
+          }
+        )}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -29,16 +39,21 @@ const OverlaySpinner: React.FC<OverlaySpinnerProps> = ({
           fill="currentFill"
         />
       </svg>
-      <p className="mt-4 text-black dark:text-white font-exo">{text}...👀</p>
+      <p className="mt-4 text-black dark:text-white font-exo">{text}... 👀</p>
       {error && (
         <Link href="/servers">
-          <button className="mt-4 px-6 py-3 bg-red-500 dark:bg-red-600 text-white rounded-lg shadow-md hover:bg-red-600 dark:hover:bg-red-700 transform transition duration-300 ease-in-out">
-            Back to Servers
+          <button className="mt-4 px-6 py-3 bg-red-500 dark:bg-red-600 text-white rounded-lg shadow-md hover:bg-red-600 dark:hover:bg-red-700 transition duration-300 ease-in-out">
+            Return to Server List
           </button>
         </Link>
       )}
     </div>
   </div>
 );
+
+OverlaySpinner.defaultProps = {
+  text: "Loading",
+  error: false,
+};
 
 export default OverlaySpinner;

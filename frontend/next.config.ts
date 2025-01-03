@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
   },
   // Enabling experimental features (if required)
   experimental: {
-    optimizeCss: true, // Example: CSS optimization for production builds
+    optimizeCss: false, // Example: CSS optimization for production builds
     scrollRestoration: true, // Retain scroll positions on navigation
   },
 };

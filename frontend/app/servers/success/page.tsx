@@ -5,7 +5,7 @@ import { BlinkDisplay } from "@/components/blink/blink-display";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
-import { CopyIcon, SquareArrowOutUpRight } from "lucide-react";
+import { CopyIcon, SquareArrowOutUpRight } from 'lucide-react';
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { MotionInput, MotionButton } from "@/components/motion";
@@ -18,7 +18,7 @@ export default function SuccessPage() {
   const [serverId, setServerId] = useState("");
   const [customUrl, setCustomUrl] = useState("");
   const { toast } = useToast();
-  const [imageSrc, setImageSrc] = useState("https://ucarecdn.com/7db1c88b-c5fa-43ec-b430-6a1f1817a7dd/servers.jpg");
+  const [imageSrc, setImageSrc] = useState("https://ucarecdn.com/56d0844b-a460-4dad-a761-92f2f14752f2/check.png?height=200&width=200");
   const router = useRouter();
   const { isDark } = useContext(ThemeContext);
 
@@ -30,8 +30,9 @@ export default function SuccessPage() {
   useEffect(() => {
     if (!serverId) return;
 
-    setBlinkUrl(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/${serverId}`);
-    setCustomUrl(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/${serverId}`);
+    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "";
+    setBlinkUrl(`${baseUrl}/${serverId}`);
+    setCustomUrl(`${baseUrl}/${serverId}`);
 
     const shootConfetti = () => {
       const defaults = {
@@ -65,15 +66,12 @@ export default function SuccessPage() {
     return () => clearInterval(timer);
   }, [serverId]);
 
-  const handleShare = (platform: string) => {
-    if (platform === "discord") {
-      window.open(`https://discord.com/channels/${serverId}`, "_blank");
-    } else if (platform === "x") {
-      window.open(
-        `https://twitter.com/intent/tweet?text=Check%20out%20my%20Blink!%20${encodeURIComponent(blinkUrl)}`,
-        "_blank"
-      );
-    }
+  const handleShare = (platform: "discord" | "x") => {
+    const urls = {
+      discord: `https://discord.com/channels/${serverId}`,
+      x: `https://twitter.com/intent/tweet?text=Check%20out%20my%20Blink!%20${encodeURIComponent(blinkUrl)}`,
+    };
+    window.open(urls[platform], "_blank", "noopener,noreferrer");
   };
 
   const copyCustomUrl = () => {
@@ -85,26 +83,21 @@ export default function SuccessPage() {
   };
 
   const openCustomUrl = () => {
-    window.open(customUrl, '_blank');
+    window.open(customUrl, '_blank', "noopener,noreferrer");
   }
 
   useEffect(() => {
-    const imageUrl = "https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"; // Example URL
-    try {
-      new URL(imageUrl); // Check if valid URL
-      setImageSrc(imageUrl); // If valid, use the provided URL
-    } catch (error) {
-      console.error("Invalid URL, using placeholder image instead.");
-      setImageSrc("https://ucarecdn.com/f6029e68-9768-49db-80a9-64e41e70acff/waveblack.png");
-    }
+    const imageUrl = "https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp";
+    setImageSrc(imageUrl);
   }, []);
 
   return (
     <div
-      className={`min-h-screen flex flex-col items-center justify-center px-4 py-12 ${isDark
-        ? "bg-gradient-to-b from-gray-900 to-gray-950"
-        : "bg-gradient-to-b from-gray-100 to-white"
-        }`}
+      className={`min-h-screen flex flex-col items-center justify-center px-4 py-12 ${
+        isDark
+          ? "bg-gradient-to-b from-gray-900 to-gray-950"
+          : "bg-gradient-to-b from-gray-100 to-white"
+      }`}
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -116,8 +109,9 @@ export default function SuccessPage() {
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className={`text-4xl md:text-5xl font-bold text-center mb-8 ${isDark ? "text-white" : "text-navy-900"
-            }`}
+          className={`text-4xl md:text-5xl font-bold text-center mb-8 ${
+            isDark ? "text-white" : "text-navy-900"
+          }`}
         >
           Blink Created Successfully! 🎉
         </motion.h1>
@@ -127,8 +121,9 @@ export default function SuccessPage() {
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className={`rounded-lg shadow-lg p-6 ${isDark ? "bg-gray-800" : "bg-white"
-              }`}
+            className={`rounded-lg shadow-lg p-6 ${
+              isDark ? "bg-gray-800" : "bg-white"
+            }`}
           >
             <h2 className={`text-2xl font-semibold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>
               Your Blink
@@ -140,8 +135,9 @@ export default function SuccessPage() {
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className={`rounded-lg shadow-lg p-6 flex flex-col justify-between ${isDark ? "bg-gray-800" : "bg-white"
-              }`}
+            className={`rounded-lg shadow-lg p-6 flex flex-col justify-between ${
+              isDark ? "bg-gray-800" : "bg-white"
+            }`}
           >
             <h2 className={`text-2xl font-semibold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>
               Your Custom Blink URL 🔗
@@ -180,7 +176,7 @@ export default function SuccessPage() {
 
             <Separator className="my-4" />
 
-            <h2 className={`text-2xl font-semibold mb-4 ${isDark ? "text-white" : "text-gray-200"}`}>
+            <h2 className={`text-2xl font-semibold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>
               Share Your Blink
             </h2>
             <p className={`mb-6 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
@@ -247,22 +243,25 @@ export default function SuccessPage() {
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                   <motion.div
-                    className={`absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 ${isDark ? "border-gray-200" : "border-gray-500"
-                      } z-10`}
+                    className={`absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 ${
+                      isDark ? "border-gray-200" : "border-gray-500"
+                    } z-10`}
                     animate={{ rotate: 0 }}
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 2, ease: "linear" }}
                   />
                   <motion.div
-                    className={`absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 ${isDark ? "border-gray-200" : "border-gray-500"
-                      } z-10`}
+                    className={`absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 ${
+                      isDark ? "border-gray-200" : "border-gray-500"
+                    } z-10`}
                     animate={{ rotate: 0 }}
                     whileHover={{ rotate: -360 }}
                     transition={{ duration: 2, ease: "linear" }}
                   />
                   <motion.div
-                    className={`absolute -inset-4 ${isDark ? "bg-gray-100" : "bg-gray-200/30"
-                      } opacity-20 z-0`}
+                    className={`absolute -inset-4 ${
+                      isDark ? "bg-gray-100" : "bg-gray-200/30"
+                    } opacity-20 z-0`}
                     animate={{ rotate: [0, 360] }}
                   />
                 </motion.span>{" "}
@@ -274,3 +273,4 @@ export default function SuccessPage() {
     </div>
   );
 }
+

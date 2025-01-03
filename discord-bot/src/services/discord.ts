@@ -82,7 +82,7 @@ export async function addblinkshareRole(
     )) as TextChannel;
 
     const embed = new EmbedBuilder()
-      .setColor('#60D0AA')
+      .setColor('#DBCFC7')
       .setTitle('Role Purchase')
       .setDescription(
         `**User:** <@${interaction.user.id}>

@@ -140,6 +140,9 @@ importers:
       axios:
         specifier: ^1.7.9
         version: 1.7.9
+      beasties:
+        specifier: link:@/types/beasties
+        version: link:@/types/beasties
       bs58:
         specifier: ^6.0.0
         version: 6.0.0

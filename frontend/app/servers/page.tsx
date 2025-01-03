@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import LoadingSpinner, { SpinnerSvg } from "@/components/loading";
+import LoadingSpinner, { SpinnerSvg } from "@/components/ui/loading";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { GridPattern } from "@/components/ui/grid-pattern";
 import { ThemeContext } from "@/lib/contexts/theme-provider";
@@ -39,11 +39,11 @@ export default function Servers() {
     if (discordConnected) {
       fetchGuilds();
     } else {
-      const guilds = localStorage.getItem("guilds");
-      if (guilds) {
+      const storedGuilds = localStorage.getItem("guilds");
+      if (storedGuilds) {
         try {
           setGuilds(
-            JSON.parse(guilds).sort((a: any, b: any) => a.name.localeCompare(b.name))
+            JSON.parse(storedGuilds).sort((a: Guild, b: Guild) => a.name.localeCompare(b.name))
           );
         } catch (error) {
           console.error("Failed to parse guilds from localStorage", error);
@@ -58,7 +58,7 @@ export default function Servers() {
     const userData = useUserStore.getState().userData;
 
     if (userData?.guilds) {
-      setGuilds(userData.guilds.sort((a: any, b: any) => a.name.localeCompare(b.name)));
+      setGuilds(userData.guilds.sort((a: Guild, b: Guild) => a.name.localeCompare(b.name)));
     }
     setIsFetchingGuilds(false);
   };
@@ -164,10 +164,10 @@ export default function Servers() {
                 alt={guild.name}
                 width={64}
                 height={64}
-                className="rounded-full border-2 border-neon-cyan shadow-md"
+                className="rounded-md border-2 border-gray-200 shadow-md"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-gray-500 flex items-center justify-center text-white text-2xl font-bold border-2 border-white shadow-md">
+              <div className="w-16 h-16 rounded-md bg-gray-500 flex items-center justify-center text-white text-2xl font-bold border-2 border-white shadow-md">
                 {guild.name.charAt(0)}
               </div>
             )}
@@ -268,3 +268,4 @@ export default function Servers() {
     </div>
   );
 }
+
