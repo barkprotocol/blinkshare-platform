@@ -1,6 +1,7 @@
-import { Entity, Column, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, Index } from 'typeorm';
 import { Role } from './role';
 import { BaseEntity } from './base-entity';
+import { User } from './user';
 
 enum TimeUnit {
   Hours = 'Hours',
@@ -10,6 +11,7 @@ enum TimeUnit {
 }
 
 @Entity()
+@Index('guild_address_idx', ['address']) // Optional: Add index to address for faster lookup
 export class Guild extends BaseEntity<Guild> {
   @PrimaryColumn({ type: 'varchar', unique: true })
   id: string;
@@ -56,16 +58,24 @@ export class Guild extends BaseEntity<Guild> {
   @UpdateDateColumn()
   updateTime: Date;
 
+  @DeleteDateColumn()
+  deletedAt: Date | null;
+
+  @ManyToOne(() => User, { nullable: true })
+  createdBy: User | null;
+
   /**
    * Validates if the limited time role settings are correct.
    */
-  validateLimitedTimeRoles(): boolean {
-    if (this.limitedTimeRoles && !this.limitedTimeQuantity) {
-      throw new Error('Limited time roles must have a valid quantity.');
+  validateLimitedTimeRoles(): boolean | { valid: boolean, message: string } {
+    if (this.limitedTimeRoles) {
+      if (!this.limitedTimeQuantity) {
+        return { valid: false, message: 'Limited time roles must have a valid quantity.' };
+      }
+      if (!this.limitedTimeUnit) {
+        return { valid: false, message: 'Limited time roles must have a valid time unit.' };
+      }
     }
-    if (this.limitedTimeRoles && !this.limitedTimeUnit) {
-      throw new Error('Limited time roles must have a valid time unit.');
-    }
-    return true;
+    return { valid: true, message: 'Valid' };
   }
 }

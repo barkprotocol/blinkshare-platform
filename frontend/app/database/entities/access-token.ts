@@ -38,20 +38,120 @@ export class AccessToken extends BaseEntity<AccessToken> {
    * Encrypts the access token before storing it
    */
   encryptToken(token: string): string {
-    const cipher = crypto.createCipher('aes-256-cbc', process.env.TOKEN_SECRET_KEY); // Use environment variable for the secret key
-    let encrypted = cipher.update(token, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return encrypted;
+    try {
+      const iv = crypto.randomBytes(16); // Initialization Vector for added security
+      const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(process.env.TOKEN_SECRET_KEY, 'hex'), iv);
+      let encrypted = cipher.update(token, 'utf8', 'hex');
+      encrypted += cipher.final('hex');
+      const ivHex = iv.toString('hex'); // Store IV along with the encrypted token
+      return ivHex + ':' + encrypted; // Use colon as separator
+    } catch (error) {
+      console.error('Error encrypting token:', error);
+      throw new Error('Failed to encrypt token');
+    }
   }
 
   /**
    * Decrypts the access token when retrieving it
    */
   decryptToken(): string {
-    const decipher = crypto.createDecipher('aes-256-cbc', process.env.TOKEN_SECRET_KEY); // Use environment variable for the secret key
-    let decrypted = decipher.update(this.token, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
+    try {
+      const [ivHex, encryptedToken] = this.token.split(':'); // Retrieve IV and encrypted token
+      const iv = Buffer.from(ivHex, 'hex');
+      const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(process.env.import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
+        import { BaseEntity } from './base-entity';
+        import crypto from 'crypto';
+        
+        /**
+         * Used to store discord access tokens when assigning roles to a user
+         * Access token has a longer lifetime, while grant code has just 1 minute
+         * For safety, store the access token (encrypted), in case the user purchase flow takes more than 1 minute
+         */
+        @Entity()
+        export class AccessToken extends BaseEntity<AccessToken> {
+          /**
+           * Discord OAuth grant code
+           */
+          @PrimaryColumn({ type: 'varchar', unique: true })
+          code: string;
+        
+          /**
+           * Discord user ID
+           */
+          @Column({ type: 'varchar' })
+          @Index()  // Index to speed up lookups for user
+          discordUserId: string;
+        
+          /**
+           * Encrypted access token
+           */
+          @Column({ type: 'varchar' })
+          token: string;
+        
+          /**
+           * Date and time when the token expires
+           */
+          @Column({ type: 'timestamp' })
+          expiresAt: Date;
+        
+          /**
+           * Encrypts the access token before storing it
+           */
+          encryptToken(token: string): string {
+            try {
+              const iv = crypto.randomBytes(16); // Initialization Vector for added security
+              const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(process.env.TOKEN_SECRET_KEY, 'hex'), iv);
+              let encrypted = cipher.update(token, 'utf8', 'hex');
+              encrypted += cipher.final('hex');
+              const ivHex = iv.toString('hex'); // Store IV along with the encrypted token
+              return ivHex + ':' + encrypted; // Use colon as separator
+            } catch (error) {
+              console.error('Error encrypting token:', error);
+              throw new Error('Failed to encrypt token');
+            }
+          }
+        
+          /**
+           * Decrypts the access token when retrieving it
+           */
+          decryptToken(): string {
+            try {
+              const [ivHex, encryptedToken] = this.token.split(':'); // Retrieve IV and encrypted token
+              const iv = Buffer.from(ivHex, 'hex');
+              const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(process.env.TOKEN_SECRET_KEY, 'hex'), iv);
+              let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
+              decrypted += decipher.final('utf8');
+              return decrypted;
+            } catch (error) {
+              console.error('Error decrypting token:', error);
+              throw new Error('Failed to decrypt token');
+            }
+          }
+        
+          /**
+           * Checks if the token is expired
+           */
+          isExpired(): boolean {
+            return new Date() > this.expiresAt;
+          }
+        
+          /**
+           * Validates the token status (if expired)
+           */
+          validateToken(): void {
+            if (this.isExpired()) {
+              throw new Error('Token has expired');
+            }
+          }
+        }
+        , 'hex'), iv);
+      let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    } catch (error) {
+      console.error('Error decrypting token:', error);
+      throw new Error('Failed to decrypt token');
+    }
   }
 
   /**
@@ -59,5 +159,14 @@ export class AccessToken extends BaseEntity<AccessToken> {
    */
   isExpired(): boolean {
     return new Date() > this.expiresAt;
+  }
+
+  /**
+   * Validates the token status (if expired)
+   */
+  validateToken(): void {
+    if (this.isExpired()) {
+      throw new Error('Token has expired');
+    }
   }
 }

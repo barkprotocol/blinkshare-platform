@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, DeleteDateColumn } from 'typeorm';
 import { Guild } from './guild';
 import { Role } from './role';
 import { BaseEntity } from './base-entity';
@@ -46,29 +46,33 @@ export class RolePurchase extends BaseEntity<RolePurchase> {
     }
 
     const now = new Date();
+    const expiryDate = new Date(now);
 
     switch (limitedTimeUnit) {
       case 'Hours':
-        now.setHours(now.getHours() + +limitedTimeQuantity);
+        expiryDate.setHours(expiryDate.getHours() + +limitedTimeQuantity);
         break;
       case 'Days':
-        now.setDate(now.getDate() + +limitedTimeQuantity);
+        expiryDate.setDate(expiryDate.getDate() + +limitedTimeQuantity);
         break;
       case 'Weeks':
-        now.setDate(now.getDate() + +limitedTimeQuantity * 7);
+        expiryDate.setDate(expiryDate.getDate() + +limitedTimeQuantity * 7);
         break;
       case 'Months':
-        now.setMonth(now.getMonth() + +limitedTimeQuantity);
+        expiryDate.setMonth(expiryDate.getMonth() + +limitedTimeQuantity);
         break;
       default:
         throw new Error(`Unsupported time unit: ${limitedTimeUnit}`);
     }
 
-    this.expiresAt = now;
+    this.expiresAt = expiryDate;
 
     // Optionally log a warning when setting expiration time
     console.warn(`Role expires at ${this.expiresAt}`);
 
     return this;
   }
+
+  @DeleteDateColumn()
+  deletedAt: Date | null; // Optional: For soft deletion functionality
 }

@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "server": "node server.js"
   },
   "dependencies": {
     "@dialectlabs/blinks": "^0.18.3",
@@ -61,8 +62,12 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "compression": "^1.7.5",
     "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "framer-motion": "^11.15.0",
+    "helmet": "^8.0.0",
     "input-otp": "^1.4.1",
     "just-debounce-it": "^3.2.0",
     "lucide-react": "^0.469.0",

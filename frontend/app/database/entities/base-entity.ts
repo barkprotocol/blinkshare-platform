@@ -1,8 +1,7 @@
-import { CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
-
 export class BaseEntity<T> {
   // Constructor to allow easy creation of entities
   constructor(data: Partial<T>) {
+    // Assign values to all properties except id and createTime
     Object.assign(this, data);
   }
 
