@@ -9,53 +9,54 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.discordapp.com",
+        hostname: "cdn.discordapp.com", // Allow images from Discord CDN
       },
       {
         protocol: "https",
-        hostname: "ucarecdn.com",
+        hostname: "ucarecdn.com", // Allow images from Ucare CDN
       },
     ],
   },
   async headers() {
     try {
+      // Return headers for all routes to improve security and privacy
       return [
         {
-          source: '/(.*)',
+          source: '/(.*)', // Applies to all routes
           headers: [
             {
               key: 'X-Frame-Options',
-              value: 'DENY',
+              value: 'DENY', // Prevent embedding in frames (XSS protection)
             },
             {
               key: 'X-Content-Type-Options',
-              value: 'nosniff',
+              value: 'nosniff', // Prevent MIME sniffing attacks
             },
             {
               key: 'Referrer-Policy',
-              value: 'no-referrer',
+              value: 'no-referrer', // Prevent sending referrer information
             },
             {
               key: 'Strict-Transport-Security',
-              value: 'max-age=31536000; includeSubDomains; preload',
+              value: 'max-age=31536000; includeSubDomains; preload', // Enforce HTTPS across all subdomains
             },
           ],
         },
       ];
     } catch (error) {
       console.error("Error configuring headers:", error);
-      // Fallback to an empty headers array if errors occur
+      // If an error occurs, return an empty array as a fallback
       return [];
     }
   },
   // Enabling TypeScript build error tolerance
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // Ignore TypeScript build errors during build
   },
   // Enabling experimental features (if required)
   experimental: {
-    optimizeCss: false, // Example: CSS optimization for production builds
-    scrollRestoration: true, // Retain scroll positions on navigation
+    optimizeCss: false, // Disable CSS optimization (for development or debugging)
+    scrollRestoration: false, // Disable scroll restoration on navigation
   },
 };
 

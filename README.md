@@ -1,6 +1,6 @@
 # BlinkShare Platform (MVP)
 
-![BlinkShare Hero Image](../public/assets/hero.png)
+![BlinkShare Hero Image](/frontend/public/assets/landing-page.png)
 
 ## Overview
 **BlinkShare** is a platform designed to enable seamless blockchain interactions within social media communities, such as Discord. Built on **Next.js** and **TypeScript**, BlinkShare integrates **Solana web3.js**, **Shadcn/UI**, and **Supabase**, offering an advanced ecosystem for managing community roles and transactions using Solana Blinks.

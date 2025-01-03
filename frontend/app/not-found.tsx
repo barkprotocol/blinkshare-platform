@@ -11,15 +11,11 @@ export default function NotFound() {
           Oops! The page you're looking for doesn't exist or has been moved.
         </p>
         <div className="space-y-4 sm:space-y-0 sm:space-x-4">
-          <Button asChild size="lg" className="bg-[#d0c8b9] hover:bg-[#c5bdae] text-gray-900">
-            <Link href="/">
-              Return Home
-            </Link>
+          <Button size="lg" className="bg-[#d0c8b9] hover:bg-[#c5bdae] text-gray-900">
+            <Link href="/">Return Home</Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30">
-            <Link href="/marketplace">
-              Explore Marketplace
-            </Link>
+          <Button variant="outline" size="lg" className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30">
+            <Link href="/marketplace">Explore Marketplace</Link>
           </Button>
         </div>
       </div>

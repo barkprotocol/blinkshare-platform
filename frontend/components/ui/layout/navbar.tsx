@@ -33,16 +33,16 @@ export function Navbar() {
 
         {/* Navbar (Desktop) */}
         <nav className="hidden md:flex flex-grow justify-center space-x-6">
-          <Link href="/features" className="text-white/80 hover:text-white flex items-center space-x-2">
+          <Link href="/features" className="text-[#DBCFC7]/80 hover:text-[#DBCFC7] flex items-center space-x-2">
             <FaCogs /> <span>Features</span>
           </Link>
-          <Link href="https://discord.gg/invite/BxQUSECy" className="text-white/80 hover:text-white flex items-center space-x-2">
+          <Link href="https://discord.gg/invite/BxQUSECy" className="text-[#DBCFC7]/80 hover:text-[#DBCFC7] flex items-center space-x-2">
             <FaDiscord /> <span>Discord</span>
           </Link>
-          <Link href="/my-blinks" className="text-white/80 hover:text-white flex items-center space-x-2">
+          <Link href="/my-blinks" className="text-[#DBCFC7]/80 hover:text-[#DBCFC7] flex items-center space-x-2">
             <FaUserAlt /> <span>My Blinks</span>
           </Link>
-          <Link href="/faq" className="text-white/80 hover:text-white flex items-center space-x-2">
+          <Link href="/faq" className="text-[#DBCFC7]/80 hover:text-[#DBCFC7] flex items-center space-x-2">
             <FaQuestionCircle /> <span>FAQ</span>
           </Link>
         </nav>
@@ -52,7 +52,7 @@ export function Navbar() {
           <button
             onClick={toggleMenu}
             aria-label="Toggle menu"
-            className="text-white focus:outline-none"
+            className="text-[#DBCFC7] focus:outline-none"
           >
             {isMenuOpen ? (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-x" viewBox="0 0 16 16">
@@ -69,7 +69,7 @@ export function Navbar() {
         {/* Actions */}
         <div className="flex items-center space-x-4">
           <WalletButton />
-          <Button asChild className="text-white bg-primary hover:bg-primary/90">
+          <Button asChild className="text-white bg-black border-1 border-white hover:bg-gray-900 hover:text-gray-100">
             <Link href="/create-blink">Create a Blink</Link>
           </Button>
         </div>
@@ -77,7 +77,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-black/90 text-white p-4 space-y-4">
+        <div className="md:hidden bg-black/90 text-[#DBCFC7] p-4 space-y-4">
           <Link href="/features" className="block flex items-center space-x-2">
             <FaCogs /> <span>Features</span>
           </Link>

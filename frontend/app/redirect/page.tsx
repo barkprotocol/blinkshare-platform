@@ -1,13 +1,12 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useContext } from "react";
-import { motion, useAnimation } from "framer-motion";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { useUserStore } from "@/lib/contexts/zustand/user-store";
-import { useSearchParams } from "next/navigation";
-import { ThemeContext } from "@/lib/contexts/theme-provider";
-import OverlaySpinner from "@/components/ui/overlay-spinner";
+import React, { useEffect, useState, useContext } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useUserStore } from '@/lib/contexts/zustand/user-store';
+import { useSearchParams } from 'next/navigation';
+import { ThemeContext } from '@/lib/contexts/theme-provider';
 
 function RedirectComponent() {
   const router = useRouter();
@@ -18,25 +17,24 @@ function RedirectComponent() {
   const setToken = useUserStore((state) => state.setToken);
   const setUserData = useUserStore((state) => state.setUserData);
   const setDiscordConnected = useUserStore((state) => state.setDiscordConnected);
-  const setDiscordDisconnected = useUserStore(
-    (state) => state.setDiscordDisconnected
-  );
+  const setDiscordDisconnected = useUserStore((state) => state.setDiscordDisconnected);
 
   const searchParams = useSearchParams();
 
   const handleCodeCallback = async (code: string, searchParams: URLSearchParams) => {
     if (callbackHandled) return;
 
-    const state = searchParams.get("state") as string;
+    const state = searchParams.get('state') as string;
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/login/callback?code=${encodeURIComponent(code)}${state ? '' : '&owner=true'}`,
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { 'Content-Type': 'application/json' } }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Discord API error:", errorData);
+        console.error('Discord API error:', errorData);
         throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
       }
 
@@ -45,14 +43,14 @@ function RedirectComponent() {
 
       if (data.token) {
         setToken(data.token);
-        localStorage.setItem("discordToken", data.token);
-        localStorage.setItem("guilds", JSON.stringify(data.guilds));
+        localStorage.setItem('discordToken', data.token);
+        localStorage.setItem('guilds', JSON.stringify(data.guilds));
         setUserData(data);
-      } else if (state) localStorage.setItem("state", state);
+      } else if (state) localStorage.setItem('state', state);
 
-      router.push(state ? `${state}?code=${code}` : "/servers");
+      router.push(state ? `${state}?code=${code}` : '/servers');
     } catch (error) {
-      console.error("Error in handleCodeCallback:", error);
+      console.error('Error in handleCodeCallback:', error);
       setDiscordDisconnected(true);
     } finally {
       setCallbackHandled(true);
@@ -60,9 +58,9 @@ function RedirectComponent() {
   };
 
   useEffect(() => {
-    const code = searchParams.get("code");
+    const code = searchParams.get('code');
     if (!code) {
-      router.push("/error");
+      router.push('/error');
     } else if (code && !callbackHandled) {
       handleCodeCallback(code, searchParams);
     }
@@ -71,10 +69,10 @@ function RedirectComponent() {
   // Handle the timeout logic for redirection after 5 minutes
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push("/servers");
+      router.push('/servers');
     }, 300000); // Redirect after 5 minutes
 
-    controls.start("visible");
+    controls.start('visible');
 
     return () => clearTimeout(timer);
   }, [router, controls]);
@@ -84,7 +82,7 @@ function RedirectComponent() {
     visible: {
       opacity: 1,
       transition: {
-        when: "beforeChildren",
+        when: 'beforeChildren',
         staggerChildren: 0.1,
         delayChildren: 0.3,
       },
@@ -96,7 +94,7 @@ function RedirectComponent() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: "spring", stiffness: 100, damping: 10 },
+      transition: { type: 'spring', stiffness: 100, damping: 10 },
     },
   };
 
@@ -105,12 +103,12 @@ function RedirectComponent() {
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { type: "spring", stiffness: 100, damping: 10 },
+      transition: { type: 'spring', stiffness: 100, damping: 10 },
     },
   };
 
-  const bgColor = isDark ? "bg-gray-900" : "bg-white";
-  const textColor = isDark ? "text-white" : "text-gray-900";
+  const bgColor = isDark ? 'bg-gray-900' : 'bg-white';
+  const textColor = isDark ? 'text-white' : 'text-gray-900';
 
   return (
     <div className={`relative flex h-screen flex-col ${bgColor}`}>
@@ -176,8 +174,6 @@ function RedirectComponent() {
           </motion.h1>
         </motion.div>
       </div>
-
-      <OverlaySpinner /> {/* Simplified - no need for Suspense */}
     </div>
   );
 }
