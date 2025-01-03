@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { BlinkDisplay } from "@/components/blink/blink-display";
@@ -34,6 +32,7 @@ export default function BlinkPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { width } = useWindowSize();
+  const screenWidth = width ?? 0; // Set default width to 0 if undefined
 
   const authenticateUser = async () => {
     setIsLoading(true); // Show loading spinner
@@ -84,7 +83,7 @@ export default function BlinkPage() {
         className="container max-w-6xl mt-6"
       >
         <div
-          className={`flex flex-col ${width >= 800 ? "md:flex-row" : ""} items-start space-y-8 md:space-y-0 md:space-x-8 mt-16`}
+          className={`flex flex-col ${screenWidth >= 800 ? "md:flex-row" : ""} items-start space-y-8 md:space-y-0 md:space-x-8 mt-16`}
         >
           <motion.div
             initial={{ x: -20, opacity: 0 }}
@@ -96,7 +95,7 @@ export default function BlinkPage() {
               <WelcomeText />
 
               <div className="mt-8 text-center">
-                {isAuthenticated || code ? (width > 800 ? (<Illustration />) : null) : (
+                {isAuthenticated || code ? (screenWidth > 800 ? (<Illustration />) : null) : (
                   <CardContent className="text-center">
                     {isLoading ? (
                       <Spinner />
@@ -132,7 +131,7 @@ export default function BlinkPage() {
           </motion.div>
 
           <motion.div
-            initial={{ x: width < 800 ? 0 : 20, opacity: 0 }}
+            initial={{ x: screenWidth < 800 ? 0 : 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
             className="flex-1 w-full"
