@@ -17,7 +17,6 @@ import Image from "next/image";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { Button } from "@/components/ui/button";
 import NotFound from "../not-found";
-import { Spinner } from "@/components/ui/overlay-spinner";
 
 export default function BlinkPage() {
   const router = useRouter();
@@ -74,7 +73,7 @@ export default function BlinkPage() {
     params.delete("code");
 
     router.push(`${window.location.pathname}?${params.toString()}`);
-  }, [code]);
+  }, [code, serverId, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -85,8 +84,7 @@ export default function BlinkPage() {
         className="container max-w-6xl mt-6"
       >
         <div
-          className={`flex flex-col ${width! >= 800 ? "md:flex-row" : ""
-            } items-start space-y-8 md:space-y-0 md:space-x-8 mt-16`}
+          className={`flex flex-col ${width >= 800 ? "md:flex-row" : ""} items-start space-y-8 md:space-y-0 md:space-x-8 mt-16`}
         >
           <motion.div
             initial={{ x: -20, opacity: 0 }}
@@ -97,8 +95,8 @@ export default function BlinkPage() {
             <Card className="w-full">
               <WelcomeText />
 
-              <div className="mt-8" style={{ textAlign: "center" }}>
-                {isAuthenticated || code ? (width! > 800 ? (<Illustration />) : null) : (
+              <div className="mt-8 text-center">
+                {isAuthenticated || code ? (width > 800 ? (<Illustration />) : null) : (
                   <CardContent className="text-center">
                     {isLoading ? (
                       <Spinner />
@@ -106,23 +104,23 @@ export default function BlinkPage() {
                       <>
                         {errorMessage && (
                           <Alert className="mb-4">
-                            <AlertTitle> <InfoIcon className="h-7 w-7 mr-2" style={{ display: 'inline' }} />Error</AlertTitle>
+                            <AlertTitle><InfoIcon className="h-7 w-7 mr-2 inline" />Error</AlertTitle>
                             <AlertDescription className="mt-2">
                               {errorMessage}
                             </AlertDescription>
                           </Alert>
                         )}
                         <Alert className="mb-4">
-                          <AlertTitle> <InfoIcon className="h-7 w-7 mr-2" style={{ display: 'inline' }} />Discord Connection Required</AlertTitle>
+                          <AlertTitle><InfoIcon className="h-7 w-7 mr-2 inline" />Discord Connection Required</AlertTitle>
                           <AlertDescription className="mt-2">
-                            Please connect your Discord to proceed. blinkshare requires you to connect your Discord in order to assign you the purchased role
+                            Please connect your Discord to proceed. BlinkShare requires you to connect your Discord in order to assign you the purchased role.
                           </AlertDescription>
                         </Alert>
                         <Button
                           onClick={onConnect}
                           className="w-fit h-10 sm:h-12 bg-gray-100 hover:bg-gray-200 text-black font-bold py-2 px-4 sm:px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
                         >
-                          <img className="mr-2 h-4 w-4 sm:h-5 sm:w-5" src="https://unpkg.com/simple-icons@v13/icons/discord.svg" />
+                          <img className="mr-2 h-4 w-4 sm:h-5 sm:w-5" src="https://unpkg.com/simple-icons@v13/icons/discord.svg" alt="Discord" />
                           Connect Discord
                         </Button>
                       </>
@@ -134,7 +132,7 @@ export default function BlinkPage() {
           </motion.div>
 
           <motion.div
-            initial={{ x: width! < 800 ? 0 : 20, opacity: 0 }}
+            initial={{ x: width < 800 ? 0 : 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
             className="flex-1 w-full"
@@ -172,12 +170,11 @@ const Illustration = () => (
   >
     <motion.span className="relative inline-block group" whileHover={{ scale: 1.05 }}>
       <Image
-        src="/helmet.svg"
+        src="/helmet.png"
         alt="Illustration"
         width={400}
         height={400}
-        style={{ margin: "auto" }}
-        className="rounded-lg full"
+        className="rounded-lg"
       />
       <motion.div
         className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-gray-200 z-10"
