@@ -95,7 +95,7 @@ export default function SuccessPage() {
       setImageSrc(imageUrl); // If valid, use the provided URL
     } catch (error) {
       console.error("Invalid URL, using placeholder image instead.");
-      setImageSrc("https://ucarecdn.com/f6029e68-9768-49db-80a9-64e41e70acff/waveblack.png"); // Fallback to placeholder
+      setImageSrc("https://ucarecdn.com/f6029e68-9768-49db-80a9-64e41e70acff/waveblack.png");
     }
   }, []);
 

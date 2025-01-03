@@ -8,16 +8,16 @@ export default function TermsOfServicePage() {
           Terms of Service Agreement
         </h1>
         <p className="text-lg text-gray-600 mb-6">
-          This Terms of Service Agreement (the "Agreement") is entered into between BlinkShare ("Bot Owner") and the user ("User") of the BlinkShareBot Discord bot (the "Bot").
+          This Terms of Service Agreement (the "Agreement") is entered into between BlinkShare ("Bot Owner") and the user ("User") of the BlinkShare Bot Discord bot (the "Bot").
         </p>
         <p className="text-lg text-gray-600 mb-8">
-          By using the Bot, the User agrees to be bound by the terms of this Agreement. If the User does not agree to the terms of this Agreement, they should immediately discontinue use of the BlinkShare Bot.
+          By using the BlinkShare Bot, the User agrees to be bound by the terms of this Agreement. If the User does not agree to the terms of this Agreement, they should immediately discontinue use of the BlinkShare Bot.
         </p>
 
         <section>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">1. Use of the Bot</h2>
           <p className="text-lg text-gray-600 mb-6">
-            The Bot Owner grants the User a non-exclusive, non-transferable, limited license to use the Bot for personal or non-commercial purposes.
+            The BlinkShare Bot Owner grants the User a non-exclusive, non-transferable, limited license to use the Bot for personal or non-commercial purposes.
           </p>
         </section>
 

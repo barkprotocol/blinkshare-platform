@@ -374,7 +374,7 @@ const faq = [
     answer: (
       <div>
         Embedded wallets and delegated actions are highly secure, utilizing Shamir's secret sharing and trusted execution environments (TEEs) to protect private keys. TEEs ensure that private keys are only reconstituted within a secure enclave, and actions can only occur with user consent.{" "}
-        <a href="https://docs.privy.io/guide/server/wallets/delegated-actions/architecture" target="_blank" className="text-blue-700 cursor-pointer">
+        <a href="https://docs.privy.io/guide/server/wallets/delegated-actions/architecture" target="_blank" className="text-gray-700 cursor-pointer">
           Learn more
         </a>
       </div>
