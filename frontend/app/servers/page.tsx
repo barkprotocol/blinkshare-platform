@@ -49,7 +49,10 @@ export default function Servers() {
           console.error("Failed to parse guilds from localStorage", error);
         }
       }
-      handleConnectDiscord();
+      handleConnectDiscord(() => { 
+        // Callback logic after Discord is connected
+        fetchGuilds();
+      });
     }
   }, [discordConnected]);
 
@@ -77,10 +80,15 @@ export default function Servers() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${guildId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch server details: ${response.statusText}`);
+      }
+
       const data = await response.json();
 
       if (response.status === 401) {
-        handleConnectDiscord();
+        handleConnectDiscord(() => fetchGuilds()); // Retry fetching guilds after re-authorization
       }
 
       if (data?.guild?.id) {
@@ -89,7 +97,7 @@ export default function Servers() {
         router.push(`/servers/${guildId}/create`);
       }
     } catch (error) {
-      console.error("Failed to fetch server details:", error);
+      console.error("Error during server selection:", error);
       setLoading((prev) => ({ ...prev, [guildId]: false }));
     }
   };
@@ -223,49 +231,14 @@ export default function Servers() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex-grow">
-        <div className="container mx-auto px-4 py-12">
-          <motion.h1
-            className="text-5xl font-bold text-center mb-16"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Select a server
-            {guilds?.length ? (
-              <>
-                <p className="text-sm text-muted-foreground text-center mt-4">
-                  Please choose a server you want to create a blink for.
-                </p>
-                <p className="text-sm text-muted-foreground text-center mt-4">
-                  The BlinkShare Bot will be added to your server in order to assign roles to your members.
-                </p>
-              </>
-            ) : (
-              <p className="text-center text-lg text-muted-foreground mt-4">
-                You are not an owner or admin of any guild. Please check your Discord permissions or create a new server.
-              </p>
-            )}
-          </motion.h1>
-
-          {isFetchingGuilds ? (
-            <LoadingSpinner />
-          ) : (
-            guilds?.length > 0 && (
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full justify-center text-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                {guilds.map((guild, index) => renderGuildCard(guild, index))}
-              </motion.div>
-            )
-          )}
+    <div className="pt-10">
+      {isFetchingGuilds ? (
+        <LoadingSpinner />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {guilds.map((guild, index) => renderGuildCard(guild, index))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
-

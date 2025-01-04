@@ -22,7 +22,7 @@ declare interface DiscordRole {
   position?: number;
 }
 
-// Updated server interface to handle optional fields and purpose
+// Server interface to handle optional fields and purpose
 declare type DiscordServer = {
   id: string;
   name: string;
@@ -31,7 +31,7 @@ declare type DiscordServer = {
   description: string;
   detailedDescription: string;
   roles: DiscordRole[];
-  ownerWallet: string; // Wallet address of the server owner
+  ownerWallet: string;
 };
 
 // Specific interface for Blinkshare server settings
@@ -41,11 +41,11 @@ declare type BlinkshareServerSettings = {
   customIcon?: string;
   description: string;
   detailedDescription: string;
-  selectedRoles: string[]; // Role IDs selected for Blink
+  selectedRoles: string[];
   ownerWallet: string;
 };
 
-// OAuth Response with clearer definitions
+// OAuth Response with definitions
 declare type DiscordOAuthResponse = {
   accessToken: string;
   refreshToken: string;
@@ -61,7 +61,7 @@ declare type ServerListResponse = {
   }>;
 };
 
-// Blink Data with better clarity and added properties
+// Blink Data with clarity and added properties
 declare type BlinkData = {
   guildId: string;
   title: string;
@@ -204,7 +204,7 @@ declare interface ServerFormProps {
   setFormData: React.Dispatch<React.SetStateAction<ServerFormData>>;
   roleData: RoleData;
   setRoleData: React.Dispatch<React.SetStateAction<RoleData>>;
-  formErrors: FormErrors;  // Make sure `FormErrors` type is defined
+  formErrors: FormErrors;  // Ensure `FormErrors` type is defined
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   isLoading: boolean;
   channels: { name: string; id: string }[];

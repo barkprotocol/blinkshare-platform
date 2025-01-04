@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import blinkImage from '@/public/assets/blinkshare-image.png';
 
@@ -13,52 +15,42 @@ const BlinkShareBot = () => {
             Simplify user interactions and enhance your Discord server with BlinkShare Bot.
             Here's how it works:
           </p>
-          
+
           <div className="space-y-8">
-            <div className="flex items-start space-x-4">
-              <div className="text-xl font-semibold text-gray-700 dark:text-white">
-                <h3>Interact and Send Transactions</h3>
+            {[
+              {
+                title: 'Interact and Send Transactions',
+                description:
+                  'With BlinkShare Bot, users can directly interact with the app and send transactions, all without leaving Discord.',
+              },
+              {
+                title: 'Instantly Detect Blink URLs',
+                description:
+                  'The bot detects Blink URLs and instantly provides available actions, simplifying user interactions and saving time.',
+              },
+              {
+                title: 'Secure Solana Wallet Management',
+                description:
+                  'Users can create and manage their Solana wallet securely without leaving Discord, offering a seamless experience.',
+              },
+              {
+                title: 'Enhanced Wallet Security',
+                description:
+                  'BlinkShare Bot uses a dedicated Key Management Service (KMS) and Privy.io embedded wallets to ensure wallet security.',
+              },
+              {
+                title: 'Instant Premium Role Assignment',
+                description:
+                  'After a successful payment, BlinkShare Bot automatically assigns premium roles, giving users instant access to exclusive content.',
+              },
+            ].map((item, index) => (
+              <div key={index} className="flex items-start space-x-4">
+                <div className="text-xl font-semibold text-gray-700 dark:text-white">
+                  <h3>{item.title}</h3>
+                </div>
+                <p className="text-gray-500 dark:text-gray-300">{item.description}</p>
               </div>
-              <p className="text-gray-500 dark:text-gray-300">
-                With BlinkShare Bot, users can directly interact with the app and send transactions, all without leaving Discord.
-              </p>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="text-xl font-semibold text-gray-700 dark:text-white">
-                <h3>Instantly Detect Blink URLs</h3>
-              </div>
-              <p className="text-gray-500 dark:text-gray-300">
-                The bot detects Blink URLs and instantly provides available actions, simplifying user interactions and saving time.
-              </p>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="text-xl font-semibold text-gray-700 dark:text-white">
-                <h3>Secure Solana Wallet Management</h3>
-              </div>
-              <p className="text-gray-500 dark:text-gray-300">
-                Users can create and manage their Solana wallet securely without leaving Discord, offering a seamless experience.
-              </p>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="text-xl font-semibold text-gray-700 dark:text-white">
-                <h3>Enhanced Wallet Security</h3>
-              </div>
-              <p className="text-gray-500 dark:text-gray-300">
-                BlinkShare Bot uses a dedicated Key Management Service (KMS) and Privy.io embedded wallets to ensure wallet security.
-              </p>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="text-xl font-semibold text-gray-700 dark:text-white">
-                <h3>Instant Premium Role Assignment</h3>
-              </div>
-              <p className="text-gray-500 dark:text-gray-300">
-                After a successful payment, BlinkShare Bot automatically assigns premium roles, giving users instant access to exclusive content.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -66,8 +58,8 @@ const BlinkShareBot = () => {
           <Image
             src={blinkImage}
             alt="BlinkShare Bot in action"
-            className="rounded-lg shadow-lg"
-            width={500} 
+            className="rounded-lg shadow-lg w-full max-w-md"
+            width={500}
             height={350}
           />
         </div>

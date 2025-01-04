@@ -2,7 +2,6 @@
 
 import { usePrivy, useSolanaWallets, useDelegatedActions, type WalletWithMetadata } from "@privy-io/react-auth";
 import { Info, Copy, Ban, LogOut, CircleCheck, CircleAlert, ArrowRightFromLine, CircleDollarSign, WalletIcon } from "lucide-react";
-import { CoinPatternBg } from "@/components/common/coin-pattern-bg";
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -93,7 +92,6 @@ export default function Wallet() {
 
   return (
     <div className="w-full min-h-screen mt-16 flex justify-evenly items-center bg-gray-100 transition-colors duration-300 ease-in-out">
-      <CoinPatternBg gridBlocks={[[4, 1], [5, 17], [6, 3], [7, 14],]} />
       <div className="ml-24 hidden md:block w-1/6 -mt-72">
         <HelmetImage />
       </div>
@@ -179,7 +177,7 @@ export default function Wallet() {
                   className="border border-gray-200 dark:border-gray-600 bg-builderz-blue hover:bg-neon-cyan hover:scale-105 transition duration-300 ease-in-out transform focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 text-black dark:text-white w-full mb-4 h-10 sm:h-12 font-bold py-2 px-4 sm:px-6 rounded-md hover:bg-neon-cyan dark:text-black"
                   onClick={onDelegate}>
                   <Image
-                    src="/images/delegated-actions.svg"
+                    src="https://ucarecdn.com/19b61847-7c45-4850-aab2-aff5281350d0/taskactions.png"
                     alt="Delegated Actions"
                     width={20}
                     height={20}
@@ -270,8 +268,8 @@ function HelmetImage() {
         className="inline w-16 sm:w-20 md:w-24 lg:w-28 z-20 relative"
         width={192}
         height={108}
-        src="/evolve.svg"
-        alt="Person wearing helmet"
+        src="https://ucarecdn.com/30e579c5-cb52-476f-bcfa-616004d6edca/helmeticon.png"
+        alt="helmet"
       />
       <motion.div
         className="absolute -top-1 -left-1 md:-top-2 md:-left-2 w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8 border-t-2 border-l-2 border-neon-blue z-10"
@@ -303,12 +301,12 @@ function BotImage() {
         className="inline w-12 sm:w-16 md:w-20 z-20 relative"
         width={192}
         height={108}
-        src="/bark.png"
-        alt="BARK"
+        src="https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"
+        alt="BARK logo icon"
       />
 
       <div className="absolute inset-0 flex justify-center items-center">
-        {/* //yellow */}
+        {/* //white */}
         <motion.div
           className="absolute top-0 sm:-top-4 -left-4 w-0 h-0 border-l-[15px] sm:border-l-[20px] md:border-l-[25px] lg:border-l-[35px] xl:border-l-[45px] border-l-transparent border-r-[15px] sm:border-r-[20px] md:border-r-[25px] lg:border-r-[35px] xl:border-r-[45px] border-r-transparent border-b-[30px] sm:border-b-[40px] md:border-b-[50px] lg:border-b-[70px] xl:border-b-[90px] border-b-yellow-400 z-1"
           initial={{ opacity: 0, y: -50 }}

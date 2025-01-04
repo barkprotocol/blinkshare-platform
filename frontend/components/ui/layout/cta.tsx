@@ -1,5 +1,7 @@
-import Link from 'next/link'
-import { Button } from "@/components/ui/button"
+'use client';
+
+import Link from 'next/link';
+import { Button } from "@/components/ui/button";
 
 export function CTA() {
   return (
@@ -11,12 +13,12 @@ export function CTA() {
         <p className="text-xl mb-8 text-primary-foreground/80">
           Start using BlinkShare today and revolutionize your Discord server's engagement.
         </p>
-        <Button asChild size="lg" variant="secondary">
+        <Button size="lg" variant="secondary">
           <Link href="/create-blink">
             Create Your Blink Now
           </Link>
         </Button>
       </div>
     </section>
-  )
+  );
 }
