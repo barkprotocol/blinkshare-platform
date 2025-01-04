@@ -25,17 +25,20 @@ export default function BlinkPage() {
   const { serverId } = useParams<{ serverId: string }>();
   const code = searchParams.get("code") || "";
 
-  // If serverId is not valid discord server ID, redirect to not found page
-  if (!/^\d{17,19}$/.test(serverId)) {
-    return <NotFound />;
-  }
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { width } = useWindowSize();
   const screenWidth = width ?? 0; // Set default width to 0 if undefined
+
+  // If serverId is not valid discord server ID, redirect to not found page
+  useEffect(() => {
+    if (!/^\d{17,19}$/.test(serverId)) {
+      // Redirect to NotFound page if invalid serverId
+      router.push("/not-found");
+    }
+  }, [serverId, router]);
 
   const authenticateUser = async () => {
     setIsLoading(true); // Show loading spinner
@@ -62,19 +65,18 @@ export default function BlinkPage() {
   };
 
   useEffect(() => {
-    if (!code) {
-      return;
-    }
+    if (!code) return;
+
     const guildId = localStorage.getItem("state");
 
     if (guildId === serverId) {
-      return setIsAuthenticated(true);
+      setIsAuthenticated(true);
+    } else {
+      // If link was shared with code, remove the code from URL if not logged in
+      const params = new URLSearchParams(window.location.search);
+      params.delete("code");
+      router.push(`${window.location.pathname}?${params.toString()}`);
     }
-    // If link was shared with code, use this measure to remove code from URL in case user did not log in yet
-    const params = new URLSearchParams(window.location.search);
-    params.delete("code");
-
-    router.push(`${window.location.pathname}?${params.toString()}`);
   }, [code, serverId, router]);
 
   return (
@@ -172,7 +174,7 @@ const Illustration = () => (
   >
     <motion.span className="relative inline-block group" whileHover={{ scale: 1.05 }}>
       <Image
-        src="/helmet.png"
+        src="https://ucarecdn.com/30e579c5-cb52-476f-bcfa-616004d6edca/helmeticon.png"
         alt="Illustration"
         width={400}
         height={400}
@@ -193,12 +195,7 @@ const Illustration = () => (
       <motion.div
         className="absolute top-0 left-0 right-0 w-full h-32 bg-gray-200 opacity-20 z-0"
         animate={{ rotate: [0, 360] }}
-        transition={{ duration: 2, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 w-full h-32 bg-gray-200 opacity-20 z-0"
-        animate={{ rotate: [0, 360] }}
-        transition={{ duration: 2, ease: "linear" }}
+        transition={{ duration: 2, ease: "linear", repeat: Infinity }}
       />
     </motion.span>
   </motion.h1>

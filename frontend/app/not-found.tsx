@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4">404</h1>
         <h2 className="text-3xl font-semibold text-gray-800 dark:text-gray-200 mb-6">Page Not Found</h2>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-          Oops! The page you're looking for doesn't exist or has been moved.
+          Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
         <div className="space-y-4 sm:space-y-0 sm:space-x-4">
           <Button size="lg" className="bg-[#d0c8b9] hover:bg-[#c5bdae] text-gray-900">

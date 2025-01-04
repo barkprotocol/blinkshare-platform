@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">Data Retention</h2>
           <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-            We retain your information for as long as necessary to provide BlinkShare Bot’s services or as required by law. We will delete your information upon your request or when it is no longer needed.
+            We retain your information for as long as necessary to provide BlinkShare Bot&rsquo;s services or as required by law. We will delete your information upon your request or when it is no longer needed.
           </p>
         </section>
 

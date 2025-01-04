@@ -8,7 +8,7 @@ export default function TermsOfServicePage() {
           Terms of Service Agreement
         </h1>
         <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-          This Terms of Service Agreement (the "Agreement") is entered into between BlinkShare ("Bot Owner") and the user ("User") of the BlinkShare Bot Discord bot (the "Bot").
+          This Terms of Service Agreement (the &quot;Agreement&quot;) is entered into between BlinkShare (&quot;Bot Owner&quot;) and the user (&quot;User&quot;) of the BlinkShare Bot Discord bot (the &quot;Bot&quot;).
         </p>
         <p className="text-lg text-gray-600 mb-8 leading-relaxed">
           By using the BlinkShare Bot, the User agrees to be bound by the terms of this Agreement. If the User does not agree to the terms of this Agreement, they should immediately discontinue use of the BlinkShare Bot.
@@ -52,7 +52,7 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">6. Indemnification</h2>
           <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-            The User agrees to indemnify and hold harmless the Bot Owner, its affiliates, and their respective directors, officers, employees, and agents from any and all claims, damages, liabilities, costs, and expenses, including reasonable attorneys' fees, arising out of the User's use of the Bot.
+            The User agrees to indemnify and hold harmless the Bot Owner, its affiliates, and their respective directors, officers, employees, and agents from any and all claims, damages, liabilities, costs, and expenses, including reasonable attorneys&apos; fees, arising out of the User&apos;s use of the Bot.
           </p>
         </section>
 
