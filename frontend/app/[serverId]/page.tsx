@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { BlinkDisplay } from "@/components/blink/blink-display";
@@ -14,7 +16,7 @@ import {
 import Image from "next/image";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { Button } from "@/components/ui/button";
-import NotFound from "../not-found";
+import NotFound from "@/app/not-found";
 import Spinner from "@/components/ui/spinner";
 
 export default function BlinkPage() {
@@ -30,17 +32,16 @@ export default function BlinkPage() {
   const { width } = useWindowSize();
   const screenWidth = width ?? 0; // Set default width to 0 if undefined
 
-  // If serverId is not valid discord server ID, redirect to not found page
+  // If serverId is not valid Discord server ID, redirect to not found page
   useEffect(() => {
     if (!/^\d{17,19}$/.test(serverId)) {
-      // Redirect to NotFound page if invalid serverId
       router.push("/not-found");
     }
   }, [serverId, router]);
 
   const authenticateUser = async () => {
-    setIsLoading(true); // Show loading spinner
-    setErrorMessage(null); // Clear any previous error message
+    setIsLoading(true);
+    setErrorMessage(null);
 
     try {
       const response = await fetch(
@@ -54,7 +55,7 @@ export default function BlinkPage() {
       console.error("Failed to connect to Discord", error);
       setErrorMessage("An error occurred while trying to authenticate. Please try again later.");
     } finally {
-      setIsLoading(false); // Hide loading spinner
+      setIsLoading(false);
     }
   };
 
@@ -62,6 +63,7 @@ export default function BlinkPage() {
     authenticateUser();
   };
 
+  // Handle the code in URL and authentication status
   useEffect(() => {
     if (!code) return;
 
@@ -70,7 +72,7 @@ export default function BlinkPage() {
     if (guildId === serverId) {
       setIsAuthenticated(true);
     } else {
-      // If link was shared with code, remove the code from URL if not logged in
+      // Remove 'code' from URL if not authenticated
       const params = new URLSearchParams(window.location.search);
       params.delete("code");
       router.push(`${window.location.pathname}?${params.toString()}`);
@@ -88,6 +90,7 @@ export default function BlinkPage() {
         <div
           className={`flex flex-col ${screenWidth >= 800 ? "md:flex-row" : ""} items-start space-y-8 md:space-y-0 md:space-x-8 mt-16`}
         >
+          {/* Left Section */}
           <motion.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -98,7 +101,11 @@ export default function BlinkPage() {
               <WelcomeText />
 
               <div className="mt-8 text-center">
-                {isAuthenticated || code ? (screenWidth > 800 ? (<Illustration />) : null) : (
+                {isAuthenticated || code ? (
+                  screenWidth > 800 ? (
+                    <Illustration />
+                  ) : null
+                ) : (
                   <CardContent className="text-center">
                     {isLoading ? (
                       <Spinner />
@@ -106,14 +113,20 @@ export default function BlinkPage() {
                       <>
                         {errorMessage && (
                           <Alert className="mb-4">
-                            <AlertTitle><InfoIcon className="h-7 w-7 mr-2 inline" />Error</AlertTitle>
+                            <AlertTitle>
+                              <InfoIcon className="h-7 w-7 mr-2 inline" />
+                              Error
+                            </AlertTitle>
                             <AlertDescription className="mt-2">
                               {errorMessage}
                             </AlertDescription>
                           </Alert>
                         )}
                         <Alert className="mb-4">
-                          <AlertTitle><InfoIcon className="h-7 w-7 mr-2 inline" />Discord Connection Required</AlertTitle>
+                          <AlertTitle>
+                            <InfoIcon className="h-7 w-7 mr-2 inline" />
+                            Discord Connection Required
+                          </AlertTitle>
                           <AlertDescription className="mt-2">
                             Please connect your Discord to proceed. BlinkShare requires you to connect your Discord in order to assign you the purchased role.
                           </AlertDescription>
@@ -139,6 +152,7 @@ export default function BlinkPage() {
             </Card>
           </motion.div>
 
+          {/* Right Section */}
           <motion.div
             initial={{ x: screenWidth < 800 ? 0 : 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -157,10 +171,11 @@ export default function BlinkPage() {
   );
 }
 
+// Welcome text for the BlinkShare page
 const WelcomeText = () => (
   <CardHeader>
     <CardTitle className="text-2xl font-bold text-center">
-      Welcome to <span className="highlight-gray">BlinkShare&apos;s</span>
+      Welcome to <span className="highlight-gray">BlinkShare</span>
     </CardTitle>
     <CardDescription className="text-center">
       You're one step away from unlocking exclusive content and features on your
@@ -169,6 +184,7 @@ const WelcomeText = () => (
   </CardHeader>
 );
 
+// Illustration for the page
 const Illustration = () => (
   <motion.h1
     className="text-3xl font-normal tracking-tight md:text-6xl"
