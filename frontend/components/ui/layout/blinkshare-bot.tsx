@@ -8,7 +8,10 @@ const BlinkShareBot = () => {
     <section className="py-16 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 flex flex-col-reverse md:flex-row items-center">
         <div className="md:w-1/2 text-center md:text-left">
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">
+          <h2 
+            className="text-3xl font-bold text-gray-800 dark:text-white mb-6"
+            aria-label="Introducing BlinkShare Bot for Discord"
+          >
             Introducing BlinkShare Bot for Discord
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
@@ -61,6 +64,7 @@ const BlinkShareBot = () => {
             className="rounded-lg shadow-lg w-full max-w-md"
             width={500}
             height={350}
+            priority
           />
         </div>
       </div>

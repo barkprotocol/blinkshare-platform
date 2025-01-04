@@ -49,9 +49,11 @@ export default function Servers() {
           console.error("Failed to parse guilds from localStorage", error);
         }
       }
-      handleConnectDiscord(() => { 
+
+      // Updated handleConnectDiscord callback to return a Promise<void>
+      handleConnectDiscord(async () => { 
         // Callback logic after Discord is connected
-        fetchGuilds();
+        await fetchGuilds(); // Fetch guilds after successful connection
       });
     }
   }, [discordConnected]);
@@ -88,7 +90,7 @@ export default function Servers() {
       const data = await response.json();
 
       if (response.status === 401) {
-        handleConnectDiscord(() => fetchGuilds()); // Retry fetching guilds after re-authorization
+        handleConnectDiscord(async () => fetchGuilds()); // Retry fetching guilds after re-authorization
       }
 
       if (data?.guild?.id) {

@@ -57,33 +57,32 @@ const RedirectComponent = () => {
     // Initialize searchParams on the client side
     const params = new URLSearchParams(window.location.search);
     setSearchParams(params);
-
+  
     const code = params.get('code');
     const state = params.get('state');
-
+  
     if (!code) {
       router.push('/error');
     } else if (code && !callbackHandled) {
       handleCodeCallback(code, state);
     }
-
+  
     const timer = setTimeout(() => {
       router.push('/servers');
     }, 300000); // Redirect after 5 minutes
-
+  
     controls.start('visible');
-
+  
     return () => clearTimeout(timer);
-  }, [callbackHandled, router, controls]);
+  }, [callbackHandled, router, controls, handleCodeCallback]);
 
+  // Define the containerVariants for the animation
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        when: 'beforeChildren',
-        staggerChildren: 0.1,
-        delayChildren: 0.3,
+        duration: 1,
       },
     },
   };

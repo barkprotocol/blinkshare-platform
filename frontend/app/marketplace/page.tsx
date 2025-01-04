@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { Suspense, useEffect, useState } from "react";
 import { BlinkDisplay } from "@/components/blink/blink-display";
@@ -9,6 +9,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { CoinPatternBg } from "@/components/common/coin-pattern-bg";
+import Image from "next/image";
 
 interface Blink {
   id: string;
@@ -105,7 +106,13 @@ const BlinkMarketplaceComponent = () => {
                       onClick={() => onConnect(false)}
                       className="mt-4 w-48 sm:w-64 py-2 px-4 sm:px-6 rounded-full bg-gray-900 hover:bg-gray-950 text-white font-semibold shadow-lg transform transition duration-300 ease-in-out"
                     >
-                      <img className="mr-3 h-5 w-5" src="/images/discord-icon.svg" alt="Discord Logo" />
+                      <Image
+                        className="mr-3 h-5 w-5"
+                        src="https://ucarecdn.com/0da96123-0acb-43a5-b3d8-571629377d1b/discord.png"
+                        alt="Discord Logo"
+                        width={20}
+                        height={20}
+                      />
                       Connect Discord
                     </Button>
                   </div>
@@ -147,4 +154,3 @@ export default function BlinkMarketplace() {
     </Suspense>
   );
 }
-

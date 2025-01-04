@@ -26,7 +26,6 @@ export interface RoleData {
   blinkShareRolePosition: number; // Role position field
 }
 
-// Role type with optional `position`
 declare interface DiscordRole {
   id: string;
   name: string;
@@ -35,7 +34,6 @@ declare interface DiscordRole {
   position?: number;
 }
 
-// Server interface to handle optional fields and purpose
 declare type DiscordServer = {
   id: string;
   name: string;
@@ -47,7 +45,6 @@ declare type DiscordServer = {
   ownerWallet: string;
 };
 
-// Specific interface for Blinkshare server settings
 declare type BlinkshareServerSettings = {
   guildId: string;
   customTitle?: string;
@@ -224,3 +221,8 @@ declare interface ServerFormProps {
   isLoading: boolean;
   channels: { name: string; id: string }[];
 }
+
+// Defining FormErrors type (if not already defined)
+declare type FormErrors = {
+  [key: string]: string[]; // Object with field names as keys and an array of error messages
+};

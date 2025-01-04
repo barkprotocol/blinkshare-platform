@@ -9,12 +9,18 @@ import { z } from "zod";
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "sonner";
-import { DiscordRole, RoleData } from "@/lib/types/index";
+import { DiscordRole } from "@/lib/types/index";
 import { fetchRoles } from "@/lib/actions/discord-actions";
 import { defaultSchema, ServerFormData, serverFormSchema } from "@/lib/zod-validation";
 import { MotionCard, MotionCardContent } from "@/components/motion";
 import ServerForm from "@/components/form";
 import OverlaySpinner from "@/components/ui/overlay-spinner";
+
+// Update the RoleData interface
+export interface RoleData {
+  blinkShareRolePosition: number;
+  roles: DiscordRole[];
+}
 
 export default function CreateServerPage() {
   const { serverId } = useParams<{ serverId: string }>();
@@ -22,7 +28,7 @@ export default function CreateServerPage() {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [formData, setFormData] = useState<ServerFormData>(() => ({ ...defaultSchema, id: serverId }));
-  const [roleData, setRoleData] = useState<RoleData>({ blinkshareRolePosition: -1, roles: [] });
+  const [roleData, setRoleData] = useState<RoleData>({ blinkShareRolePosition: -1, roles: [] });
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ServerFormData, string>>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [channels, setChannels] = useState<Array<{ name: string; id: string }>>([]);
@@ -63,8 +69,8 @@ export default function CreateServerPage() {
           })
         ]);
 
-        // Ensure blinkshareRolePosition is always treated as a number
-        const blinkshareRolePosition = typeof rolesData.blinkshareRolePosition === 'number' ? rolesData.blinkshareRolePosition : -1;
+        // Ensure BlinkshareRolePosition is always treated as a number
+        const blinkShareRolePosition = typeof rolesData.blinkShareRolePosition === 'number' ? rolesData.blinkShareRolePosition : -1;
 
         setRoleData({
           ...rolesData,
@@ -73,7 +79,7 @@ export default function CreateServerPage() {
             price: '',
             enabled: false,
           })),
-          blinkshareRolePosition, // Assign it as a number
+          blinkShareRolePosition,
         });
 
         if (channelsResponse.ok) {
@@ -169,7 +175,7 @@ export default function CreateServerPage() {
   };
 
   return (
-    <div className="space-y-6 p-6 bg-gray-100 dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 min-h-screen">
+    <div className="space-y-6 p-6 bg-gray-100 dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-950 min-h-screen">
       {overlayVisible && (
         <OverlaySpinner
           text="Submitting your Blink configuration"
@@ -200,8 +206,6 @@ export default function CreateServerPage() {
             <ServerForm
               formData={formData}
               setFormData={setFormData}
-              roleData={roleData}
-              setRoleData={setRoleData}
               formErrors={formErrors}
               onSubmit={handleSubmit}
               isLoading={isLoading}
