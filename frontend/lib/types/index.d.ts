@@ -13,6 +13,19 @@ declare type SearchParamProps = {
 // ========================================
 // Discord Role and Server Types
 
+export interface Role {
+  id: string;
+  name: string;
+  price: string;
+  position?: number;
+  enabled: boolean;
+}
+
+export interface RoleData {
+  roles: Role[]; // Array of roles
+  blinkShareRolePosition: number; // Role position field
+}
+
 // Role type with optional `position`
 declare interface DiscordRole {
   id: string;
@@ -129,8 +142,9 @@ declare type PatchGuild = (
   token: string
 ) => Promise<DiscordServer>;
 
-// Role data structured for in role-based actions
+// Role data structured for role-based actions
 declare type RoleData = {
+  [x: string]: number; // This can be adjusted based on your use case
   blinkshareRolePosition: number;
   roles: DiscordRole[];
 };
@@ -150,6 +164,7 @@ declare type DiscordMember = SupabaseUser & {
 
 // Server form data with field names
 declare type ServerFormData = {
+  [x: string]: any;
   title: string;
   description: string;
   details: string;

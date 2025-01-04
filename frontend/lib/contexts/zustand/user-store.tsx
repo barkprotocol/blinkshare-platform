@@ -20,8 +20,6 @@ interface UserState {
   token: string | null;
   userData: UserData | null;
   discordConnected: boolean;
-  discordDisconnected: boolean;
-  discordClientId: number;
   selectedGuild: GuildData;
   tokenTimestamp: number | null; // Track timestamp for token expiry
   inactivityLimit: number; // The limit in milliseconds for token expiry
@@ -30,7 +28,6 @@ interface UserState {
   setToken: (token: string | null) => void;
   setUserData: (userData: UserData | null) => void;
   setDiscordConnected: (connected: boolean) => void;
-  setDiscordDisconnected: (disconnected: boolean) => void;
   setSelectedGuild: (guild: GuildData) => void;
   clearUserData: () => void;
   checkTokenExpiry: () => void; // Method to check if the token has expired
@@ -57,8 +54,6 @@ export const useUserStore = create<UserState>()(
       token: null,
       userData: null,
       discordConnected: false,
-      discordDisconnected: false,
-      discordClientId: 1324299574336290866,
       selectedGuild: { name: null, image: null, id: null },
       tokenTimestamp: null,
       inactivityLimit: 3600000, // 1 hour inactivity limit in milliseconds
@@ -69,17 +64,15 @@ export const useUserStore = create<UserState>()(
         set({
           token,
           discordConnected: !!token,
-          tokenTimestamp: now,
+          tokenTimestamp: token ? now : null,
         });
       },
 
       // Set the user data
       setUserData: (userData) => set({ userData }),
 
-      // Set Discord connection states
+      // Set Discord connection state
       setDiscordConnected: (connected) => set({ discordConnected: connected }),
-
-      setDiscordDisconnected: (disconnected) => set({ discordDisconnected: disconnected }),
 
       // Set the selected guild information
       setSelectedGuild: (guild) => set({ selectedGuild: guild }),
@@ -89,9 +82,8 @@ export const useUserStore = create<UserState>()(
         token: null,
         userData: null,
         discordConnected: false,
-        discordDisconnected: false,
-        selectedGuild: { name: null, image: null, id: null }, // Reset to default values
-        tokenTimestamp: null, // Clear the timestamp
+        selectedGuild: { name: null, image: null, id: null },
+        tokenTimestamp: null,
       }),
 
       // Method to check if the token has expired
@@ -102,7 +94,6 @@ export const useUserStore = create<UserState>()(
             token: null,
             discordConnected: false,
             tokenTimestamp: null,
-            discordDisconnected: true,
           });
         }
       },
@@ -121,7 +112,6 @@ export const useUserStore = create<UserState>()(
         selectedGuild: state.selectedGuild,
         tokenTimestamp: state.tokenTimestamp,
         discordConnected: state.discordConnected,
-        discordDisconnected: state.discordDisconnected,
       }),
       storage: customStorage, // Using customStorage instead of localStorage directly
     }

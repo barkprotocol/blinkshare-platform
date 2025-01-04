@@ -233,6 +233,9 @@ importers:
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
+      solana:
+        specifier: link:@dialectlabs/blinks/hooks/solana
+        version: link:@dialectlabs/blinks/hooks/solana
       sonner:
         specifier: ^1.7.1
         version: 1.7.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)

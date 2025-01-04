@@ -5,15 +5,16 @@ import { BlinkDisplay } from "@/components/blink/blink-display";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
-import { CopyIcon, SquareArrowOutUpRight } from 'lucide-react';
+import { CopyIcon, SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { MotionInput, MotionButton } from "@/components/motion";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { ThemeContext } from "@/lib/contexts/theme-provider";
+import { Connection } from "@solana/web3.js";
 
-export default function SuccessPage() {
+export default function SuccessPage({ rpcUrl }: { rpcUrl: string }) {
   const [blinkUrl, setBlinkUrl] = useState("");
   const [serverId, setServerId] = useState("");
   const [customUrl, setCustomUrl] = useState("");
@@ -21,6 +22,9 @@ export default function SuccessPage() {
   const [imageSrc, setImageSrc] = useState("https://ucarecdn.com/56d0844b-a460-4dad-a761-92f2f14752f2/check.png?height=200&width=200");
   const router = useRouter();
   const { isDark } = useContext(ThemeContext);
+
+  // Establish Solana connection using the rpcUrl from props
+  const connection = new Connection(rpcUrl, "confirmed");
 
   useEffect(() => {
     const id = window.location.pathname.split("/")?.at(-2);
@@ -83,8 +87,8 @@ export default function SuccessPage() {
   };
 
   const openCustomUrl = () => {
-    window.open(customUrl, '_blank', "noopener,noreferrer");
-  }
+    window.open(customUrl, "_blank", "noopener,noreferrer");
+  };
 
   useEffect(() => {
     const imageUrl = "https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp";
@@ -188,7 +192,7 @@ export default function SuccessPage() {
                 className="bg-gray-100 hover:bg-gray-200 text-black"
               >
                 <Image
-                  src="/images/x.webp"
+                  src="https://ucarecdn.com/a903718f-e219-4946-98ed-2578cd5a2bd2/x.png"
                   alt="X"
                   width={24}
                   height={24}
@@ -201,7 +205,7 @@ export default function SuccessPage() {
                 className="bg-gray-100 hover:bg-gray-200 text-black"
               >
                 <Image
-                  src="/images/discord.svg"
+                  src="https://ucarecdn.com/0da96123-0acb-43a5-b3d8-571629377d1b/discord.png"
                   alt="Discord"
                   width={24}
                   height={24}
@@ -217,55 +221,10 @@ export default function SuccessPage() {
               <Button
                 variant="default"
                 className="w-full bg-gray-100 hover:bg-gray-200 text-black"
-                onClick={() => router.push(`/servers/${serverId}/configure`)}
+                onClick={() => router.push("/")}
               >
-                Configure your Blink 👀
+                Back to Home
               </Button>
-            </div>
-
-            <div className="mt-8 text-center">
-              <motion.h1
-                className="text-3xl font-normal tracking-tight md:text-6xl"
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <motion.span
-                  className="relative inline-block group"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <Image
-                    src="/success.png"
-                    alt="Success Icon"
-                    width={150}
-                    height={150}
-                    className="rounded-lg"
-                    style={{ maxWidth: "100%", height: "auto" }}
-                  />
-                  <motion.div
-                    className={`absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 ${
-                      isDark ? "border-gray-200" : "border-gray-500"
-                    } z-10`}
-                    animate={{ rotate: 0 }}
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 2, ease: "linear" }}
-                  />
-                  <motion.div
-                    className={`absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 ${
-                      isDark ? "border-gray-200" : "border-gray-500"
-                    } z-10`}
-                    animate={{ rotate: 0 }}
-                    whileHover={{ rotate: -360 }}
-                    transition={{ duration: 2, ease: "linear" }}
-                  />
-                  <motion.div
-                    className={`absolute -inset-4 ${
-                      isDark ? "bg-gray-100" : "bg-gray-200/30"
-                    } opacity-20 z-0`}
-                    animate={{ rotate: [0, 360] }}
-                  />
-                </motion.span>{" "}
-              </motion.h1>
             </div>
           </motion.div>
         </div>
@@ -274,3 +233,17 @@ export default function SuccessPage() {
   );
 }
 
+export async function getServerSideProps() {
+  const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
+  if (!rpcUrl) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      rpcUrl,
+    },
+  };
+}

@@ -1,13 +1,14 @@
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import { DiscordRole } from "@/lib/types";
 
+// Define response interface for roles fetch
 interface RolesResponse {
   roles: DiscordRole[];
   blinkShareRolePosition: number;
   [key: string]: number | DiscordRole[];
 }
 
-// Fetch roles for a given guild
+// Fetch roles for a given guild with enhanced error handling
 export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
   const token = typeof window !== 'undefined' 
     ? useUserStore.getState().token || localStorage.getItem("discordToken")
@@ -35,7 +36,7 @@ export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
 
     const data: RolesResponse = await response.json();
 
-    // Optional: Validate the data shape here if needed
+    // Validate the roles data structure
     if (!Array.isArray(data.roles)) {
       throw new Error("Invalid response format: roles is not an array");
     }
@@ -43,17 +44,17 @@ export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
     return data;
   } catch (error) {
     console.error(`Error fetching roles for guild ${guildId}:`, error);
-    // Optional: captureException(error); // Log error to Sentry or similar service
-    throw error;
+    throw error; // rethrow the error after logging it
   }
 };
 
+// Define response interface for creating an embedded wallet
 interface EmbeddedWalletResponse {
   success: boolean;
   error?: string;
 }
 
-// Create an embedded wallet for a Discord user
+// Create an embedded wallet for a Discord user with added checks
 export const createEmbeddedWallet = async (
   accessToken: string,
   discordUserId: string,
@@ -84,7 +85,6 @@ export const createEmbeddedWallet = async (
     return { success: true };
   } catch (error) {
     console.error(`Error creating embedded wallet for user ${discordUserId}:`, error);
-    // Optional: captureException(error); // Log error to Sentry or similar service
     return { 
       success: false, 
       error: error instanceof Error ? error.message : String(error)

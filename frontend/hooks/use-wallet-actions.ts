@@ -30,8 +30,9 @@ export function useWalletActions() {
 
     const { signMessage: sign, publicKey, connected } = wallet;
 
+    // Type check for wallet connection and signing availability
     if (!connected || !publicKey || !sign) {
-      console.error("Wallet not connected or signMessage not available");
+      console.error("Wallet is not connected or signing is unavailable");
       toast.error("Wallet is not properly connected or signing is unavailable");
       return null;
     }
@@ -47,10 +48,23 @@ export function useWalletActions() {
     }
   };
 
+  // Optional: Disconnect the wallet
+  const disconnectWallet = async (): Promise<void> => {
+    if (wallet.connected) {
+      try {
+        await wallet.disconnect();
+        toast.success("Wallet disconnected successfully");
+      } catch (error) {
+        console.error("Failed to disconnect wallet:", error);
+        toast.error("Failed to disconnect wallet. Please try again.");
+      }
+    }
+  };
+
   return {
     wallet,
     signMessage,
     promptConnectWallet,
+    disconnectWallet,
   };
 }
-

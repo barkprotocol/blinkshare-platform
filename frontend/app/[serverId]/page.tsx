@@ -32,7 +32,6 @@ export default function BlinkPage() {
   const { width } = useWindowSize();
   const screenWidth = width ?? 0; // Set default width to 0 if undefined
 
-  // If serverId is not valid Discord server ID, redirect to not found page
   useEffect(() => {
     if (!/^\d{17,19}$/.test(serverId)) {
       router.push("/not-found");
@@ -63,7 +62,6 @@ export default function BlinkPage() {
     authenticateUser();
   };
 
-  // Handle the code in URL and authentication status
   useEffect(() => {
     if (!code) return;
 
@@ -72,7 +70,6 @@ export default function BlinkPage() {
     if (guildId === serverId) {
       setIsAuthenticated(true);
     } else {
-      // Remove 'code' from URL if not authenticated
       const params = new URLSearchParams(window.location.search);
       params.delete("code");
       router.push(`${window.location.pathname}?${params.toString()}`);
@@ -171,7 +168,6 @@ export default function BlinkPage() {
   );
 }
 
-// Welcome text for the BlinkShare page
 const WelcomeText = () => (
   <CardHeader>
     <CardTitle className="text-2xl font-bold text-center">
@@ -184,7 +180,6 @@ const WelcomeText = () => (
   </CardHeader>
 );
 
-// Illustration for the page
 const Illustration = () => (
   <motion.h1
     className="text-3xl font-normal tracking-tight md:text-6xl"

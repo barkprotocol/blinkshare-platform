@@ -1,4 +1,4 @@
-import { RoleData, ServerFormProps, Role } from "@/lib/types";
+import { RoleData, Role, ServerFormProps } from "@/lib/types";
 import { fetchRoles } from "@/lib/actions/discord-actions";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
@@ -20,19 +20,27 @@ export const handleDiscordRoleToggle = (
   roleData: RoleData,
   setRoleData: Dispatch<SetStateAction<RoleData>>,
   setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>,
-  setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>
+  setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>,
+  setErrorMessage: Dispatch<SetStateAction<string>>
 ) => {
   const role = roleData.roles.find((role) => role.id === roleId);
 
-  if (!role) return;
+  if (!role) {
+    setErrorMessage("Role not found.");
+    toast.error("Role not found.");
+    return;
+  }
 
   // Ensure the role can only be toggled if it has a lower position than the "blinkord" role
   if (roleData.blinkShareRolePosition <= (role.position || 0)) {
     setRoleErrors((prev) => ({ ...prev, [roleId]: true }));
+    setErrorMessage("You cannot toggle this role due to its position.");
+    toast.error("You cannot toggle this role due to its position.");
     return;
   }
 
   setRoleErrors((prev) => ({ ...prev, [roleId]: false }));
+  setErrorMessage(""); // Reset error message on success
 
   const updatedRoles = roleData.roles.map((r) =>
     r.id === roleId ? { ...r, enabled: !r.enabled } : r
@@ -58,7 +66,8 @@ export const handleDiscordRolePriceChange = (
   roleData: RoleData,
   setRoleData: Dispatch<SetStateAction<RoleData>>,
   setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>,
-  setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>
+  setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>,
+  setErrorMessage: Dispatch<SetStateAction<string>> // Added error message handling
 ) => {
   const updatedRoles = roleData.roles.map((role) =>
     role.id === roleId ? { ...role, price } : role
@@ -75,6 +84,7 @@ export const handleDiscordRolePriceChange = (
     }));
 
   setFormData((prev) => ({ ...prev, roles: enabledRoles }));
+  setErrorMessage(""); // Reset error message on success
 };
 
 // Fetch and refresh Discord roles
@@ -100,15 +110,14 @@ export const refreshRoles = async (
         : role;
     });
 
-    // Ensure the updated role data contains the correct `blinkShareRolePosition`
     setRoleData({
-      ...roleData, // Keep the existing data
+      ...roleData,
       roles: mergedRoles,
-      blinkShareRolePosition: roleData.blinkShareRolePosition, // Ensure this property is passed
+      blinkShareRolePosition: roleData.blinkShareRolePosition,
     });
 
     setRoleErrors({});
-    toast.success("Roles refreshed successfully");
+    toast.success("Roles refreshed successfully!");
   } catch (error) {
     console.error("Error refreshing roles", error);
     setErrorMessage("Failed to refresh roles. Please try again.");

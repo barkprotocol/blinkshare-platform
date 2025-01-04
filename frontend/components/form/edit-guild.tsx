@@ -66,7 +66,7 @@ function ServerFormEdit({
       >
         <h2 className="text-2xl font-semibold mb-4">Edit Blink Data ✍️</h2>
         <Separator className="my-4" />
-        
+
         <div className="space-y-4">
           {/* Title Input */}
           <div>

@@ -8,6 +8,7 @@ import {
 import { FC, ReactNode, useCallback, useMemo } from "react";
 import { WalletModalProvider as ReactUIWalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { toast } from "sonner";
 
 interface WalletContextProviderProps {
   children: ReactNode;
@@ -21,7 +22,7 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children
       new SolflareWalletAdapter(),
     ];
 
-    // You can add more wallets dynamically or based on configuration/environment
+    // Conditionally add additional wallets (e.g., Phantom) based on environment
     if (process.env.NEXT_PUBLIC_ENABLE_PHANTOM_WALLET === "true") {
       availableWallets.push(new PhantomWalletAdapter());
     }
@@ -30,9 +31,10 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children
   }, []);
 
   const onError = useCallback((error: WalletError) => {
-    // Log the error and show some feedback to the user
+    // Log the error and show feedback to the user
     console.error("Wallet error:", error);
-    // Example: Display an error toast or alert
+    // Display an error toast or alert
+    toast.error(`Wallet error: ${error.message || "Unknown error"}`);
   }, []);
 
   return (

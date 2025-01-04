@@ -13,7 +13,7 @@ interface BlinkFormData {
 interface BlinkStore {
   formData: BlinkFormData;
   setFormData: <K extends keyof BlinkFormData>(key: K, value: BlinkFormData[K]) => void;
-  addField: () => void;
+  addField: (value?: string) => void;
   removeField: (index: number) => void;
 }
 
@@ -28,21 +28,21 @@ export const useBlinkStore = create<BlinkStore>((set) => ({
     fields: [],
   },
   setFormData: (key, value) => set((state) => ({
-    formData: { 
-      ...state.formData, 
-      [key]: value 
-    },
-  })),
-  addField: () => set((state) => ({
     formData: {
       ...state.formData,
-      fields: [...state.formData.fields, ''], // Add an empty string as the new field value
+      [key]: value,
+    },
+  })),
+  addField: (value = '') => set((state) => ({
+    formData: {
+      ...state.formData,
+      fields: [...state.formData.fields, value],
     },
   })),
   removeField: (index: number) => set((state) => ({
     formData: {
       ...state.formData,
-      fields: state.formData.fields.filter((_, i) => i !== index), // Remove field by index
+      fields: state.formData.fields.filter((_, i) => i !== index),
     },
   })),
 }));
