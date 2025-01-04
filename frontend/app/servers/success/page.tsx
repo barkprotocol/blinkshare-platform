@@ -35,7 +35,13 @@ export default function SuccessPage() {
   }, []);
 
   // Establish Solana connection using the rpcUrl from state
-  const connection = rpcUrl ? new Connection(rpcUrl, "confirmed") : null;
+  const [connection, setConnection] = useState<Connection | null>(null);
+
+  useEffect(() => {
+    if (rpcUrl) {
+      setConnection(new Connection(rpcUrl, "confirmed"));
+    }
+  }, [rpcUrl]);
 
   useEffect(() => {
     const id = window.location.pathname.split("/")?.at(-2);
@@ -223,18 +229,6 @@ export default function SuccessPage() {
                   className="mr-2"
                 />
                 Share on Discord
-              </Button>
-            </div>
-
-            <Separator className="my-4" />
-
-            <div className="flex justify-center w-full">
-              <Button
-                variant="default"
-                className="w-full bg-gray-100 hover:bg-gray-200 text-black"
-                onClick={() => router.push("/")}
-              >
-                Back to Home
               </Button>
             </div>
           </motion.div>

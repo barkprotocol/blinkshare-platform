@@ -47,7 +47,7 @@ const RedirectComponent = () => {
       router.push(state ? `${state}?code=${code}` : '/servers');
     } catch (error) {
       console.error('Error in handleCodeCallback:', error);
-      setDiscordDisconnected(true);
+      setDiscordDisconnected(true); // Set discordDisconnected state on error
     } finally {
       setCallbackHandled(true);
     }

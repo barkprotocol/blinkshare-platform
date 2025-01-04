@@ -91,7 +91,7 @@ export default function ConfigureServerPage() {
               return selectedRole ? { ...role, price: selectedRole.amount, enabled: true } : role;
             });
 
-            setRoleData({ ...allRoles, roles: mergedRoles, blinkShareRolePosition: -1 }); // Ensure blinkShareRolePosition is set
+            setRoleData({ ...allRoles, roles: mergedRoles, blinkShareRolePosition: -1 });
             setGuildFound(true);
             setCustomUrl(`${window.location.origin}/${guild.id}`);
           } else {
@@ -212,7 +212,7 @@ export default function ConfigureServerPage() {
           <CardContent className="flex flex-col items-center">
             <div className="mb-6 flex justify-center">
               <img
-                src="/bark.png"
+                src="https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"
                 alt="No BlinkShare Guild Selected"
                 width={200}
                 height={200}
@@ -287,11 +287,9 @@ export default function ConfigureServerPage() {
               setFormData={setFormData}
               roleData={roleData}
               setRoleData={setRoleData}
-              formErrors={formErrors}
               onSubmit={handleSubmit}
               isLoading={isLoading}
-              channels={channels}
-            />
+              channels={channels} formErrors={{}}            />
 
             <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
               <MotionCardContent>
