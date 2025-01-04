@@ -15,11 +15,11 @@ import { ThemeContext } from "@/lib/contexts/theme-provider";
 import { Connection } from "@solana/web3.js";
 
 export default function SuccessPage() {
-  const [blinkUrl, setBlinkUrl] = useState("");
-  const [serverId, setServerId] = useState("");
-  const [customUrl, setCustomUrl] = useState("");
+  const [blinkUrl, setBlinkUrl] = useState<string>("");
+  const [serverId, setServerId] = useState<string>("");
+  const [customUrl, setCustomUrl] = useState<string>("");
   const { toast } = useToast();
-  const [imageSrc, setImageSrc] = useState("https://ucarecdn.com/56d0844b-a460-4dad-a761-92f2f14752f2/check.png?height=200&width=200");
+  const [imageSrc, setImageSrc] = useState<string>("https://ucarecdn.com/56d0844b-a460-4dad-a761-92f2f14752f2/check.png?height=200&width=200");
   const router = useRouter();
   const { isDark } = useContext(ThemeContext);
   const [rpcUrl, setRpcUrl] = useState<string>("");
@@ -95,12 +95,20 @@ export default function SuccessPage() {
     window.open(urls[platform], "_blank", "noopener,noreferrer");
   };
 
-  const copyCustomUrl = () => {
-    navigator.clipboard.writeText(customUrl);
-    toast({
-      title: "Custom URL Copied!",
-      description: "The custom URL has been copied to your clipboard.",
-    });
+  const copyCustomUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(customUrl);
+      toast({
+        title: "Custom URL Copied!",
+        description: "The custom URL has been copied to your clipboard.",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to Copy URL",
+        description: "There was an error copying the URL to the clipboard.",
+        variant: "destructive",
+      });
+    }
   };
 
   const openCustomUrl = () => {

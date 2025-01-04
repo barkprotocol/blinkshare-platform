@@ -23,18 +23,18 @@ export const BlinkDisplay: React.FC<BlinkPreviewProps> = ({ serverId, code }) =>
   const { adapter } = useActionSolanaWalletAdapter(process.env.NEXT_PUBLIC_HELIUS_URL!);
 
   // Fetch action and loading state
-  const { action, isLoading, refresh, error: apiError } = useAction({ url: actionApiUrl });
+  const { action, isLoading, refresh } = useAction({ url: actionApiUrl });
 
   // Handle errors if action is null or loading fails
   useEffect(() => {
-    if (apiError) {
-      setError('Failed to fetch Blink data. Please try again later.');
-    } else if (action === null) {
+    if (isLoading) {
+      setError(null); // Reset error state while loading
+    } else if (!action) {
       setError('No Blink data available for this server. Please try again later.');
     } else {
-      setError(null); // Reset error if action is loaded
+      setError(null); // Reset error if action is loaded successfully
     }
-  }, [action, apiError]);
+  }, [action, isLoading]);
 
   // Setting style preset based on the theme
   const stylePreset = isDark ? 'x-dark' : 'default';
