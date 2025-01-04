@@ -38,24 +38,24 @@ export default function ConfigureServerPage() {
   const { serverId } = useParams<{ serverId: string }>();
   const serverIdStr = Array.isArray(serverId) ? serverId[0] : serverId;
   const { signMessage, promptConnectWallet } = useWalletActions();
-  const [guildName, setGuildName] = useState("");
-  const [overlayVisible, setOverlayVisible] = useState(false);
-  const [errorOccurred, setErrorOccurred] = useState(false);
+  const [guildName, setGuildName] = useState<string>("");
+  const [overlayVisible, setOverlayVisible] = useState<boolean>(false);
+  const [errorOccurred, setErrorOccurred] = useState<boolean>(false);
   const [roleData, setRoleData] = useState<RoleData>({ blinkShareRolePosition: -1, roles: [] });
-  const [customUrl, setCustomUrl] = useState("");
+  const [customUrl, setCustomUrl] = useState<string>("");
   const wallet = useWallet();
 
-  const [formData, setFormData] = useState<ServerFormData>(() => ({ ...defaultSchema, id: serverId }));
+  const [formData, setFormData] = useState<ServerFormData>(() => ({ ...defaultSchema, id: serverIdStr }));
   const [channels, setChannels] = useState<{ name: string; id: string }[]>([]);
 
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ServerFormData, string>>>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [guildFound, setGuildFound] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [guildFound, setGuildFound] = useState<boolean>(false);
   const router = useRouter();
 
   const [token, setToken] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState<number>(0);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -91,7 +91,7 @@ export default function ConfigureServerPage() {
               return selectedRole ? { ...role, price: selectedRole.amount, enabled: true } : role;
             });
 
-            setRoleData({ ...allRoles, roles: mergedRoles });
+            setRoleData({ ...allRoles, roles: mergedRoles, blinkShareRolePosition: -1 }); // Ensure blinkShareRolePosition is set
             setGuildFound(true);
             setCustomUrl(`${window.location.origin}/${guild.id}`);
           } else {
@@ -226,8 +226,8 @@ export default function ConfigureServerPage() {
           </CardContent>
         </div>
       </div>
-    );
-  }
+      );
+    }
 
   return (
     <div className="relative max-w-7xl mx-auto px-8 py-10">

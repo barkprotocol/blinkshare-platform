@@ -63,6 +63,9 @@ export default function CreateServerPage() {
           })
         ]);
 
+        // Ensure blinkshareRolePosition is always treated as a number
+        const blinkshareRolePosition = typeof rolesData.blinkshareRolePosition === 'number' ? rolesData.blinkshareRolePosition : -1;
+
         setRoleData({
           ...rolesData,
           roles: rolesData.roles.map((role: DiscordRole) => ({
@@ -70,7 +73,7 @@ export default function CreateServerPage() {
             price: '',
             enabled: false,
           })),
-          blinkshareRolePosition: rolesData.blinkshareRolePosition ?? -1,
+          blinkshareRolePosition, // Assign it as a number
         });
 
         if (channelsResponse.ok) {
@@ -210,4 +213,3 @@ export default function CreateServerPage() {
     </div>
   );
 }
-

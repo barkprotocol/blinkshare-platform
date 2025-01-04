@@ -24,10 +24,12 @@ export default function InstallBot() {
         const DISCORD_CLIENT_ID = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
         const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
+        // Check for missing environment variables early
         if (!DISCORD_CLIENT_ID || !APP_BASE_URL) {
           throw new Error("Missing required environment variables: DISCORD_CLIENT_ID or APP_BASE_URL.");
         }
 
+        // Construct Discord OAuth URL
         const baseUrl = new URL('https://discord.com/oauth2/authorize');
         baseUrl.searchParams.set('client_id', DISCORD_CLIENT_ID);
         baseUrl.searchParams.set('permissions', '268463105');
@@ -43,9 +45,10 @@ export default function InstallBot() {
           baseUrl.searchParams.set('response_type', 'code');
         }
 
+        // Redirect the user to Discord OAuth
         await router.push(baseUrl.toString());
       } catch (err) {
-        console.error("Error in InstallBot:", err);
+        console.error("Error in Install Bot:", err);
         setError(err instanceof Error ? err.message : "An unknown error occurred");
       } finally {
         setIsLoading(false);
@@ -78,4 +81,3 @@ export default function InstallBot() {
 
   return <Redirect />;
 }
-

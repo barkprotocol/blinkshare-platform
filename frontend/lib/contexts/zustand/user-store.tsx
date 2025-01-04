@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 // Define types for user and guild data
 interface UserData {
+  [x: string]: any;
   id: string;
   username: string;
   email: string;
@@ -24,7 +25,7 @@ interface UserState {
   selectedGuild: GuildData;
   tokenTimestamp: number | null; // Track timestamp for token expiry
   inactivityLimit: number; // The limit in milliseconds for token expiry
-  
+
   // Methods for setting and clearing state
   setToken: (token: string | null) => void;
   setUserData: (userData: UserData | null) => void;
@@ -33,7 +34,22 @@ interface UserState {
   setSelectedGuild: (guild: GuildData) => void;
   clearUserData: () => void;
   checkTokenExpiry: () => void; // Method to check if the token has expired
+  isUserLoggedIn: () => boolean; // Helper method to check login status
 }
+
+// Custom localStorage wrapper
+const customStorage = {
+  getItem: (key: string) => {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  },
+  setItem: (key: string, value: any) => {
+    localStorage.setItem(key, JSON.stringify(value));
+  },
+  removeItem: (key: string) => {
+    localStorage.removeItem(key);
+  },
+};
 
 export const useUserStore = create<UserState>()(
   persist(
@@ -44,13 +60,17 @@ export const useUserStore = create<UserState>()(
       discordDisconnected: false,
       discordClientId: 1324299574336290866,
       selectedGuild: { name: null, image: null, id: null },
-      tokenTimestamp: null, // Track the last time the token was set
+      tokenTimestamp: null,
       inactivityLimit: 3600000, // 1 hour inactivity limit in milliseconds
 
       // Set the token and automatically manage the discord connection state
       setToken: (token) => {
         const now = Date.now();
-        set({ token, discordConnected: !!token, tokenTimestamp: now });
+        set({
+          token,
+          discordConnected: !!token,
+          tokenTimestamp: now,
+        });
       },
 
       // Set the user data
@@ -87,18 +107,23 @@ export const useUserStore = create<UserState>()(
         }
       },
 
+      // Helper method to check if the user is logged in
+      isUserLoggedIn: () => {
+        const { token, tokenTimestamp, inactivityLimit } = get();
+        return !!token && (!tokenTimestamp || Date.now() - tokenTimestamp <= inactivityLimit);
+      },
     }),
     {
-      name: "user-storage", // Specify the storage key
+      name: "user-storage", // The name of the storage key
       partialize: (state) => ({
         token: state.token,
         userData: state.userData,
         selectedGuild: state.selectedGuild,
-        tokenTimestamp: state.tokenTimestamp, // Persist the timestamp
+        tokenTimestamp: state.tokenTimestamp,
+        discordConnected: state.discordConnected,
+        discordDisconnected: state.discordDisconnected,
       }),
-      getStorage: () => localStorage, // Default to localStorage, can be adjusted
+      storage: customStorage, // Using customStorage instead of localStorage directly
     }
   )
 );
-
-// Optionally, you could call checkTokenExpiry periodically or upon specific user actions

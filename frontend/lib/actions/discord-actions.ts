@@ -4,11 +4,14 @@ import { DiscordRole } from "@/lib/types";
 interface RolesResponse {
   roles: DiscordRole[];
   blinkShareRolePosition: number;
+  [key: string]: number | DiscordRole[];
 }
 
 // Fetch roles for a given guild
 export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
-  const token = useUserStore.getState().token || (typeof window !== 'undefined' ? localStorage.getItem("discordToken") : null);
+  const token = typeof window !== 'undefined' 
+    ? useUserStore.getState().token || localStorage.getItem("discordToken")
+    : null;
 
   if (!token) {
     console.error("No authorization token found.");
@@ -31,9 +34,16 @@ export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
     }
 
     const data: RolesResponse = await response.json();
+
+    // Optional: Validate the data shape here if needed
+    if (!Array.isArray(data.roles)) {
+      throw new Error("Invalid response format: roles is not an array");
+    }
+
     return data;
   } catch (error) {
     console.error(`Error fetching roles for guild ${guildId}:`, error);
+    // Optional: captureException(error); // Log error to Sentry or similar service
     throw error;
   }
 };
@@ -74,10 +84,10 @@ export const createEmbeddedWallet = async (
     return { success: true };
   } catch (error) {
     console.error(`Error creating embedded wallet for user ${discordUserId}:`, error);
+    // Optional: captureException(error); // Log error to Sentry or similar service
     return { 
       success: false, 
       error: error instanceof Error ? error.message : String(error)
     };
   }
 };
-

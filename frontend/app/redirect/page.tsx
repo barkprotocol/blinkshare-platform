@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useContext, Suspense } from 'react';
 import { motion, useAnimation } from 'framer-motion';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useUserStore } from '@/lib/contexts/zustand/user-store';
 import { ThemeContext } from '@/lib/contexts/theme-provider';
@@ -10,12 +10,13 @@ import { ErrorBoundary } from '@/components/error-boundary';
 
 const RedirectComponent = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const controls = useAnimation();
   const [callbackHandled, setCallbackHandled] = useState(false);
   const { isDark } = useContext(ThemeContext);
-
   const { setToken, setUserData, setDiscordConnected, setDiscordDisconnected } = useUserStore();
+  
+  // Initialize searchParams on the client side
+  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
 
   const handleCodeCallback = async (code: string, state: string | null) => {
     if (callbackHandled) return;
@@ -53,8 +54,12 @@ const RedirectComponent = () => {
   };
 
   useEffect(() => {
-    const code = searchParams.get('code');
-    const state = searchParams.get('state');
+    // Initialize searchParams on the client side
+    const params = new URLSearchParams(window.location.search);
+    setSearchParams(params);
+
+    const code = params.get('code');
+    const state = params.get('state');
 
     if (!code) {
       router.push('/error');
@@ -69,7 +74,7 @@ const RedirectComponent = () => {
     controls.start('visible');
 
     return () => clearTimeout(timer);
-  }, [searchParams, callbackHandled, router, controls]);
+  }, [callbackHandled, router, controls]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -106,74 +111,71 @@ const RedirectComponent = () => {
 
   return (
     <ErrorBoundary>
-      <Suspense fallback={<div>Loading...</div>}>
-        <div className={`relative flex h-screen flex-col ${bgColor}`}>
-          <div className={`grid h-screen place-content-center px-4 ${bgColor}`}>
+      <div className={`relative flex h-screen flex-col ${bgColor}`}>
+        <div className={`grid h-screen place-content-center px-4 ${bgColor}`}>
+          <motion.div
+            className="absolute inset-0 -z-10 flex justify-center items-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate={controls}
+          >
             <motion.div
-              className="absolute inset-0 -z-10 flex justify-center items-center"
-              variants={containerVariants}
-              initial="hidden"
-              animate={controls}
-            >
-              <motion.div
-                className="absolute top-32 -right-0 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-700 -z-50"
-                variants={shapeVariants}
-              />
-              <motion.div
-                className="absolute top-0 left-10 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-200 z-1"
-                variants={shapeVariants}
-              />
-              <motion.div
-                className="absolute top-10 left-20 w-64 h-36 bg-gray-600 z-1"
-                variants={shapeVariants}
-              />
-            </motion.div>
+              className="absolute top-32 -right-0 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-700 -z-50"
+              variants={shapeVariants}
+            />
+            <motion.div
+              className="absolute top-0 left-10 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-200 z-1"
+              variants={shapeVariants}
+            />
+            <motion.div
+              className="absolute top-10 left-20 w-64 h-36 bg-gray-600 z-1"
+              variants={shapeVariants}
+            />
+          </motion.div>
 
+          <motion.div
+            className="text-center relative z-10"
+            variants={containerVariants}
+            initial="hidden"
+            animate={controls}
+          >
             <motion.div
-              className="text-center relative z-10"
-              variants={containerVariants}
-              initial="hidden"
-              animate={controls}
+              className="mt-6 flex flex-col items-center justify-center"
+              variants={itemVariants}
             >
               <motion.div
-                className="mt-6 flex flex-col items-center justify-center"
+                className="mt-6 flex items-center justify-center space-x-4"
                 variants={itemVariants}
               >
-                <motion.div
-                  className="mt-6 flex items-center justify-center space-x-4"
-                  variants={itemVariants}
-                >
-                  <Image
-                    src="https://ucarecdn.com/84aedf39-daf1-4c75-b35c-ed08c6c95c4a/coffeemug.png"
-                    alt="Coffee Mug"
-                    className="h-auto w-auto"
-                    priority
-                    width={200}
-                    height={200}
-                  />
-                  <Image
-                    src="https://ucarecdn.com/0fcc538d-7e39-4cc2-9e0e-4ead361f1858/barkspl20.png"
-                    alt="Bark Logo"
-                    className="h-auto w-auto"
-                    priority
-                    width={200}
-                    height={200}
-                  />
-                </motion.div>
-                <motion.div
-                  className={`mt-4 ${textColor}`}
-                  variants={itemVariants}
-                >
-                  Please wait while we verify your credentials.
-                </motion.div>
+                <Image
+                  src="https://ucarecdn.com/84aedf39-daf1-4c75-b35c-ed08c6c95c4a/coffeemug.png"
+                  alt="Coffee Mug"
+                  className="h-auto w-auto"
+                  priority
+                  width={200}
+                  height={200}
+                />
+                <Image
+                  src="https://ucarecdn.com/0fcc538d-7e39-4cc2-9e0e-4ead361f1858/barkspl20.png"
+                  alt="Bark Logo"
+                  className="h-auto w-auto"
+                  priority
+                  width={200}
+                  height={200}
+                />
+              </motion.div>
+              <motion.div
+                className={`mt-4 ${textColor}`}
+                variants={itemVariants}
+              >
+                Please wait while we verify your credentials.
               </motion.div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
-      </Suspense>
+      </div>
     </ErrorBoundary>
   );
 };
 
 export default RedirectComponent;
-

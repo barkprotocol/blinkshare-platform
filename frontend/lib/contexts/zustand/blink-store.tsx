@@ -1,4 +1,3 @@
-import { useBlinkStore } from '@/hooks/use-store';
 import { create } from 'zustand';
 
 // Type definition for form data
@@ -12,8 +11,12 @@ interface BlinkFormData {
   fields: string[];
 }
 
-// Zustand store
-export const useBlinkStore = create((set: any) => ({
+// Zustand store with more specific type for the state and set function
+export const useBlinkStore = create<{
+  formData: BlinkFormData;
+  setFormData: (key: keyof BlinkFormData, value: string | string[]) => void;
+  addField: () => void;
+}>((set) => ({
   formData: {
     title: '',
     description: '',
@@ -22,9 +25,9 @@ export const useBlinkStore = create((set: any) => ({
     serverId: '',
     code: '',
     fields: [],
-  } as BlinkFormData,
-  setFormData: (key: keyof BlinkFormData, value: string | string[]) => {
-    set((state: any) => ({
+  },
+  setFormData: (key, value) => {
+    set((state) => ({
       formData: {
         ...state.formData,
         [key]: value,
@@ -32,7 +35,7 @@ export const useBlinkStore = create((set: any) => ({
     }));
   },
   addField: () => {
-    set((state: any) => ({
+    set((state) => ({
       formData: {
         ...state.formData,
         fields: [...state.formData.fields, ''],
@@ -45,7 +48,7 @@ export const useBlinkStore = create((set: any) => ({
 const BlinkForm = () => {
   const { formData, setFormData, addField } = useBlinkStore();
 
-  // Handle changes to form fields
+  // Handle changes to form fields (text or array of strings)
   const handleInputChange = (key: keyof BlinkFormData, value: string | string[]) => {
     setFormData(key, value);
   };
@@ -98,7 +101,7 @@ const BlinkForm = () => {
         <select
           id="stylePreset"
           value={formData.stylePreset}
-          onChange={(e) => handleInputChange('stylePreset', e.target.value)}
+          onChange={(e) => handleInputChange('stylePreset', e.target.value as 'default' | 'dark')}
         >
           <option value="default">Default</option>
           <option value="dark">Dark</option>
