@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { useWalletActions } from "@/hooks/use-wallet-actions";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "sonner";
@@ -22,6 +22,11 @@ export interface RoleData {
   roles: DiscordRole[];
 }
 
+// Define the FormErrors type to support arrays of error messages
+type FormErrors = {
+  [key in keyof ServerFormData]?: string[]; // Each field can have an array of error messages
+};
+
 export default function CreateServerPage() {
   const { serverId } = useParams<{ serverId: string }>();
   const { signMessage, promptConnectWallet } = useWalletActions();
@@ -29,7 +34,7 @@ export default function CreateServerPage() {
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [formData, setFormData] = useState<ServerFormData>(() => ({ ...defaultSchema, id: serverId }));
   const [roleData, setRoleData] = useState<RoleData>({ blinkShareRolePosition: -1, roles: [] });
-  const [formErrors, setFormErrors] = useState<Partial<Record<keyof ServerFormData, string>>>({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(true);
   const [channels, setChannels] = useState<Array<{ name: string; id: string }>>([]);
   const [guildName, setGuildName] = useState<string | null>(null);
@@ -151,18 +156,24 @@ export default function CreateServerPage() {
       toast.success("Server created successfully!");
       router.push(`/servers/${serverId}/success`);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errors: Partial<Record<keyof ServerFormData, string>> = {};
+      if (error instanceof ZodError) {
+        const errors: FormErrors = {};
+
+        // Collect all error messages for each field
         error.errors.forEach((err) => {
-          if (err.path.length) {
-            const field = err.path[0];
-            if (typeof field === 'string' && field in formData) {
-              errors[field as keyof ServerFormData] = err.message;
+          const field = err.path[0]; // Get the field name
+          if (typeof field === 'string' && field in formData) {
+            // Initialize the error array for this field if it doesn't exist
+            if (!errors[field]) {
+              errors[field] = [];
             }
+            // Add the error message to the array for the field
+            errors[field]?.push(err.message);
           }
         });
+
         setFormErrors(errors);
-        toast.error(`Please fix the form errors: ${Object.values(errors).join("\n")}`);
+        toast.error(`Please fix the form errors: ${Object.values(errors).flat().join("\n")}`);
       } else if (error instanceof Error) {
         console.error("Unexpected error:", error);
         toast.error(error.message || "An unexpected error occurred.");
@@ -209,8 +220,9 @@ export default function CreateServerPage() {
               formErrors={formErrors}
               onSubmit={handleSubmit}
               isLoading={isLoading}
-              channels={channels}
-            />
+              channels={channels} roleData={undefined} setRoleData={function (value: SetStateAction<RoleData>): void {
+                throw new Error("Function not implemented.");
+              } }            />
           </MotionCardContent>
         </MotionCard>
       </div>

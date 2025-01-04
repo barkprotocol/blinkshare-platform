@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from "zustand";
 
 interface UserState {
   token: string | null;
@@ -6,18 +6,18 @@ interface UserState {
   discordConnected: boolean;
   discordDisconnected: boolean;
   setToken: (token: string) => void;
-  setUserData: (userData: any) => void;
+  setUserData: (data: any) => void;
   setDiscordConnected: (connected: boolean) => void;
   setDiscordDisconnected: (disconnected: boolean) => void;
 }
 
-export const useUserStore = create<UserState>((set: (arg0: { token?: any; userData?: any; discordConnected?: any; discordDisconnected?: any; }) => any) => ({
+export const useUserStore = create<UserState>((set) => ({
   token: null,
   userData: null,
   discordConnected: false,
   discordDisconnected: false,
-  setToken: (token: any) => set({ token }),
-  setUserData: (userData: any) => set({ userData }),
-  setDiscordConnected: (connected: any) => set({ discordConnected: connected }),
-  setDiscordDisconnected: (disconnected: any) => set({ discordDisconnected: disconnected }),
+  setToken: (token) => set({ token }),
+  setUserData: (data) => set({ userData: data }),
+  setDiscordConnected: (connected) => set({ discordConnected: connected }),
+  setDiscordDisconnected: (disconnected) => set({ discordDisconnected: disconnected }),
 }));

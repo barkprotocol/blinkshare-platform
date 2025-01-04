@@ -7,23 +7,38 @@ import { FAQ } from "@/components/ui/layout/faq";
 export default function Home() {
   return (
     <main className="flex flex-col space-y-16">
-      <section aria-label="Hero" className="py-16 sm:py-0">
+      <section
+        aria-label="Hero Section"
+        className="py-16 sm:py-24 flex items-center justify-center"
+      >
         <Hero />
       </section>
 
-      <section aria-label="Features" className="bg-muted py-16 sm:py-24">
+      <section
+        aria-label="Features Section"
+        className="bg-muted py-16 sm:py-24"
+      >
         <Features />
       </section>
 
-      <section aria-label="How It Works" className="py-16 sm:py-24">
+      <section
+        aria-label="How It Works Section"
+        className="py-16 sm:py-24"
+      >
         <HowItWorks />
       </section>
 
-      <section aria-label="BlinkShare BOT" className="bg-muted py-16 sm:py-24">
+      <section
+        aria-label="BlinkShare BOT Section"
+        className="bg-muted py-16 sm:py-24"
+      >
         <CTA />
       </section>
 
-      <section aria-label="Frequently Asked Questions" className="py-16 sm:py-24">
+      <section
+        aria-label="Frequently Asked Questions Section"
+        className="py-16 sm:py-24"
+      >
         <FAQ />
       </section>
     </main>

@@ -47,7 +47,7 @@ const RedirectComponent = () => {
       router.push(state ? `${state}?code=${code}` : '/servers');
     } catch (error) {
       console.error('Error in handleCodeCallback:', error);
-      setDiscordDisconnected(true); // Set discordDisconnected state on error
+      setDiscordDisconnected(true);
     } finally {
       setCallbackHandled(true);
     }
@@ -74,7 +74,7 @@ const RedirectComponent = () => {
     controls.start('visible');
   
     return () => clearTimeout(timer);
-  }, [callbackHandled, router, controls, handleCodeCallback]);
+  }, [callbackHandled, router, controls]);
 
   // Define the containerVariants for the animation
   const containerVariants = {

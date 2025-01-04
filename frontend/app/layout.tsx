@@ -1,15 +1,16 @@
 'use client';
 
-import { Poppins, Syne } from 'next/font/google';
-import { ThemeProvider } from 'next-themes';
+import { useEffect } from 'react';
 import './styles/globals.css';
 import { Header } from '@/components/ui/layout/header';
 import Footer from '@/components/ui/layout/footer';
-import Head from 'next/head';
 import { WalletProviderComponent } from '@/components/ui/wallet-provider';
+import { ThemeProvider } from 'next-themes';
 import { supabase } from '@/lib/supabase-client';
-import { useEffect } from 'react';
+import Head from 'next/head';
+import { Poppins, Syne } from 'next/font/google';
 
+// Import the fonts with necessary weights and subsets
 const syne = Syne({ subsets: ['latin'], variable: '--font-syne' });
 const poppins = Poppins({ weight: ['400', '600'], subsets: ['latin'], variable: '--font-poppins' });
 

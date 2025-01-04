@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
@@ -206,46 +206,18 @@ function ServerFormEdit({
             className="mt-2"
           />
         </div>
-
-        {/* Limited Time Role Inputs */}
-        {formData.limitedTimeRoles && (
-          <div className="flex space-x-4">
-            <div className="flex flex-col w-1/4">
-              <Label htmlFor="limitedTimeQuantity">Amount</Label>
-              <select
-                id="limitedTimeQuantity"
-                value={formData.limitedTimeQuantity}
-                onChange={(e) => handleInputChange("limitedTimeQuantity", e.target.value, setFormData)}
-                className="border rounded p-2 w-full"
-              >
-                {Array.from({ length: 30 }, (_, i) => i + 1).map((num) => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col w-1/4">
-              <Label htmlFor="roleTimeLimit">Time Limit</Label>
-              <input
-                id="roleTimeLimit"
-                type="number"
-                value={formData.roleTimeLimit}
-                onChange={(e) => handleInputChange("roleTimeLimit", e.target.value, setFormData)}
-                className="border rounded p-2 w-full"
-              />
-            </div>
-          </div>
-        )}
       </MotionCardContent>
 
-      {/* Save Changes Button */}
+      {/* Save & Submit */}
       <MotionButton
         type="submit"
-        className="self-end mt-6"
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 300 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="mt-4 w-full bg-blue-600 text-white flex items-center justify-center space-x-2"
       >
-        Save Changes
-        <SaveIcon className="ml-2 h-4 w-4" />
+        {isLoading ? <SpinnerSvg /> : <SaveIcon />}
+        <span>Save Changes</span>
       </MotionButton>
     </form>
   );

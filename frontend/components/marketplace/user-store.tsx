@@ -1,3 +1,6 @@
+"use client";
+
+import Image from 'next/image';
 import { useUserStore } from '@/hooks/use-user-store';
 
 const UserMarketplace = () => {
@@ -21,10 +24,13 @@ const UserMarketplace = () => {
       {userData ? (
         <div className="mt-4">
           <h2 className="text-xl">Welcome, {userData.username}</h2>
-          <img 
+          {/* Use Image component for better performance */}
+          <Image 
             src={userData.avatarUrl} 
             alt="User Avatar" 
-            className="rounded-full w-16 h-16 mt-2"
+            className="rounded-full mt-2"
+            width={64} // Set image width
+            height={64} // Set image height
           />
         </div>
       ) : (

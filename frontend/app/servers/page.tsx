@@ -51,10 +51,7 @@ export default function Servers() {
       }
 
       // Updated handleConnectDiscord callback to return a Promise<void>
-      handleConnectDiscord(async () => { 
-        // Callback logic after Discord is connected
-        await fetchGuilds(); // Fetch guilds after successful connection
-      });
+      handleConnectDiscord(() => fetchGuilds());
     }
   }, [discordConnected]);
 
@@ -90,7 +87,7 @@ export default function Servers() {
       const data = await response.json();
 
       if (response.status === 401) {
-        handleConnectDiscord(async () => fetchGuilds()); // Retry fetching guilds after re-authorization
+        handleConnectDiscord(() => fetchGuilds()); // Retry fetching guilds after re-authorization
       }
 
       if (data?.guild?.id) {
@@ -233,14 +230,24 @@ export default function Servers() {
   );
 
   return (
-    <div className="pt-10">
-      {isFetchingGuilds ? (
-        <LoadingSpinner />
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {guilds.map((guild, index) => renderGuildCard(guild, index))}
-        </div>
-      )}
+    <div className="px-4 py-8 sm:px-8">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-800">Your Servers</h1>
+        <p className="text-lg text-gray-500 mt-2">Select a server to configure or create a new one.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        {guilds.length === 0 ? (
+          <div className="col-span-full text-center">
+            {isFetchingGuilds ? (
+              <LoadingSpinner />
+            ) : (
+              <p className="text-lg text-gray-500">No servers found. Connect your Discord to view them!</p>
+            )}
+          </div>
+        ) : (
+          guilds.map(renderGuildCard)
+        )}
+      </div>
     </div>
   );
 }

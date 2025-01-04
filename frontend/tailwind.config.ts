@@ -62,9 +62,9 @@ const config: Config = {
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',  // Large border radius
-        md: 'calc(var(--radius) - 2px)',  // Medium border radius
-        sm: 'calc(var(--radius) - 4px)',  // Small border radius
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
         'accordion-down': {
@@ -89,18 +89,20 @@ const config: Config = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       spacing: {
-        // Example of adding extra spacing utilities
-        '128': '32rem',  // Custom spacing
-        '144': '36rem',  // Custom spacing
+        '128': '32rem',
+        '144': '36rem',
       },
       fontFamily: {
-        sans: ['Poppins', 'Arial', 'sans-serif'], // Default sans-serif font
-        title: ['Oswald', 'sans-serif'], // Custom font for titles
-        body: ['Poppins Light', 'sans-serif'], // Custom body font
+        sans: ['Poppins', 'Arial', 'sans-serif'],
+        title: ['Oswald', 'sans-serif'],
+        body: ['Poppins Light', 'sans-serif'],
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-};
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/forms")
+  ],
+} satisfies Config;
 
 export default config;
