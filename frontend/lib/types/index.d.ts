@@ -211,18 +211,18 @@ declare type CreateOrEditGuild = (
 // ========================================
 // ServerFormProps with refined state management
 
+// Define FormErrors type (if not already defined)
+declare type FormErrors = {
+  [key: string]: string[]; // Object with field names as keys and an array of error messages
+};
+
 declare interface ServerFormProps {
   formData: ServerFormData;
   setFormData: React.Dispatch<React.SetStateAction<ServerFormData>>;
   roleData: RoleData;
   setRoleData: React.Dispatch<React.SetStateAction<RoleData>>;
-  formErrors: FormErrors;  // Ensure `FormErrors` type is defined
+  formErrors: FormErrors; // Ensure formErrors is typed correctly
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   isLoading: boolean;
   channels: { name: string; id: string }[];
 }
-
-// Defining FormErrors type (if not already defined)
-declare type FormErrors = {
-  [key: string]: string[]; // Object with field names as keys and an array of error messages
-};

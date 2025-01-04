@@ -141,9 +141,9 @@ function ServerFormEdit({
               const value = e.target.value === "null" ? null : e.target.value;
               handleInputChange("notificationChannelId", value, setFormData);
             }}
-            className="mt-1 w-full rounded border-gray-300 dark:border-gray-800 bg-transparent"
+            className="block w-full p-2 bg-white border rounded"
           >
-            <option value="null">None</option>
+            <option value={null}>Select a channel...</option>
             {channels.map((channel) => (
               <option key={channel.id} value={channel.id}>
                 {channel.name}
@@ -153,74 +153,25 @@ function ServerFormEdit({
         </div>
       </MotionCardContent>
 
-      {/* Wallet Section */}
-      <MotionCardContent
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <div className="flex flex-col">
-          <div className="flex items-center">
-            <Label htmlFor="payoutWallet" className="mr-2">Payout Wallet</Label>
-            {HelpTooltip("Role purchase payments from your blink will be sent to this address. To change it, connect to a different address and save at the bottom of the page.")}
-          </div>
-          <MotionInput
-            id="payoutWallet"
-            value={formData.address}
-            readOnly
-            className="mt-2 w-full"
-            whileFocus={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          />
-        </div>
-      </MotionCardContent>
-
-      {/* Payment Method & Role Time Limit */}
-      <MotionCardContent
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="flex flex-row w-full space-x-4"
-      >
-        <div className="flex flex-col w-1/4">
-          <div className="flex items-center">
-            <Label htmlFor="useUsdc" className="mr-1">Pay in $USDC</Label>
-            {HelpTooltip("Use $USDC, SOL, or BARK token for payments")}
-          </div>
-          <Switch
-            id="useUsdc"
-            checked={formData.useUsdc}
-            onCheckedChange={(value) => handleInputChange("useUsdc", value, setFormData)}
-            className="mt-2"
-          />
-        </div>
-        <div className="flex flex-col w-1/4">
-          <div className="flex items-center">
-            <Label htmlFor="limitedTimeRoles" className="mr-2">Limited Time</Label>
-            {HelpTooltip("If toggled on, roles will be available to members for a limited time only and will be automatically removed afterwards.")}
-          </div>
-          <Switch
-            id="limitedTimeRoles"
-            checked={formData.limitedTimeRoles}
-            onCheckedChange={(value) => handleInputChange("limitedTimeRoles", value, setFormData)}
-            className="mt-2"
-          />
-        </div>
-      </MotionCardContent>
-
-      {/* Save & Submit */}
-      <MotionButton
-        type="submit"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mt-4 w-full bg-blue-600 text-white flex items-center justify-center space-x-2"
-      >
-        {isLoading ? <SpinnerSvg /> : <SaveIcon />}
-        <span>Save Changes</span>
-      </MotionButton>
+      {/* Actions Section */}
+      <div className="flex justify-between">
+        <MotionButton
+          type="submit"
+          disabled={isLoading}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="flex items-center px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          {isLoading ? (
+            <SpinnerSvg />
+          ) : (
+            <SaveIcon className="mr-2" />
+          )}
+          Save Changes
+        </MotionButton>
+      </div>
     </form>
   );
 }
 
-export default ServerFormEdit;
+export { ServerFormEdit };

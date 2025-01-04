@@ -1,10 +1,8 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CopyIcon, SquareArrowOutUpRight } from 'lucide-react';
+import { CopyIcon, SquareArrowOutUpRight } from "lucide-react";
 import { useWalletActions } from "@/hooks/use-wallet-actions";
 import { DiscordRole, RoleData } from "@/lib/types";
 import {
@@ -20,7 +18,7 @@ import { BlinkDisplay } from "@/components/blink/blink-display";
 import { toast } from "sonner";
 import { defaultSchema, ServerFormData, serverFormSchema } from "@/lib/zod-validation";
 import OverlaySpinner from "@/components/ui/overlay-spinner";
-import ServerFormEdit from "@/components/form/edit-guild";
+import EditGuild, { ServerFormEdit } from "@/components/form/edit-guild";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { z } from "zod";
 import {
@@ -33,6 +31,18 @@ import { fetchRoles } from "@/lib/actions/discord-actions";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import MySubscriptions from "../subscriptions";
+import Image from "next/image";
+
+// ServerFormProps interface
+export interface ServerFormProps {
+  formData: ServerFormData;
+  setFormData: React.Dispatch<React.SetStateAction<ServerFormData>>;
+  formErrors: Partial<Record<keyof ServerFormData, string>>;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  roleData: RoleData;
+  setRoleData: React.Dispatch<React.SetStateAction<RoleData>>;
+  isLoading: boolean;
+}
 
 export default function ConfigureServerPage() {
   const { serverId } = useParams<{ serverId: string }>();
@@ -76,7 +86,7 @@ export default function ConfigureServerPage() {
           }),
           fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}/channels`, {
             headers: { Authorization: `Bearer ${token}` },
-          })
+          }),
         ]);
 
         if (guildResponse.ok) {
@@ -211,7 +221,8 @@ export default function ConfigureServerPage() {
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <div className="mb-6 flex justify-center">
-              <img
+              {/* Replacing <img> with <Image> */}
+              <Image
                 src="https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"
                 alt="No BlinkShare Guild Selected"
                 width={200}
@@ -221,91 +232,32 @@ export default function ConfigureServerPage() {
             </div>
             <p className="text-gray-600 text-center max-w-md">
               You haven't created Discord paid roles for your server{" "}
-              <span className="font-semibold">{guildName}</span>. Please use the <strong>Discord Roles</strong> tab to enable roles.
+              <span className="font-medium">{guildName}</span>. Follow the instructions on how to create a
+              custom subscription page for your server.
             </p>
+            <div className="mt-6 space-x-3">
+              <Button onClick={copyCustomUrl}>Copy URL</Button>
+              <Button onClick={openCustomUrl} className="bg-sand">
+                View in Browser
+              </Button>
+            </div>
           </CardContent>
         </div>
       </div>
-      );
-    }
+    );
+  }
 
   return (
-    <div className="relative max-w-7xl mx-auto px-8 py-10">
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-3xl font-bold mb-8"
-      >
-        Configure Blink for {guildName}
-      </motion.h1>
-      {overlayVisible && (
-        <OverlaySpinner
-          text="Submitting your blink configuration"
-          error={errorOccurred}
-        />
-      )}
-      <Tabs selectedIndex={activeTab} onSelect={(index: number) => setActiveTab(index)}>
-        <TabList className="flex justify-center space-x-4 mb-8">
-          <Tab className={`px-4 py-2 rounded cursor-pointer ${activeTab === 0 ? "bg-primary text-primary-foreground" : "bg-background"}`}>
-            🔧 Configure
-          </Tab>
-          <Tab className={`px-4 py-2 rounded cursor-pointer ${activeTab === 1 ? "bg-primary text-primary-foreground" : "bg-background"}`}>
-            📜 My Subscriptions
-          </Tab>
-        </TabList>
-
-        <TabPanel>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <MotionCardContent>
-                <h2 className="text-2xl font-semibold mb-4">Your custom Blink URL 🔗</h2>
-                <Separator className="my-4" />
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                  <MotionInput
-                    type="text"
-                    value={customUrl}
-                    readOnly
-                    className="flex-grow mb-4 sm:mb-0 sm:mr-4"
-                  />
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                    <MotionButton onClick={copyCustomUrl}>
-                      <CopyIcon className="mr-2 h-4 w-4" />
-                      Copy URL
-                    </MotionButton>
-                    <MotionButton onClick={openCustomUrl}>
-                      <SquareArrowOutUpRight className="mr-2 h-4 w-4" />
-                      Open URL
-                    </MotionButton>
-                  </div>
-                </div>
-              </MotionCardContent>
-            </MotionCard>
-
-            <ServerFormEdit
-              formData={formData}
-              setFormData={setFormData}
-              roleData={roleData}
-              setRoleData={setRoleData}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              channels={channels} formErrors={{}}            />
-
-            <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
-              <MotionCardContent>
-                <h2 className="text-2xl font-semibold mb-4">Blink Preview 👀</h2>
-                <Separator className="my-4" />
-                <BlinkDisplay serverId={serverIdStr} />
-              </MotionCardContent>
-            </MotionCard>
-          </form>
-        </TabPanel>
-
-        <TabPanel>
-          <MySubscriptions serverName={guildName} />
-        </TabPanel>
-      </Tabs>
-    </div>
+    <>
+      <ServerFormEdit
+        formData={formData}
+        setFormData={setFormData}
+        formErrors={formErrors}
+        handleSubmit={handleSubmit}
+        roleData={roleData}
+        setRoleData={setRoleData}
+        isLoading={isLoading}
+      />
+    </>
   );
 }
-
