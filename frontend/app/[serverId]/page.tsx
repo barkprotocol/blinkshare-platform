@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { BlinkDisplay } from "@/components/blink/blink-display";
@@ -124,7 +122,13 @@ export default function BlinkPage() {
                           onClick={onConnect}
                           className="w-fit h-10 sm:h-12 bg-gray-100 hover:bg-gray-200 text-black font-bold py-2 px-4 sm:px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
                         >
-                          <img className="mr-2 h-4 w-4 sm:h-5 sm:w-5" src="https://unpkg.com/simple-icons@v13/icons/discord.svg" alt="Discord" />
+                          <Image
+                            className="mr-2 h-4 w-4 sm:h-5 sm:w-5"
+                            src="https://unpkg.com/simple-icons@v13/icons/discord.svg"
+                            alt="Discord"
+                            width={20}
+                            height={20}
+                          />
                           Connect Discord
                         </Button>
                       </>
@@ -156,7 +160,7 @@ export default function BlinkPage() {
 const WelcomeText = () => (
   <CardHeader>
     <CardTitle className="text-2xl font-bold text-center">
-      Welcome to <span className="highlight-gray">BlinkShare</span>
+      Welcome to <span className="highlight-gray">BlinkShare&apos;s</span>
     </CardTitle>
     <CardDescription className="text-center">
       You're one step away from unlocking exclusive content and features on your
@@ -172,31 +176,6 @@ const Illustration = () => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <motion.span className="relative inline-block group" whileHover={{ scale: 1.05 }}>
-      <Image
-        src="https://ucarecdn.com/30e579c5-cb52-476f-bcfa-616004d6edca/helmeticon.png"
-        alt="Illustration"
-        width={400}
-        height={400}
-        className="rounded-lg"
-      />
-      <motion.div
-        className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-gray-200 z-10"
-        animate={{ rotate: 0 }}
-        whileHover={{ rotate: 360 }}
-        transition={{ duration: 2, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-gray-200 z-10"
-        animate={{ rotate: 0 }}
-        whileHover={{ rotate: -360 }}
-        transition={{ duration: 2, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute top-0 left-0 right-0 w-full h-32 bg-gray-200 opacity-20 z-0"
-        animate={{ rotate: [0, 360] }}
-        transition={{ duration: 2, ease: "linear", repeat: Infinity }}
-      />
-    </motion.span>
+    BlinkShare: Exclusive Content Awaits!
   </motion.h1>
 );

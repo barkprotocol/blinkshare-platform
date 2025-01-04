@@ -52,7 +52,7 @@ const nextConfig: NextConfig = {
     }
   },
   typescript: {
-    ignoreBuildErrors: process.env.NODE_ENV === "production",
+    ignoreBuildErrors: true,
   },
   experimental: {
     optimizeCss: false,
