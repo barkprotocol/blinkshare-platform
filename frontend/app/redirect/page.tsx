@@ -2,66 +2,23 @@
 
 import React, { useEffect, useState, useContext, Suspense } from 'react';
 import { motion, useAnimation } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useUserStore } from '@/lib/contexts/zustand/user-store';
-import { useSearchParams } from 'next/navigation';
 import { ThemeContext } from '@/lib/contexts/theme-provider';
-
-// Error Boundary Component to catch any errors during rendering
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-}
-
-class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
-  state = { hasError: false };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught in ErrorBoundary:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <div>Something went wrong. Please try again later.</div>;
-    }
-    return this.props.children;
-  }
-}
+import { ErrorBoundary } from '@/components/error-boundary';
 
 const RedirectComponent = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const controls = useAnimation();
   const [callbackHandled, setCallbackHandled] = useState(false);
-  const [mounted, setMounted] = useState(false); // To ensure client-side rendering
   const { isDark } = useContext(ThemeContext);
 
-  const setToken = useUserStore((state) => state.setToken);
-  const setUserData = useUserStore((state) => state.setUserData);
-  const setDiscordConnected = useUserStore((state) => state.setDiscordConnected);
-  const setDiscordDisconnected = useUserStore((state) => state.setDiscordDisconnected);
+  const { setToken, setUserData, setDiscordConnected, setDiscordDisconnected } = useUserStore();
 
-  // Ensure the component uses useSearchParams only on the client-side
-  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      const params = new URLSearchParams(window.location.search);
-      setSearchParams(params);
-    }
-  }, [mounted]);
-
-  const handleCodeCallback = async (code: string, searchParams: URLSearchParams) => {
+  const handleCodeCallback = async (code: string, state: string | null) => {
     if (callbackHandled) return;
-
-    const state = searchParams.get('state') as string;
 
     try {
       const response = await fetch(
@@ -71,7 +28,6 @@ const RedirectComponent = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Discord API error:', errorData);
         throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
       }
 
@@ -83,7 +39,9 @@ const RedirectComponent = () => {
         localStorage.setItem('discordToken', data.token);
         localStorage.setItem('guilds', JSON.stringify(data.guilds));
         setUserData(data);
-      } else if (state) localStorage.setItem('state', state);
+      } else if (state) {
+        localStorage.setItem('state', state);
+      }
 
       router.push(state ? `${state}?code=${code}` : '/servers');
     } catch (error) {
@@ -95,18 +53,15 @@ const RedirectComponent = () => {
   };
 
   useEffect(() => {
-    if (!searchParams) return;
-    
     const code = searchParams.get('code');
+    const state = searchParams.get('state');
+
     if (!code) {
       router.push('/error');
     } else if (code && !callbackHandled) {
-      handleCodeCallback(code, searchParams);
+      handleCodeCallback(code, state);
     }
-  }, [searchParams, callbackHandled]);
 
-  // Handle the timeout logic for redirection after 5 minutes
-  useEffect(() => {
     const timer = setTimeout(() => {
       router.push('/servers');
     }, 300000); // Redirect after 5 minutes
@@ -114,7 +69,7 @@ const RedirectComponent = () => {
     controls.start('visible');
 
     return () => clearTimeout(timer);
-  }, [router, controls]);
+  }, [searchParams, callbackHandled, router, controls]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -148,10 +103,6 @@ const RedirectComponent = () => {
 
   const bgColor = isDark ? 'bg-gray-900' : 'bg-white';
   const textColor = isDark ? 'text-white' : 'text-gray-900';
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <ErrorBoundary>
@@ -194,7 +145,7 @@ const RedirectComponent = () => {
                 >
                   <Image
                     src="https://ucarecdn.com/84aedf39-daf1-4c75-b35c-ed08c6c95c4a/coffeemug.png"
-                    alt="First Image"
+                    alt="Coffee Mug"
                     className="h-auto w-auto"
                     priority
                     width={200}
@@ -202,7 +153,7 @@ const RedirectComponent = () => {
                   />
                   <Image
                     src="https://ucarecdn.com/0fcc538d-7e39-4cc2-9e0e-4ead361f1858/barkspl20.png"
-                    alt="Second Image"
+                    alt="Bark Logo"
                     className="h-auto w-auto"
                     priority
                     width={200}
@@ -225,3 +176,4 @@ const RedirectComponent = () => {
 };
 
 export default RedirectComponent;
+

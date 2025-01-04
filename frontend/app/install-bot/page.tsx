@@ -15,7 +15,7 @@ export default function InstallBot() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const installBot = () => {
+    const installBot = async () => {
       try {
         const url = new URL(window.location.href);
         const redirect = url.searchParams.get('redirect') === 'true';
@@ -25,7 +25,7 @@ export default function InstallBot() {
         const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
         if (!DISCORD_CLIENT_ID || !APP_BASE_URL) {
-          throw new Error("Missing required environment variables");
+          throw new Error("Missing required environment variables: DISCORD_CLIENT_ID or APP_BASE_URL.");
         }
 
         const baseUrl = new URL('https://discord.com/oauth2/authorize');
@@ -43,7 +43,7 @@ export default function InstallBot() {
           baseUrl.searchParams.set('response_type', 'code');
         }
 
-        router.push(baseUrl.toString());
+        await router.push(baseUrl.toString());
       } catch (err) {
         console.error("Error in InstallBot:", err);
         setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -57,8 +57,9 @@ export default function InstallBot() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen" aria-live="polite" aria-busy="true">
         <Skeleton className="w-[300px] h-[20px]" />
+        <span className="sr-only">Loading bot installation page...</span>
       </div>
     );
   }
@@ -67,7 +68,7 @@ export default function InstallBot() {
     return (
       <div className="flex items-center justify-center h-screen">
         <Alert variant="destructive">
-          <InfoCircledIcon className="h-4 w-4" />
+          <InfoCircledIcon className="h-4 w-4" aria-hidden="true" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>

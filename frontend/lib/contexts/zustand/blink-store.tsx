@@ -1,19 +1,63 @@
 import { useBlinkStore } from '@/hooks/use-store';
 import { create } from 'zustand';
 
+// Type definition for form data
+interface BlinkFormData {
+  title: string;
+  description: string;
+  iconUrl: string;
+  stylePreset: 'default' | 'dark';
+  serverId: string;
+  code: string;
+  fields: string[];
+}
+
+// Zustand store
+export const useBlinkStore = create((set: any) => ({
+  formData: {
+    title: '',
+    description: '',
+    iconUrl: '',
+    stylePreset: 'default',
+    serverId: '',
+    code: '',
+    fields: [],
+  } as BlinkFormData,
+  setFormData: (key: keyof BlinkFormData, value: string | string[]) => {
+    set((state: any) => ({
+      formData: {
+        ...state.formData,
+        [key]: value,
+      },
+    }));
+  },
+  addField: () => {
+    set((state: any) => ({
+      formData: {
+        ...state.formData,
+        fields: [...state.formData.fields, ''],
+      },
+    }));
+  },
+}));
+
+// Form Component
 const BlinkForm = () => {
   const { formData, setFormData, addField } = useBlinkStore();
 
+  // Handle changes to form fields
   const handleInputChange = (key: keyof BlinkFormData, value: string | string[]) => {
     setFormData(key, value);
   };
 
+  // Handle changes to dynamic fields
   const handleFieldChange = (index: number, value: string) => {
     const updatedFields = [...formData.fields];
     updatedFields[index] = value;
     setFormData('fields', updatedFields);
   };
 
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission (e.g., send data to the server)

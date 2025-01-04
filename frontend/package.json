@@ -57,6 +57,7 @@
     "Typography": "link:@mui/material/Typography",
     "autoprefixer": "10.4.20",
     "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
     "beasties": "^0.2.0",
     "bs58": "^6.0.0",
     "canvas-confetti": "^1.9.3",
@@ -89,7 +90,9 @@
     "sonner": "^1.7.1",
     "three": "^0.172.0",
     "typeorm": "^0.3.20",
+    "uuid": "^11.0.3",
     "vaul": "^1.1.2",
+    "winston": "^3.17.0",
     "zod": "^3.24.1",
     "zustand": "^5.0.2"
   },

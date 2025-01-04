@@ -26,21 +26,28 @@ export default function CreateServerPage() {
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ServerFormData, string>>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [channels, setChannels] = useState<Array<{ name: string; id: string }>>([]);
+  const [guildName, setGuildName] = useState<string | null>(null);
+  const [guildImage, setGuildImage] = useState<string | null>(null);
 
   const router = useRouter();
   const wallet = useWallet();
-  const token = useUserStore((state) => state.token) || localStorage.getItem("discordToken");
-  const { guildName, guildImage } = JSON.parse(localStorage.getItem("selectedGuild") || "{}");
+  const token = useUserStore((state) => state.token) || (typeof window !== 'undefined' ? localStorage.getItem("discordToken") : null);
 
   useEffect(() => {
-    if (guildName || guildImage) {
-      setFormData(prev => ({
-        ...prev,
-        name: guildName || prev.name,
-        iconUrl: guildImage || prev.iconUrl,
-      }));
+    if (typeof window !== 'undefined') {
+      const selectedGuild = localStorage.getItem("selectedGuild");
+      if (selectedGuild) {
+        const { guildName, guildImage } = JSON.parse(selectedGuild);
+        setGuildName(guildName);
+        setGuildImage(guildImage);
+        setFormData(prev => ({
+          ...prev,
+          name: guildName || prev.name,
+          iconUrl: guildImage || prev.iconUrl,
+        }));
+      }
     }
-  }, [guildName, guildImage]);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,7 +135,8 @@ export default function CreateServerPage() {
       );
 
       if (!response.ok) {
-        throw new Error("Error creating server");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error creating server");
       }
 
       toast.success("Server created successfully!");

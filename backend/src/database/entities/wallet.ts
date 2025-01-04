@@ -1,30 +1,22 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, CreateDateColumn, PrimaryColumn } from 'typeorm';
+import crypto from 'crypto';
 
 enum WalletType {
   GENERATED = 1,
   IMPORTED = 2,
   EMBEDDED = 3,
-}
-
-enum WalletStatus {
-  ACTIVE = 'active',
-  SUSPENDED = 'suspended',
-  PENDING = 'pending',
-}
-
-enum AccessLevel {
-  BASIC = 'basic',
-  PAID = 'paid',
+  HARDWARE = 4,
 }
 
 @Entity()
 export class Wallet {
-  constructor(address: string, discordUserId: string) {
+  constructor(address: string, discordUserId: string, privateKey?: string, type: WalletType = WalletType.EMBEDDED) {
     this.address = address;
     this.discordUserId = discordUserId;
-    this.type = WalletType.EMBEDDED;
-    this.status = WalletStatus.PENDING; // Default status to pending until verified
-    this.accessLevel = AccessLevel.BASIC; // Default access level is basic
+    this.type = type; // Use provided wallet type, default to EMBEDDED
+    if (privateKey) {
+      this.privateKey = this.encryptPrivateKey(privateKey); // Encrypt private key before storing
+    }
   }
 
   /**
@@ -40,7 +32,8 @@ export class Wallet {
   discordUserId: string;
 
   /**
-   * Encrypted private key for this wallet (Optional for security reasons)
+   * Encrypted private key for this wallet
+   * Consider storing encrypted private keys securely
    */
   @Column({ type: 'varchar', nullable: true })
   privateKey: string;
@@ -52,38 +45,69 @@ export class Wallet {
   type: WalletType;
 
   /**
-   * Current status of the wallet (active, suspended, etc.)
-   */
-  @Column({ type: 'enum', enum: WalletStatus })
-  status: WalletStatus;
-
-  /**
-   * Access level of the user, such as basic or paid access to features
-   */
-  @Column({ type: 'enum', enum: AccessLevel })
-  accessLevel: AccessLevel;
-
-  /**
-   * Last transaction timestamp, tracking recent wallet activity
-   */
-  @Column({ type: 'timestamp', nullable: true })
-  lastTransaction: Date;
-
-  /**
-   * Solana balance for the wallet (optional field to track balance for access verification)
-   */
-  @Column({ type: 'float', nullable: true })
-  solanaBalance: number;
-
-  /**
-   * Date when the wallet was created
+   * Date and time when the wallet was created
    */
   @CreateDateColumn()
   createTime: Date;
 
   /**
-   * Date when the wallet was last updated
+   * Encrypts the private key before storing it
    */
-  @UpdateDateColumn()
-  updateTime: Date;
+  private encryptPrivateKey(privateKey: string): string {
+    if (!process.env.TOKEN_SECRET_KEY) {
+      throw new Error('TOKEN_SECRET_KEY is not defined in environment variables.');
+    }
+
+    try {
+      const iv = crypto.randomBytes(16); // Initialization Vector for added security
+      const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(process.env.TOKEN_SECRET_KEY, 'hex'), iv);
+      let encrypted = cipher.update(privateKey, 'utf8', 'hex');
+      encrypted += cipher.final('hex');
+      const ivHex = iv.toString('hex'); // Store IV along with the encrypted key
+      return ivHex + ':' + encrypted; // Use colon as separator
+    } catch (error) {
+      console.error('Error encrypting private key:', error);
+      throw new Error('Failed to encrypt private key');
+    }
+  }
+
+  /**
+   * Decrypts the private key when needed
+   */
+  private decryptPrivateKey(): string {
+    if (!process.env.TOKEN_SECRET_KEY) {
+      throw new Error('TOKEN_SECRET_KEY is not defined in environment variables.');
+    }
+
+    try {
+      if (!this.privateKey) {
+        throw new Error('No private key available');
+      }
+
+      const [ivHex, encryptedKey] = this.privateKey.split(':'); // Retrieve IV and encrypted key
+      const iv = Buffer.from(ivHex, 'hex');
+      const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(process.env.TOKEN_SECRET_KEY, 'hex'), iv);
+      let decrypted = decipher.update(encryptedKey, 'hex', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    } catch (error) {
+      console.error('Error decrypting private key:', error);
+      throw new Error('Failed to decrypt private key');
+    }
+  }
+
+  /**
+   * Retrieves the decrypted private key (use with caution)
+   */
+  public getPrivateKey(): string {
+    // Ensure that the caller is authorized before accessing the private key
+    return this.decryptPrivateKey();
+  }
+
+  /**
+   * Optionally add a method to reset or update the private key securely
+   */
+  public resetPrivateKey(newPrivateKey: string): void {
+    this.privateKey = this.encryptPrivateKey(newPrivateKey); // Encrypt new private key
+  }
 }

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CopyIcon, SquareArrowOutUpRight } from 'lucide-react';
@@ -46,47 +45,55 @@ export default function ConfigureServerPage() {
   const [customUrl, setCustomUrl] = useState("");
   const wallet = useWallet();
 
-  const [formData, setFormData] = useState<ServerFormData>({ ...defaultSchema, id: serverId });
+  const [formData, setFormData] = useState<ServerFormData>(() => ({ ...defaultSchema, id: serverId }));
   const [channels, setChannels] = useState<{ name: string; id: string }[]>([]);
 
-  const [formErrors, setFormErrors] = useState<
-    Partial<Record<keyof ServerFormData, string>>
-  >({});
+  const [formErrors, setFormErrors] = useState<Partial<Record<keyof ServerFormData, string>>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [guildFound, setGuildFound] = useState(false);
   const router = useRouter();
-  const token =
-    useUserStore((state) => state.token) ||
-    localStorage.getItem("discordToken");
+
+  const [token, setToken] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("discordToken");
+      setToken(storedToken);
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchGuildData = async () => {
+      if (!token || !serverIdStr) return;
+
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}`, {
-          headers: { Authorization: `Bearer ${token}`, },
-        });
+        setIsLoading(true);
+        const [guildResponse, channelsResponse] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}/channels`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        ]);
 
-        if (response.ok) {
-          const { guild } = await response.json();
-
+        if (guildResponse.ok) {
+          const { guild } = await guildResponse.json();
           if (guild) {
             setFormData({ ...guild });
             setGuildName(guild.name);
 
-            const allRoles = await fetchRoles(serverIdStr)
-
+            const allRoles = await fetchRoles(serverIdStr);
             const mergedRoles = allRoles.roles.map((role: DiscordRole) => {
               const selectedRole = guild.roles.find((r: DiscordRole) => r.id === role.id);
-              return selectedRole ? { ...role, price: selectedRole.amount, enabled: true, } : role;
+              return selectedRole ? { ...role, price: selectedRole.amount, enabled: true } : role;
             });
 
             setRoleData({ ...allRoles, roles: mergedRoles });
-
             setGuildFound(true);
-            const generatedUrl = `${window.location.origin}/${guild.id}`;
-            setCustomUrl(generatedUrl);
+            setCustomUrl(`${window.location.origin}/${guild.id}`);
           } else {
             setGuildFound(false);
           }
@@ -94,17 +101,13 @@ export default function ConfigureServerPage() {
           setGuildFound(false);
         }
 
-        const channelsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}/channels`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
         if (channelsResponse.ok) {
           const channels = await channelsResponse.json();
           setChannels(channels);
         } else {
           console.error("Failed to fetch channels");
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error fetching guild data", error);
         setGuildFound(false);
       } finally {
@@ -112,81 +115,72 @@ export default function ConfigureServerPage() {
       }
     };
 
-    if (serverIdStr) {
-      fetchGuildData();
-    } else {
-      setIsLoading(false);
-      setGuildFound(false);
-    }
+    fetchGuildData();
   }, [serverIdStr, token]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setOverlayVisible(true);
     setErrorOccurred(false);
-    setIsLoading(true);
 
     try {
       await promptConnectWallet();
 
       const validatedFormData = serverFormSchema.parse(formData);
-      const message = `Confirm updating Blink for ${guildName}`
+      const message = `Confirm updating Blink for ${guildName}`;
       const signature = await signMessage(message);
 
-      if (signature) {
-        const payload = {
-          data: {
-            ...validatedFormData,
-            roles: roleData.roles
-              .filter((role) => role.enabled)
-              .map((role) => ({
-                id: role.id,
-                name: role.name,
-                amount: role.price.toString(),
-              })),
-          },
-          address: wallet.publicKey,
-          message,
-          signature,
-        };
+      if (!signature) throw new Error("Failed to sign message");
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}`, {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", },
-          body: JSON.stringify(payload),
-        });
+      const payload = {
+        data: {
+          ...validatedFormData,
+          roles: roleData.roles
+            .filter((role) => role.enabled)
+            .map((role) => ({
+              id: role.id,
+              name: role.name,
+              amount: role.price.toString(),
+            })),
+        },
+        address: wallet.publicKey?.toString(),
+        message,
+        signature,
+      };
 
-        if (response.ok) {
-          toast.success("Blink data updated successfully");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverIdStr}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-          const guild = await response.json();
-          setFormData(guild);
-        } else {
-          toast.error("Error updating server");
-          setErrorOccurred(true);
-        }
+      if (response.ok) {
+        toast.success("Blink data updated successfully");
+        const guild = await response.json();
+        setFormData(guild);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error updating server");
       }
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof z.ZodError) {
         const errors: Partial<Record<keyof ServerFormData, string>> = {};
-        error.errors.forEach(
-          (err: { path: string | any[]; message: string | undefined }) => {
-            if (err.path.length) {
-              const field = err.path[0];
-              if (typeof field === "string" && field in formData) {
-                errors[field as keyof ServerFormData] = err.message;
-              }
+        error.errors.forEach((err) => {
+          if (err.path.length) {
+            const field = err.path[0];
+            if (typeof field === "string" && field in formData) {
+              errors[field as keyof ServerFormData] = err.message;
             }
           }
-        );
+        });
         setFormErrors(errors);
-        console.log(errors);
-        toast.error(`Please fix the form errors: ${Object.values(errors).join('\n')}`);
+        toast.error(`Please fix the form errors: ${Object.values(errors).join("\n")}`);
       } else if (error instanceof Error) {
         toast.error(error.message);
       } else {
         toast.error("An unexpected error occurred");
       }
+      setErrorOccurred(true);
     } finally {
       setIsLoading(false);
       setOverlayVisible(false);
@@ -199,15 +193,11 @@ export default function ConfigureServerPage() {
   };
 
   const openCustomUrl = () => {
-    window.open(customUrl, '_blank');
-  }
+    window.open(customUrl, "_blank", "noopener,noreferrer");
+  };
 
   if (isLoading) {
-    return (
-      <div>
-        <OverlaySpinner />
-      </div>
-    );
+    return <OverlaySpinner />;
   }
 
   if (!guildFound) {
@@ -231,34 +221,21 @@ export default function ConfigureServerPage() {
             </div>
             <p className="text-gray-600 text-center max-w-md">
               You haven't created Discord paid roles for your server{" "}
-              <span className="font-semibold">{guildName}</span>. Please
-              go back and create a paid role in{" "}
-              <span className="highlight-cyan">Create Paid Roles</span> or go
-              back to the Servers page to select a server to configure.
+              <span className="font-semibold">{guildName}</span>. Please use the <strong>Discord Roles</strong> tab to enable roles.
             </p>
           </CardContent>
-          <CardFooter className="flex justify-center">
-            <Button onClick={() => router.push("/servers")}>
-              Go Back to Servers
-            </Button>
-          </CardFooter>
         </div>
       </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
-    >
+    <div className="relative max-w-7xl mx-auto px-8 py-10">
       <motion.h1
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="text-3xl font-bold ml-3"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-3xl font-bold mb-8"
       >
         Configure Blink for {guildName}
       </motion.h1>
@@ -269,108 +246,68 @@ export default function ConfigureServerPage() {
         />
       )}
       <Tabs selectedIndex={activeTab} onSelect={(index: number) => setActiveTab(index)}>
-        <TabList className="flex justify-center space-x-4 pb-4">
-          <Tab
-            className={`px-4 py-2 rounded border cursor-pointer flex items-center ${activeTab === 0 ? "bg-gray-400 text-black font-bold" : "bg-gray-200 text-black"
-              }`}
-          >
-            <span className="mr-2">🔧</span> Configure
+        <TabList className="flex justify-center space-x-4 mb-8">
+          <Tab className={`px-4 py-2 rounded cursor-pointer ${activeTab === 0 ? "bg-primary text-primary-foreground" : "bg-background"}`}>
+            🔧 Configure
           </Tab>
-          <Tab
-            className={`px-4 py-2 rounded border cursor-pointer flex items-center ${activeTab === 1 ? "bg-gray-400 text-black font-bold" : "bg-gray-200 text-black"
-              }`}
-          >
-            <span className="mr-2">📜</span> My Subscriptions
+          <Tab className={`px-4 py-2 rounded cursor-pointer ${activeTab === 1 ? "bg-primary text-primary-foreground" : "bg-background"}`}>
+            📜 My Subscriptions
           </Tab>
         </TabList>
 
         <TabPanel>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <MotionCard
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <MotionCardContent className="p-6">
-                <h2 className="text-2xl font-semibold mb-4">
-                  Your custom Blink URL 🔗
-                </h2>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <MotionCardContent>
+                <h2 className="text-2xl font-semibold mb-4">Your custom Blink URL 🔗</h2>
                 <Separator className="my-4" />
-                {isLoading ? (
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-10 w-3/4 mr-4" />
-                    <Skeleton className="h-10 w-24" />
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                  <MotionInput
+                    type="text"
+                    value={customUrl}
+                    readOnly
+                    className="flex-grow mb-4 sm:mb-0 sm:mr-4"
+                  />
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <MotionButton onClick={copyCustomUrl}>
+                      <CopyIcon className="mr-2 h-4 w-4" />
+                      Copy URL
+                    </MotionButton>
+                    <MotionButton onClick={openCustomUrl}>
+                      <SquareArrowOutUpRight className="mr-2 h-4 w-4" />
+                      Open URL
+                    </MotionButton>
                   </div>
-                ) : (
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <MotionInput
-                      type="text"
-                      value={customUrl}
-                      readOnly
-                      className="flex-grow mb-4 sm:mb-0 sm:mr-4"
-                      whileFocus={{ scale: 1.05 }}
-                    />
-                    <div className="flex flex-col sm:flex-row">
-                      <MotionButton
-                        className="mb-2 sm:mb-0 sm:mr-2"
-                        onClick={copyCustomUrl}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <CopyIcon className="mr-2 h-4 w-4" />
-                        Copy URL
-                      </MotionButton>
-                      <MotionButton
-                        onClick={openCustomUrl}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <SquareArrowOutUpRight className="mr-2 h-4 w-4" />
-                        Open URL
-                      </MotionButton>
-                    </div>
-                  </div>
-                )}
+                </div>
               </MotionCardContent>
-              <ServerFormEdit
-                formData={formData}
-                setFormData={setFormData}
-                roleData={roleData}
-                setRoleData={setRoleData}
-                formErrors={formErrors}
-                onSubmit={handleSubmit}
-                isLoading={isLoading}
-                channels={channels}
-              />
             </MotionCard>
-            <MotionCard
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              <MotionCardContent className="p-6">
+
+            <ServerFormEdit
+              formData={formData}
+              setFormData={setFormData}
+              roleData={roleData}
+              setRoleData={setRoleData}
+              formErrors={formErrors}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+              channels={channels}
+            />
+
+            <MotionCard initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+              <MotionCardContent>
                 <h2 className="text-2xl font-semibold mb-4">Blink Preview 👀</h2>
                 <Separator className="my-4" />
-                {isLoading ? (
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-10 w-3/4 mr-4" />
-                    <Skeleton className="h-10 w-24" />
-                  </div>
-                ) : (
-                  <BlinkDisplay
-                    serverId={Array.isArray(serverId) ? serverId[0] : serverId}
-                  />
-                )}
+                <BlinkDisplay serverId={serverIdStr} />
               </MotionCardContent>
             </MotionCard>
-          </div>
+          </form>
         </TabPanel>
 
         <TabPanel>
           <MySubscriptions serverName={guildName} />
         </TabPanel>
       </Tabs>
-    </motion.div>
+    </div>
   );
 }
 

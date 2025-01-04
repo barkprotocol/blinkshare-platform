@@ -1,44 +1,86 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
 import { BaseEntity } from './base-entity';
+import crypto from 'crypto';
 
 /**
- * Used to store Discord access tokens when assigning roles to a user.
- * Access token has a longer lifetime, while the grant code is short-lived (about 1 minute).
- * For security, store the access token encrypted to prevent misuse in case of prolonged purchase flow.
+ * Used to store Discord access tokens when assigning roles to a user
+ * Access token has a longer lifetime, while grant code has just 1 minute
+ * For safety, store the access token (encrypted), in case the user purchase flow takes more than 1 minute
  */
 @Entity()
 export class AccessToken extends BaseEntity<AccessToken> {
   /**
    * Discord OAuth grant code
-   * This code is used to exchange for an access token, but it expires quickly (within 1 minute).
    */
   @PrimaryColumn({ type: 'varchar', unique: true })
   code: string;
 
   /**
-   * Discord user ID to associate the token with a specific user.
+   * Discord user ID
    */
   @Column({ type: 'varchar' })
+  @Index()  // Index to speed up lookups for user
   discordUserId: string;
 
   /**
    * Encrypted access token
-   * This is securely stored to authenticate API calls on behalf of the user.
    */
   @Column({ type: 'varchar' })
   token: string;
 
   /**
-   * Date and time when the access token expires.
-   * Used to determine if the token is still valid.
+   * Date and time when the token expires
    */
   @Column({ type: 'timestamp' })
   expiresAt: Date;
 
   /**
-   * Optional refresh token, if available.
-   * The refresh token allows the application to get a new access token without requiring the user to reauthenticate.
+   * Encrypts the access token before storing it
    */
-  @Column({ type: 'varchar', nullable: true })
-  refreshToken: string;
+  encryptToken(token: string): string {
+    try {
+      const iv = crypto.randomBytes(16); // Initialization Vector for added security
+      const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(process.env.TOKEN_SECRET_KEY, 'hex'), iv);
+      let encrypted = cipher.update(token, 'utf8', 'hex');
+      encrypted += cipher.final('hex');
+      const ivHex = iv.toString('hex'); // Store IV along with the encrypted token
+      return ivHex + ':' + encrypted; // Use colon as separator
+    } catch (error) {
+      console.error('Error encrypting token:', error);
+      throw new Error('Failed to encrypt token');
+    }
+  }
+
+  /**
+   * Decrypts the access token when retrieving it
+   */
+  decryptToken(): string {
+    try {
+      const [ivHex, encryptedToken] = this.token.split(':'); // Retrieve IV and encrypted token
+      const iv = Buffer.from(ivHex, 'hex');
+      const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(process.env.TOKEN_SECRET_KEY, 'hex'), iv);
+      let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    } catch (error) {
+      console.error('Error decrypting token:', error);
+      throw new Error('Failed to decrypt token');
+    }
+  }
+
+  /**
+   * Checks if the token is expired
+   */
+  isExpired(): boolean {
+    return new Date() > this.expiresAt;
+  }
+
+  /**
+   * Validates the token status (if expired)
+   */
+  validateToken(): void {
+    if (this.isExpired()) {
+      throw new Error('Token has expired');
+    }
+  }
 }

@@ -1,95 +1,91 @@
-import { Entity, Column, OneToMany, PrimaryColumn, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, OneToMany, UpdateDateColumn, DeleteDateColumn, ManyToOne, PrimaryColumn, Index } from 'typeorm';
 import { Role } from './role';
 import { BaseEntity } from './base-entity';
+import { User } from './user';
+import { v4 as uuidv4 } from 'uuid';
+
+enum TimeUnit {
+  Hours = 'Hours',
+  Days = 'Days',
+  Weeks = 'Weeks',
+  Months = 'Months',
+}
 
 @Entity()
+@Index('guild_address_idx', ['address'])
 export class Guild extends BaseEntity<Guild> {
-  /**
-   * Discord guild ID
-   */
   @PrimaryColumn({ type: 'varchar', unique: true })
-  id: string;
+  id!: string;
 
-  /**
-   * The wallet address that payments are sent to
-   */
   @Column({ type: 'varchar' })
-  address: string;
+  address!: string;
 
-  /**
-   * Name of the guild, this will be displayed on the blink
-   */
   @Column({ type: 'varchar' })
-  name: string;
+  name!: string;
 
-  /**
-   * URL of the icon that will be displayed on the blink
-   */
   @Column({ type: 'varchar' })
-  iconUrl: string;
+  iconUrl!: string;
 
-  /**
-   * Description that will be shown on the blink
-   */
   @Column({ type: 'text' })
-  description: string;
+  description!: string;
 
-  /**
-   * Details of the server, with custom description of the whole server and the roles
-   */
   @Column({ type: 'text', nullable: true })
-  details: string;
+  details?: string;
 
-  /**
-   * The guild's website link
-   */
   @Column({ type: 'text', nullable: true })
-  website: string;
+  website?: string;
 
-  /**
-   * ID of the channel where notifications will be sent
-   */
   @Column({ type: 'varchar', nullable: true })
-  notificationChannelId: string;
+  notificationChannelId?: string;
 
-  /**
-   * If the guild owner wants to receive payment in USDC tokens
-   */
   @Column({ type: 'boolean', default: false })
   useUsdc: boolean;
 
-  /**
-   * If the blink is hidden from the marketplace
-   */
   @Column({ type: 'boolean', default: false })
   hidden: boolean;
 
   @OneToMany(() => Role, (role) => role.guild, { onDelete: 'CASCADE' })
-  roles: Role[];
+  roles!: Role[];
 
-  /**
-   * If true, limited time roles will be enabled
-   */
   @Column({ type: 'boolean', default: false })
   limitedTimeRoles: boolean;
 
-  /**
-   * Quantity of unit until role purchases expire
-   * @example 2
-   */
   @Column({ type: 'int', nullable: true })
-  limitedTimeQuantity: number;
+  limitedTimeQuantity?: number;
 
-  /**
-   * Type of time unit matched with quantity to get expiration time
-   * @example 'Days'
-   */
-  @Column({ type: 'varchar', nullable: true })
-  limitedTimeUnit: 'Hours' | 'Days' | 'Weeks' | 'Months';
-
-  @CreateDateColumn()
-  createTime: Date;
+  @Column({ type: 'enum', enum: TimeUnit, nullable: true })
+  limitedTimeUnit?: TimeUnit;
 
   @UpdateDateColumn()
-  updateTime: Date;
+  updateTime!: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date | null;
+
+  @ManyToOne(() => User, { nullable: true })
+  createdBy?: User | null;
+
+  /**
+   * Validates if the limited time role settings are correct.
+   */
+  validateLimitedTimeRoles(): { valid: boolean; message: string } {
+    if (this.limitedTimeRoles) {
+      if (!this.limitedTimeQuantity || this.limitedTimeQuantity <= 0) {
+        return { valid: false, message: 'Limited time roles must have a valid quantity greater than zero.' };
+      }
+      if (!this.limitedTimeUnit) {
+        return { valid: false, message: 'Limited time roles must have a valid time unit.' };
+      }
+    }
+    return { valid: true, message: 'Limited time roles are correctly set.' };
+  }
+
+  // Constructor to automatically generate the ID if not provided
+  constructor(data: Partial<Guild> = {}) {
+    super(data); // Call the constructor of BaseEntity to handle common fields
+    if (!this.id) {
+      this.id = uuidv4();  // Generate a UUID if not provided
+    }
+    Object.assign(this, data);  // Populate the entity with the rest of the fields
+  }
 }

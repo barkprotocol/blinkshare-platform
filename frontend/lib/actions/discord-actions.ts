@@ -4,17 +4,15 @@ import { DiscordRole } from "@/lib/types";
 interface RolesResponse {
   roles: DiscordRole[];
   blinkShareRolePosition: number;
-  [key: string]: any;
 }
 
 // Fetch roles for a given guild
 export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
-  const token =
-    useUserStore.getState().token || localStorage.getItem("discordToken");
+  const token = useUserStore.getState().token || (typeof window !== 'undefined' ? localStorage.getItem("discordToken") : null);
 
   if (!token) {
     console.error("No authorization token found.");
-    return { roles: [], blinkShareRolePosition: -1 };
+    throw new Error("Authorization token is missing");
   }
 
   try {
@@ -36,7 +34,7 @@ export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
     return data;
   } catch (error) {
     console.error(`Error fetching roles for guild ${guildId}:`, error);
-    return { roles: [], blinkShareRolePosition: -1 };
+    throw error;
   }
 };
 
@@ -52,7 +50,7 @@ export const createEmbeddedWallet = async (
   address: string
 ): Promise<EmbeddedWalletResponse> => {
   if (!accessToken || !discordUserId || !address) {
-    return { success: false, error: "Missing required parameters" };
+    throw new Error("Missing required parameters");
   }
 
   try {
