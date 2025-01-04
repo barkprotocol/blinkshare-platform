@@ -8,10 +8,35 @@ import { useUserStore } from '@/lib/contexts/zustand/user-store';
 import { useSearchParams } from 'next/navigation';
 import { ThemeContext } from '@/lib/contexts/theme-provider';
 
+// Error Boundary Component to catch any errors during rendering
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught in ErrorBoundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div>Something went wrong. Please try again later.</div>;
+    }
+    return this.props.children;
+  }
+}
+
 const RedirectComponent = () => {
   const router = useRouter();
   const controls = useAnimation();
   const [callbackHandled, setCallbackHandled] = useState(false);
+  const [mounted, setMounted] = useState(false); // To ensure client-side rendering
   const { isDark } = useContext(ThemeContext);
 
   const setToken = useUserStore((state) => state.setToken);
@@ -19,7 +44,19 @@ const RedirectComponent = () => {
   const setDiscordConnected = useUserStore((state) => state.setDiscordConnected);
   const setDiscordDisconnected = useUserStore((state) => state.setDiscordDisconnected);
 
-  const searchParams = useSearchParams();
+  // Ensure the component uses useSearchParams only on the client-side
+  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      const params = new URLSearchParams(window.location.search);
+      setSearchParams(params);
+    }
+  }, [mounted]);
 
   const handleCodeCallback = async (code: string, searchParams: URLSearchParams) => {
     if (callbackHandled) return;
@@ -58,6 +95,8 @@ const RedirectComponent = () => {
   };
 
   useEffect(() => {
+    if (!searchParams) return;
+    
     const code = searchParams.get('code');
     if (!code) {
       router.push('/error');
@@ -110,73 +149,78 @@ const RedirectComponent = () => {
   const bgColor = isDark ? 'bg-gray-900' : 'bg-white';
   const textColor = isDark ? 'text-white' : 'text-gray-900';
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div className={`relative flex h-screen flex-col ${bgColor}`}>
-        <div className={`grid h-screen place-content-center px-4 ${bgColor}`}>
-          <motion.div
-            className="absolute inset-0 -z-10 flex justify-center items-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate={controls}
-          >
-            <motion.div
-              className="absolute top-32 -right-0 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-700 -z-50"
-              variants={shapeVariants}
-            />
-            <motion.div
-              className="absolute top-0 left-10 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-200 z-1"
-              variants={shapeVariants}
-            />
-            <motion.div
-              className="absolute top-10 left-20 w-64 h-36 bg-gray-600 z-1"
-              variants={shapeVariants}
-            />
-          </motion.div>
+  if (!mounted) {
+    return null;
+  }
 
-          <motion.div
-            className="text-center relative z-10"
-            variants={containerVariants}
-            initial="hidden"
-            animate={controls}
-          >
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<div>Loading...</div>}>
+        <div className={`relative flex h-screen flex-col ${bgColor}`}>
+          <div className={`grid h-screen place-content-center px-4 ${bgColor}`}>
             <motion.div
-              className="mt-6 flex flex-col items-center justify-center"
-              variants={itemVariants}
+              className="absolute inset-0 -z-10 flex justify-center items-center"
+              variants={containerVariants}
+              initial="hidden"
+              animate={controls}
             >
               <motion.div
-                className="mt-6 flex items-center justify-center space-x-4"
-                variants={itemVariants}
-              >
-                <Image
-                  src="/coffee.png"
-                  alt="First Image"
-                  className="h-auto w-auto"
-                  priority
-                  width={200}
-                  height={200}
-                />
-                <Image
-                  src="/bark.png"
-                  alt="Second Image"
-                  className="h-auto w-auto"
-                  priority
-                  width={200}
-                  height={200}
-                />
-              </motion.div>
+                className="absolute top-32 -right-0 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-700 -z-50"
+                variants={shapeVariants}
+              />
+              <motion.div
+                className="absolute top-0 left-10 w-0 h-0 border-l-[50px] border-l-transparent border-r-[50px] border-r-transparent border-b-[100px] border-b-gray-200 z-1"
+                variants={shapeVariants}
+              />
+              <motion.div
+                className="absolute top-10 left-20 w-64 h-36 bg-gray-600 z-1"
+                variants={shapeVariants}
+              />
             </motion.div>
 
-            <motion.h1
-              className={`mt-6 text-2xl font-bold tracking-tight sm:text-4xl space-y-4 ${textColor}`}
-              variants={itemVariants}
+            <motion.div
+              className="text-center relative z-10"
+              variants={containerVariants}
+              initial="hidden"
+              animate={controls}
             >
-              We are getting your Discord account connected...
-            </motion.h1>
-          </motion.div>
+              <motion.div
+                className="mt-6 flex flex-col items-center justify-center"
+                variants={itemVariants}
+              >
+                <motion.div
+                  className="mt-6 flex items-center justify-center space-x-4"
+                  variants={itemVariants}
+                >
+                  <Image
+                    src="https://ucarecdn.com/84aedf39-daf1-4c75-b35c-ed08c6c95c4a/coffeemug.png"
+                    alt="First Image"
+                    className="h-auto w-auto"
+                    priority
+                    width={200}
+                    height={200}
+                  />
+                  <Image
+                    src="https://ucarecdn.com/0fcc538d-7e39-4cc2-9e0e-4ead361f1858/barkspl20.png"
+                    alt="Second Image"
+                    className="h-auto w-auto"
+                    priority
+                    width={200}
+                    height={200}
+                  />
+                </motion.div>
+                <motion.div
+                  className={`mt-4 ${textColor}`}
+                  variants={itemVariants}
+                >
+                  Please wait while we verify your credentials.
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </Suspense>
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 
