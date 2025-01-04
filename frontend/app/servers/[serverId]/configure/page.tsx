@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,7 +20,7 @@ import { BlinkDisplay } from "@/components/blink/blink-display";
 import { toast } from "sonner";
 import { defaultSchema, ServerFormData, serverFormSchema } from "@/lib/zod-validation";
 import OverlaySpinner from "@/components/ui/overlay-spinner";
-import EditGuild, { ServerFormEdit } from "@/components/form/edit-guild";
+import { ServerFormEdit } from "@/components/form/edit-guild";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { z } from "zod";
 import {
@@ -221,7 +223,6 @@ export default function ConfigureServerPage() {
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <div className="mb-6 flex justify-center">
-              {/* Replacing <img> with <Image> */}
               <Image
                 src="https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"
                 alt="No BlinkShare Guild Selected"
