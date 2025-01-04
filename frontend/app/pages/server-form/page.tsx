@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { ServerForm } from "@/components/form/server-form";
 import RoleList from "@/components/ui/role-list";

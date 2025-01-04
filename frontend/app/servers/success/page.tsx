@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { ThemeContext } from "@/lib/contexts/theme-provider";
 import { Connection } from "@solana/web3.js";
 
-export default function SuccessPage({ rpcUrl }: { rpcUrl: string }) {
+export default function SuccessPage() {
   const [blinkUrl, setBlinkUrl] = useState("");
   const [serverId, setServerId] = useState("");
   const [customUrl, setCustomUrl] = useState("");
@@ -22,9 +22,20 @@ export default function SuccessPage({ rpcUrl }: { rpcUrl: string }) {
   const [imageSrc, setImageSrc] = useState("https://ucarecdn.com/56d0844b-a460-4dad-a761-92f2f14752f2/check.png?height=200&width=200");
   const router = useRouter();
   const { isDark } = useContext(ThemeContext);
+  const [rpcUrl, setRpcUrl] = useState<string>("");
 
-  // Establish Solana connection using the rpcUrl from props
-  const connection = new Connection(rpcUrl, "confirmed");
+  // Fetch Solana RPC URL when the component is mounted
+  useEffect(() => {
+    const fetchRpcUrl = async () => {
+      const rpcUrlFromEnv = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
+      setRpcUrl(rpcUrlFromEnv);
+    };
+
+    fetchRpcUrl();
+  }, []);
+
+  // Establish Solana connection using the rpcUrl from state
+  const connection = rpcUrl ? new Connection(rpcUrl, "confirmed") : null;
 
   useEffect(() => {
     const id = window.location.pathname.split("/")?.at(-2);
@@ -231,19 +242,4 @@ export default function SuccessPage({ rpcUrl }: { rpcUrl: string }) {
       </motion.div>
     </div>
   );
-}
-
-export async function getServerSideProps() {
-  const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
-  if (!rpcUrl) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return {
-    props: {
-      rpcUrl,
-    },
-  };
 }
