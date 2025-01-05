@@ -13,39 +13,43 @@ export default function InstallBot() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Ensure window-related code runs only in the browser
     if (typeof window === "undefined") return;
 
     const installBot = async () => {
       try {
         const url = new URL(window.location.href);
-        const redirect = url.searchParams.get('redirect') === 'true';
-        const guild_id = url.searchParams.get('guild_id');
+        const redirect = url.searchParams.get("redirect") === "true";
+        const guild_id = url.searchParams.get("guild_id");
 
+        // Load environment variables
         const DISCORD_CLIENT_ID = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
         const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
-        // Check for missing environment variables early
+        // Validate required environment variables
         if (!DISCORD_CLIENT_ID || !APP_BASE_URL) {
-          throw new Error("Missing required environment variables: DISCORD_CLIENT_ID or APP_BASE_URL.");
+          throw new Error(
+            "Missing required environment variables: DISCORD_CLIENT_ID or APP_BASE_URL."
+          );
         }
 
         // Construct Discord OAuth URL
-        const baseUrl = new URL('https://discord.com/oauth2/authorize');
-        baseUrl.searchParams.set('client_id', DISCORD_CLIENT_ID);
-        baseUrl.searchParams.set('permissions', '268463105');
-        baseUrl.searchParams.set('integration_type', '0');
-        baseUrl.searchParams.set('scope', 'bot applications.commands');
+        const baseUrl = new URL("https://discord.com/oauth2/authorize");
+        baseUrl.searchParams.set("client_id", DISCORD_CLIENT_ID);
+        baseUrl.searchParams.set("permissions", "268463105");
+        baseUrl.searchParams.set("integration_type", "0");
+        baseUrl.searchParams.set("scope", "bot applications.commands");
 
         if (guild_id) {
-          baseUrl.searchParams.set('guild_id', guild_id);
+          baseUrl.searchParams.set("guild_id", guild_id);
         }
 
         if (redirect) {
-          baseUrl.searchParams.set('redirect_uri', `${APP_BASE_URL}/redirect`);
-          baseUrl.searchParams.set('response_type', 'code');
+          baseUrl.searchParams.set("redirect_uri", `${APP_BASE_URL}/redirect`);
+          baseUrl.searchParams.set("response_type", "code");
         }
 
-        // Redirect the user to Discord OAuth
+        // Redirect user to Discord OAuth
         await router.push(baseUrl.toString());
       } catch (err) {
         console.error("Error in Install Bot:", err);
@@ -60,7 +64,11 @@ export default function InstallBot() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen" aria-live="polite" aria-busy="true">
+      <div
+        className="flex items-center justify-center h-screen"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <Skeleton className="w-[300px] h-[20px]" />
         <span className="sr-only">Loading bot installation page...</span>
       </div>
