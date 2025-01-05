@@ -1,19 +1,19 @@
-import { NextConfig } from "next";
+import { NextConfig } from 'next';
 
 /**
  * @type {NextConfig}
- * Enhanced Next.js configuration with TypeScript support and error handling.
+ * Enhanced Next.js configuration with TypeScript support, error handling, and performance optimization.
  */
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "cdn.discordapp.com", // Allow images from Discord CDN
+        protocol: 'https',
+        hostname: 'cdn.discordapp.com', // Allow images from Discord CDN
       },
       {
-        protocol: "https",
-        hostname: "ucarecdn.com", // Allow images from Ucare CDN
+        protocol: 'https',
+        hostname: 'ucarecdn.com', // Allow images from Ucare CDN
       },
     ],
     domains: ['blinkshare.fun'], // Domains where SVGs be hosted
@@ -52,14 +52,14 @@ const nextConfig: NextConfig = {
       ];
     } catch (error) {
       // Log error and return an empty array if headers cannot be set
-      console.error("Error configuring headers:", error);
+      console.error('Error configuring headers:', error);
       return [];
     }
   },
 
   // TypeScript Configuration
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // Set this to false to enable strict checking during production
   },
 
   experimental: {
@@ -81,11 +81,23 @@ const nextConfig: NextConfig = {
       use: ['@svgr/webpack'],
     });
 
+    // Further optimization for production (tree shaking, etc.)
+    if (!isServer) {
+      config.optimization = {
+        splitChunks: {
+          chunks: 'all', // Split code for better caching
+        },
+      };
+    }
+
     return config;
   },
 
   // React Strict Mode for better debugging during development
   reactStrictMode: true,
+
+  // Enabling SWC-based minification for better performance
+  swcMinify: true,
 };
 
 export default nextConfig;
