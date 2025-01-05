@@ -44,7 +44,7 @@ client.on(Events.ClientReady, async () => {
   const guild = client.guilds.cache.get(constants.guildId);
   await Promise.all([client.application?.fetch(), mongoDB.connect(), initializeDatabase()]);
 
-  client.user.setActivity({ name: 'blinkshare.com', type: ActivityType.Playing });
+  client.user.setActivity({ name: 'blinkshare.fun', type: ActivityType.Playing });
 
   console.info(`${client.user.username} is running on ${guild.name}`);
   console.info(`The bot is running on ${client.guilds.cache.size} guilds`);
@@ -155,7 +155,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       );
 
     if (targetMessage.author.id !== constants.applicationId)
-      return interaction.editReply('The message must be from the blinkshare Bot.');
+      return interaction.editReply('The message must be from the BlinkShare Bot.');
 
     const parentMessage = await targetMessage.channel.messages.fetch(targetMessage.reference.messageId);
 

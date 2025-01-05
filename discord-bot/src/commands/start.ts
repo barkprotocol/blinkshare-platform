@@ -19,15 +19,15 @@ export async function start(interaction: ChatInputCommandInteraction): Promise<I
   const qrCodeUrl = await getQrCodeUrl(wallet.address, interaction);
 
   const embed = new EmbedBuilder()
-    .setColor('#60D0AA')
-    .setTitle('blinkshare Bot')
+    .setColor('#DBCFC7')
+    .setTitle('BlinkShare Bot')
     .setDescription(
       `**YOUR WALLET**
 \`\`\`${wallet.address}\`\`\`
 **SOL Balance**: ${solBalance} SOL ($${(solBalance * solPrice).toFixed(2)})
 
 **NOTES:**
-To deposit SOL into your blinkshare bot wallet, copy the wallet address above or scan the QR code, then use your preferred crypto wallet to send SOL to this address. Your balance will update the next time you use the /start command.
+To deposit SOL into your BlinkShare BOT wallet, copy the wallet address above or scan the QR code, then use your preferred crypto wallet to send SOL to this address. Your balance will update the next time you use the /start command.
   `,
     )
     .setThumbnail(qrCodeUrl);

@@ -2,7 +2,7 @@ import { InteractionReplyOptions, EmbedBuilder } from 'discord.js';
 
 export async function info(): Promise<InteractionReplyOptions> {
   const embed = new EmbedBuilder()
-    .setColor('#60D0AA')
+    .setColor('#DBCFC7')
     .setTitle('blinkshare Bot Information')
     .setDescription(
       `**With the blinkshare Bot, you can:**
@@ -18,11 +18,11 @@ export async function info(): Promise<InteractionReplyOptions> {
 
 **How to Unfurl Blinks:**
 Any URL which is a blink can be posted to any chatroom on your Discord server. When posted, the bot will automatically unfurl the blink and display all available actions.
-If you want to learn more about blinks and how they work, view our [Blinks docs page](https://docs.blinkshare.com/solana-actions-and-blinks)
+If you want to learn more about blinks and how they work, view our [Blinks docs page](https://docs.blinkshare.fun/solana-actions-and-blinks)
 
-Example blink URL to buy $BONK in Discord, post this on any channel to test out how blink unfurling works: https://jup.ag/swap/SOL-Bonk
+Example blink URL to buy $BARK in Discord, post this on any channel to test out how blink unfurling works: https://jup.ag/swap/SOL-BARK
 
-For more information, visit our [documentation](https://docs.blinkshare.com).`,
+For more information, visit our [documentation](https://docs.blinkshare.fun).`,
     )
     .setThumbnail('https://blinkshare.com/images/logo.png');
 

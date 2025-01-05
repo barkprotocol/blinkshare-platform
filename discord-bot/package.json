@@ -9,8 +9,8 @@
     "lint": "eslint -c .eslintrc.js --ext .ts ./src",
     "deploy": "ts-node ./src/deploy-commands.ts"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "BARK Protocol",
+  "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-kms": "^3.716.0",
     "@solana/web3.js": "^1.98.0",
