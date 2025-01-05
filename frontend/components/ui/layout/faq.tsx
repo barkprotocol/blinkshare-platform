@@ -32,17 +32,17 @@ const faqItems = [
 
 export function FAQ() {
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900">
+    <section className="py-16 bg-gray-100 dark:bg-gray-900">
       <div className="container mx-auto">
         <h2 className="text-3xl font-bold mb-8 text-center text-black dark:text-white">
           Frequently Asked Questions
         </h2>
         <Accordion type="single" collapsible className="w-full max-w-4xl mx-auto space-y-6">
-          {faqItems.map((item, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
+          {faqItems.map((item) => (
+            <AccordionItem key={item.question} value={item.question}>
               <AccordionTrigger
-                className="bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded-lg shadow-sm hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-300"
-                aria-label={`Toggle answer for ${item.question}`}
+                className="bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded-lg shadow-sm hover:shadow-lg focus:outline-none focus:ring-0 transition-all duration-300"
+                aria-label={`Toggle answer for "${item.question}"`}
               >
                 {item.question}
               </AccordionTrigger>

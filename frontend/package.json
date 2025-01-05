@@ -1,5 +1,5 @@
 {
-  "name": "blinkshare-platform",
+  "name": "blinkshare-platform-fe",
   "description": "BlinkShare is a powerful platform and tool that bridges the gap between Discord and the Solana blockchain",
   "version": "0.1.0",
   "private": true,
@@ -46,6 +46,7 @@
     "@solana/web3.js": "^1.98.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/forms": "^0.5.9",
     "@types/three": "^0.171.0",
     "@use-gesture/react": "^10.3.1",

@@ -26,7 +26,7 @@ export const handleDiscordRoleToggle = (
 
   if (!role) return;
 
-  // Ensure the role can only be toggled if it has a lower position than the "blinkord" role
+  // Ensure the role can only be toggled if it has a lower position than the "blinkShare" role
   if (roleData.blinkShareRolePosition <= (role.position || 0)) {
     setRoleErrors((prev) => ({ ...prev, [roleId]: true }));
     return;

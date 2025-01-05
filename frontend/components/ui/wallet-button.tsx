@@ -13,8 +13,12 @@ export const WalletButton = () => {
     setIsLoading(true);
     try {
       if (connected) {
+        // Disconnecting
+        console.debug(`Disconnecting from ${wallet?.adapter?.name || 'Wallet'}`);
         await disconnect();
       } else {
+        // Connecting
+        console.debug(`Connecting to ${wallet?.adapter?.name || 'Wallet'}`);
         await connect();
       }
     } catch (error) {
@@ -29,7 +33,7 @@ export const WalletButton = () => {
     <Button
       onClick={handleWalletAction}
       disabled={isLoading}
-      className={`text-white bg-black hover:bg-gray-900 hover:text-gray-100 ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
+      className={`text-white bg-black border-1 border-white hover:bg-gray-900 hover:text-gray-100 hover:border-gray-400 ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
     >
       {isLoading
         ? 'Connecting...'

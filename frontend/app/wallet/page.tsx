@@ -142,13 +142,13 @@ export default function Wallet() {
               {isDelegated ? (
                 <div className="flex items-center text-sm mb-4 px-2 py-2 rounded-lg border border-gray-300">
                   <CircleCheck className="h-14 w-14 mr-2 text-green-500" />
-                  Your wallet has enabled delegated actions, you can close this page and continue using the Blinkord Bot on Discord
+                  Your wallet has enabled delegated actions, you can close this page and continue using the blinkShare Bot on Discord
                 </div>
               ) : (
                 hasEmbeddedWallet &&
                 <div className="flex items-center text-sm mb-4 px-2 py-2 rounded-lg border border-gray-300">
                   <CircleAlert className="h-14 w-14 mr-2 text-red-500" />
-                  You must enable delegated actions for your wallet before being able to use it through the Blinkord Bot on Discord
+                  You must enable delegated actions for your wallet before being able to use it through the blinkShare Bot on Discord
                 </div>
               )}
 

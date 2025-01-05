@@ -1,59 +1,35 @@
 'use client';
 
-import { FC, ReactNode, useState } from 'react';
-import { ConnectionProvider, WalletProvider as SolanaWalletProvider, useWallet } from '@solana/wallet-adapter-react';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { useMemo } from 'react';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { clusterApiUrl } from '@solana/web3.js';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { Button } from '@/components/ui/button';
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+} from '@solana/wallet-adapter-wallets';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 
-const network = process.env.NEXT_PUBLIC_SOLANA_NETWORK || WalletAdapterNetwork.Devnet;
+const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
+  const network = WalletAdapterNetwork.Mainnet; // Or use devnet/testnet as required
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const wallets = useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter({ network }),
+    ],
+    [network]
+  );
 
-const wallets = [
-  new PhantomWalletAdapter(),
-  new SolflareWalletAdapter(),
-];
-
-interface WalletProviderProps {
-  children: ReactNode;
-}
-
-export const WalletProviderComponent: FC<WalletProviderProps> = ({ children }) => {
   return (
-    <ConnectionProvider endpoint={process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'}>
-      <SolanaWalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
-      </SolanaWalletProvider>
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect={true}>
+        <WalletModalProvider>
+          {children}
+        </WalletModalProvider>
+      </WalletProvider>
     </ConnectionProvider>
   );
 };
 
-export const WalletButton = () => {
-  const { connected, wallet, connect, disconnect } = useWallet();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleWalletAction = async () => {
-    setIsLoading(true);
-    try {
-      if (connected) {
-        await disconnect();
-      } else {
-        await connect();
-      }
-    } catch (error) {
-      console.error(`Failed to ${connected ? 'disconnect' : 'connect'} wallet:`, error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <Button
-      onClick={handleWalletAction}
-      disabled={isLoading}
-      className={`text-white bg-black border border-white hover:bg-gray-900 hover:text-gray-100 ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
-    >
-      {isLoading ? 'Connecting...' : connected ? `Disconnect from ${wallet?.adapter.name}` : 'Connect Wallet'}
-    </Button>
-  );
-};
+export default LayoutWrapper;

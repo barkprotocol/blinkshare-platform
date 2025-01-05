@@ -1,103 +1,81 @@
 "use client";
 
-import { useState, useEffect, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { useWalletActions } from "@/hooks/use-wallet-actions";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "sonner";
-import { DiscordRole } from "@/lib/types/index";
+import { DiscordRole, RoleData } from "@/lib/types/index";
 import { fetchRoles } from "@/lib/actions/discord-actions";
 import { defaultSchema, ServerFormData, serverFormSchema } from "@/lib/zod-validation";
 import { MotionCard, MotionCardContent } from "@/components/motion";
 import ServerForm from "@/components/form";
 import OverlaySpinner from "@/components/ui/overlay-spinner";
 
-// Update the RoleData interface
-export interface RoleData {
-  blinkShareRolePosition: number;
-  roles: DiscordRole[];
-}
-
-// Define the FormErrors type to support arrays of error messages
-type FormErrors = {
-  [key in keyof ServerFormData]?: string[]; // Each field can have an array of error messages
-};
-
 export default function CreateServerPage() {
   const { serverId } = useParams<{ serverId: string }>();
   const { signMessage, promptConnectWallet } = useWalletActions();
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
-  const [formData, setFormData] = useState<ServerFormData>(() => ({ ...defaultSchema, id: serverId }));
-  const [roleData, setRoleData] = useState<RoleData>({ blinkShareRolePosition: -1, roles: [] });
-  const [formErrors, setFormErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [channels, setChannels] = useState<Array<{ name: string; id: string }>>([]);
-  const [guildName, setGuildName] = useState<string | null>(null);
-  const [guildImage, setGuildImage] = useState<string | null>(null);
 
+  const { guildName, guildImage } = JSON.parse(localStorage.getItem('selectedGuild') || '{}');
+
+  const [formData, setFormData] = useState<ServerFormData>({ ...defaultSchema, id: serverId });
+  const [roleData, setRoleData] = useState<RoleData>({ blinkShareRolePosition: -1, roles: [] });
+  const [formErrors, setFormErrors] = useState<
+    Partial<Record<keyof ServerFormData, string>>
+  >({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [channels, setChannels] = useState<{ name: string; id: string }[]>([]);
   const router = useRouter();
   const wallet = useWallet();
-  const token = useUserStore((state) => state.token) || (typeof window !== 'undefined' ? localStorage.getItem("discordToken") : null);
+  const token = useUserStore((state) => state.token) || localStorage.getItem("discordToken");
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const selectedGuild = localStorage.getItem("selectedGuild");
-      if (selectedGuild) {
-        const { guildName, guildImage } = JSON.parse(selectedGuild);
-        setGuildName(guildName);
-        setGuildImage(guildImage);
-        setFormData(prev => ({
-          ...prev,
-          name: guildName || prev.name,
-          iconUrl: guildImage || prev.iconUrl,
-        }));
-      }
+    if (guildName || guildImage) {
+      setFormData((prev) => ({
+        ...prev,
+        name: guildName || prev.name,
+        iconUrl: guildImage || prev.iconUrl,
+      }));
     }
-  }, []);
+  }, [guildName, guildImage]);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!serverId || !token) return;
+      if (serverId) {
+        try {
+          const rolesData = await fetchRoles(serverId);
+          setRoleData({
+            ...rolesData,
+            roles: rolesData.roles.map((role: DiscordRole) => ({
+              ...role,
+              price: '',
+              enabled: false,
+            }))
+          });
 
-      try {
-        setIsLoading(true);
+          // Fetch channels
+          const channelsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverId}/channels`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-        const [rolesData, channelsResponse] = await Promise.all([
-          fetchRoles(serverId),
-          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${serverId}/channels`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-        ]);
-
-        // Ensure BlinkshareRolePosition is always treated as a number
-        const blinkShareRolePosition = typeof rolesData.blinkShareRolePosition === 'number' ? rolesData.blinkShareRolePosition : -1;
-
-        setRoleData({
-          ...rolesData,
-          roles: rolesData.roles.map((role: DiscordRole) => ({
-            ...role,
-            price: '',
-            enabled: false,
-          })),
-          blinkShareRolePosition,
-        });
-
-        if (channelsResponse.ok) {
-          const channelsData = await channelsResponse.json();
-          setChannels(channelsData);
-        } else {
-          throw new Error("Failed to fetch channels");
+          if (channelsResponse.ok) {
+            const channels = await channelsResponse.json();
+            setChannels(channels);
+          } else {
+            console.error("Failed to fetch channels");
+          }
+        } catch (error) {
+          console.error("Error fetching roles or channels:", error);
+          toast.error("Failed to fetch server roles or channels");
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Failed to fetch server data. Please try again later.");
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -108,77 +86,67 @@ export default function CreateServerPage() {
     e.preventDefault();
     setOverlayVisible(true);
     setErrorOccurred(false);
+    setIsLoading(true);
 
     try {
       await promptConnectWallet();
-
       const validatedFormData = serverFormSchema.parse(formData);
-      const message = `Confirm creating Blink for ${guildName}`;
+      const message = `Confirm creating Blink for ${guildName}`
       const signature = await signMessage(message);
 
-      if (!signature) {
-        throw new Error("Failed to sign message");
-      }
-
-      const payload = {
-        data: {
-          ...validatedFormData,
-          roles: roleData.roles
-            .filter(role => role.enabled)
-            .map(role => ({
+      if (signature) {
+        const payload = {
+          data: {
+            ...validatedFormData,
+            roles: roleData?.roles.filter((role) => role.enabled).map((role) => ({
               id: role.id,
               name: role.name,
               amount: role.price.toString(),
             })),
-        },
-        address: wallet.publicKey?.toString(),
-        message,
-        signature,
-      };
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          address: wallet.publicKey,
+          message,
+          signature,
+        };
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${useUserStore.getState().token || localStorage.getItem("discordToken")}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        if (response.ok) {
+          toast.success("Server created successfully");
+          router.push(`/servers/${serverId}/success`);
+        } else {
+          toast.error("Error creating server");
+          setErrorOccurred(true);
         }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error creating server");
       }
-
-      toast.success("Server created successfully!");
-      router.push(`/servers/${serverId}/success`);
     } catch (error) {
-      if (error instanceof ZodError) {
-        const errors: FormErrors = {};
-
-        // Collect all error messages for each field
+      if (error instanceof z.ZodError) {
+        const errors: Partial<Record<keyof ServerFormData, string>> = {};
         error.errors.forEach((err) => {
-          const field = err.path[0]; // Get the field name
-          if (typeof field === 'string' && field in formData) {
-            // Initialize the error array for this field if it doesn't exist
-            if (!errors[field]) {
-              errors[field] = [];
+          if (err.path.length) {
+            const field = err.path[0];
+            if (typeof field === "string" && field in formData) {
+              errors[field as keyof ServerFormData] = err.message;
             }
-            // Add the error message to the array for the field
-            errors[field]?.push(err.message);
           }
         });
-
         setFormErrors(errors);
-        toast.error(`Please fix the form errors: ${Object.values(errors).flat().join("\n")}`);
-      } else if (error instanceof Error) {
+        console.log(errors);
+        toast.error(`Please fix the form errors: ${Object.values(errors).join('\n')}`);
+      } else {
         console.error("Unexpected error:", error);
-        toast.error(error.message || "An unexpected error occurred.");
+        toast.error("An unexpected error occurred");
       }
-      setErrorOccurred(true);
     } finally {
       setIsLoading(false);
       setOverlayVisible(false);
@@ -186,10 +154,10 @@ export default function CreateServerPage() {
   };
 
   return (
-    <div className="space-y-6 p-6 bg-gray-100 dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-950 min-h-screen">
+    <div className="space-y-6 p-6 bg-gradient-to-br from-[#dbcfc7] to-[#eae3de] dark:from-gray-900 dark:to-gray-800 min-h-screen">
       {overlayVisible && (
         <OverlaySpinner
-          text="Submitting your Blink configuration"
+          text="Submitting your blink configuration"
           error={errorOccurred}
         />
       )}
@@ -217,12 +185,13 @@ export default function CreateServerPage() {
             <ServerForm
               formData={formData}
               setFormData={setFormData}
+              roleData={roleData!}
+              setRoleData={setRoleData!}
               formErrors={formErrors}
               onSubmit={handleSubmit}
               isLoading={isLoading}
-              channels={channels} roleData={undefined} setRoleData={function (value: SetStateAction<RoleData>): void {
-                throw new Error("Function not implemented.");
-              } }            />
+              channels={channels}
+            />
           </MotionCardContent>
         </MotionCard>
       </div>

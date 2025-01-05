@@ -1,228 +1,123 @@
-/* eslint-disable no-unused-vars */
-import { SupabaseUser } from "@/lib/types";
-import { ServerFormData } from "@/lib/zod-validation";
+import { RoleData, ServerFormProps, Role } from "@/lib/types";
+import { fetchRoles } from "@/lib/actions/discord-actions";
+import { toast } from "sonner";
+import { Dispatch, SetStateAction } from "react";
 
 // ========================================
-// Search Parameters Interface
-
-declare type SearchParamProps = {
-  params: Record<string, string>;
-  searchParams: Record<string, string | string[] | undefined>;
-};
-
-// ========================================
-// Discord Role and Server Types
-
-export interface Role {
-  id: string;
-  name: string;
-  price: string;
-  position?: number;
-  enabled: boolean;
-}
-
-export interface RoleData {
-  roles: Role[]; // Array of roles
-  blinkShareRolePosition: number; // Role position field
-}
-
-declare interface DiscordRole {
-  id: string;
-  name: string;
-  price: string;
-  enabled: boolean;
-  position?: number;
-}
-
-declare type DiscordServer = {
-  id: string;
-  name: string;
-  icon: string;
-  customIcon?: string;
-  description: string;
-  detailedDescription: string;
-  roles: DiscordRole[];
-  ownerWallet: string;
-};
-
-declare type BlinkshareServerSettings = {
-  guildId: string;
-  customTitle?: string;
-  customIcon?: string;
-  description: string;
-  detailedDescription: string;
-  selectedRoles: string[];
-  ownerWallet: string;
-};
-
-// OAuth Response with definitions
-declare type DiscordOAuthResponse = {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-};
-
-// Server List Response interface
-declare type ServerListResponse = {
-  servers: Array<{
-    id: string;
-    name: string;
-    icon: string;
-  }>;
-};
-
-// Blink Data with clarity and added properties
-declare type BlinkData = {
-  guildId: string;
-  title: string;
-  icon: string;
-  description: string;
-  detailedDescription: string;
-  roles: DiscordRole[];
-};
-
-// Transaction details for clarity in roles and transactions
-declare type TransactionDetails = {
-  roleId: string;
-  amount: number;
-  buyerWallet: string;
-  sellerWallet: string;
-};
-
-// General API response format with error handling
-declare type BlinkshareApiResponse<T> = {
-  success: boolean;
-  data?: T;
-  error?: {
-    code: string;
-    message: string;
-    details?: string; // Optional detailed error info
-  };
-};
-
-// API request and response types
-
-declare type CreateBlinkRequest = BlinkshareServerSettings;
-
-declare type CreateBlinkResponse = BlinkshareApiResponse<{ blinkUrl: string }>;
-
-// Handle Discord OAuth callback and fetch related user info
-declare type HandleDiscordCallback = (code: string) => Promise<{
-  userId: string;
-  username: string;
-  guilds: DiscordServer[];
-  token: string;
-}>;
-
-// Fetch guild roles with clarity on the return structure
-declare type GetGuildRoles = (
-  guildId: string,
-  token: string
-) => Promise<{ blinkshareRolePosition: number; roles: DiscordRole[] }>;
-
-// Create or edit guild settings with description
-declare type CreateOrEditGuild = (
-  guildData: BlinkshareServerSettings,
-  address: string,
-  message: string,
-  signature: string,
-  token: string
-) => Promise<DiscordServer>;
-
-// Patch guild data with parameters
-declare type PatchGuild = (
-  guildId: string,
-  guildData: BlinkshareServerSettings,
-  address: string,
-  message: string,
-  signature: string,
-  token: string
-) => Promise<DiscordServer>;
-
-// Role data structured for role-based actions
-declare type RoleData = {
-  [x: string]: number; // This can be adjusted based on your use case
-  blinkshareRolePosition: number;
-  roles: DiscordRole[];
-};
-
-// User types extending SupabaseUser for database interaction
-declare type ServerOwner = SupabaseUser & {
-  ownedServers: string[]; // Array of guild IDs
-};
-
-declare type DiscordMember = SupabaseUser & {
-  discordId: string;
-  joinedServers: string[]; // Array of guild IDs
+// Handle input changes for form data
+export const handleInputChange = <
+  T extends keyof ServerFormProps["formData"]
+>(
+  field: T,
+  value: ServerFormProps["formData"][T],
+  setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>
+) => {
+  setFormData((prev) => ({ ...prev, [field]: value }));
 };
 
 // ========================================
-// UI Form Data and Props Definitions
+// Handle toggling of Discord roles
+export const handleDiscordRoleToggle = (
+  roleId: string,
+  roleData: RoleData,
+  setRoleData: Dispatch<SetStateAction<RoleData>>,
+  setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>,
+  setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>
+) => {
+  const role = roleData.roles.find((role) => role.id === roleId);
 
-// Server form data with field names
-declare type ServerFormData = {
-  [x: string]: any;
-  title: string;
-  description: string;
-  details: string;
-  roles: string[];
+  if (!role) return;
+
+  // Ensure the role can only be toggled if it has a lower position than the "blinkShare" role
+  if (roleData.blinkShareRolePosition <= (role.position || 0)) {
+    setRoleErrors((prev) => ({ ...prev, [roleId]: true }));
+    return;
+  }
+
+  setRoleErrors((prev) => ({ ...prev, [roleId]: false }));
+
+  const updatedRoles = roleData.roles.map((r) =>
+    r.id === roleId ? { ...r, enabled: !r.enabled } : r
+  );
+
+  setRoleData({ ...roleData, roles: updatedRoles });
+
+  const enabledRoles = updatedRoles
+    .filter((r) => r.enabled)
+    .map((r) => ({
+      id: r.id,
+      name: r.name,
+      amount: r.price,
+    }));
+
+  setFormData((prev) => ({ ...prev, roles: enabledRoles }));
 };
-
-// Blink action interface with description and fields
-export interface BlinkAction {
-  title: string;
-  description: string;
-  fields: string[];
-}
-
-export interface BlinkProps {
-  action: BlinkAction;
-  websiteText: string;
-}
-
-// API Function Types
-
-// Function signature for generating Discord login URL
-declare type GetDiscordLoginUrl = (owner: boolean) => Promise<string>;
-
-// Discord callback handling function signature
-declare type HandleDiscordCallback = (code: string) => Promise<{
-  userId: string;
-  username: string;
-  guilds: DiscordServer[];
-  token: string;
-}>;
-
-// Function signature for fetching guild roles with parameters
-declare type GetGuildRoles = (
-  guildId: string,
-  token: string
-) => Promise<{ blinkshareRolePosition: number; roles: DiscordRole[] }>;
-
-// Types for creating or editing guild with parameters
-declare type CreateOrEditGuild = (
-  guildData: BlinkshareServerSettings,
-  address: string,
-  message: string,
-  signature: string,
-  token: string
-) => Promise<DiscordServer>;
 
 // ========================================
-// ServerFormProps with refined state management
+// Handle price changes for Discord roles
+export const handleDiscordRolePriceChange = (
+  roleId: string,
+  price: string,
+  roleData: RoleData,
+  setRoleData: Dispatch<SetStateAction<RoleData>>,
+  setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>,
+  setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>
+) => {
+  const updatedRoles = roleData.roles.map((role) =>
+    role.id === roleId ? { ...role, price } : role
+  );
 
-// Define FormErrors type (if not already defined)
-declare type FormErrors = {
-  [key: string]: string[]; // Object with field names as keys and an array of error messages
+  setRoleData({ ...roleData, roles: updatedRoles });
+
+  const enabledRoles = updatedRoles
+    .filter((role) => role.enabled)
+    .map((role) => ({
+      id: role.id,
+      name: role.name,
+      amount: price,
+    }));
+
+  setFormData((prev) => ({ ...prev, roles: enabledRoles }));
 };
 
-declare interface ServerFormProps {
-  formData: ServerFormData;
-  setFormData: React.Dispatch<React.SetStateAction<ServerFormData>>;
-  roleData: RoleData;
-  setRoleData: React.Dispatch<React.SetStateAction<RoleData>>;
-  formErrors: FormErrors; // Ensure formErrors is typed correctly
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  isLoading: boolean;
-  channels: { name: string; id: string }[];
-}
+// ========================================
+// Fetch and refresh Discord roles
+export const refreshRoles = async (
+  formDataId: string,
+  roleData: RoleData,
+  setRoleData: Dispatch<SetStateAction<RoleData>>,
+  setIsRefreshingRoles: Dispatch<SetStateAction<boolean>>,
+  setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>,
+  setErrorMessage: Dispatch<SetStateAction<string>> // New error message state for better feedback
+) => {
+  setIsRefreshingRoles(true);
+  setErrorMessage(""); // Clear any previous error message
+
+  try {
+    const allRoles = await fetchRoles(formDataId);
+
+    // Merge roles to keep custom values like price and enabled state
+    const mergedRoles: Role[] = allRoles.roles.map((role) => {
+      const selectedRole = roleData.roles.find((r) => r.id === role.id);
+      return selectedRole
+        ? { ...role, price: selectedRole.price, enabled: selectedRole.enabled }
+        : role;
+    });
+
+    // Ensure the updated role data contains the correct `blinkShareRolePosition`
+    setRoleData({
+      ...roleData, // Keep the existing data
+      roles: mergedRoles,
+      blinkShareRolePosition: roleData.blinkShareRolePosition, // Ensure this property is passed
+    });
+
+    setRoleErrors({}); // Clear any previous role errors
+    toast.success("Roles refreshed successfully");
+  } catch (error) {
+    console.error("Error refreshing roles", error);
+    setErrorMessage("Failed to refresh roles. Please try again.");
+    toast.error("Failed to refresh roles. Please try again.");
+  } finally {
+    setIsRefreshingRoles(false);
+  }
+};

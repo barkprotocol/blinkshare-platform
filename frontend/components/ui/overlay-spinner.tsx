@@ -14,6 +14,7 @@ const OverlaySpinner: React.FC<OverlaySpinnerProps> = ({
   <div
     className="animate-in fade-in-0 fixed inset-0 z-50 bg-white/90 dark:bg-black/80 flex items-center justify-center"
     aria-live="polite"
+    role="status"
   >
     <div className="flex flex-col items-center">
       <svg
@@ -21,8 +22,7 @@ const OverlaySpinner: React.FC<OverlaySpinnerProps> = ({
         className={clsx(
           "animate-spin h-20 w-20",
           {
-            "fill-neutral-600 text-neutral-200 dark:fill-neutral-400 dark:text-neutral-800":
-              !error,
+            "fill-neutral-600 text-neutral-200 dark:fill-neutral-400 dark:text-neutral-800": !error,
             "text-red-500 dark:text-red-400": error,
           }
         )}
@@ -50,10 +50,5 @@ const OverlaySpinner: React.FC<OverlaySpinnerProps> = ({
     </div>
   </div>
 );
-
-OverlaySpinner.defaultProps = {
-  text: "Loading",
-  error: false,
-};
 
 export default OverlaySpinner;

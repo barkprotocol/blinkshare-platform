@@ -1,13 +1,13 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { Button } from "@/components/ui/button";
+import Link from 'next/link'
+import Image from 'next/image'
+import { Button } from "@/components/ui/button"
 
 export default function Hero() {
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center bg-black overflow-hidden">
+    <section className="relative w-full min-h-screen flex items-center justify-center bg-gray-950 overflow-hidden">
       <Image
-        src="https://ucarecdn.com/8f30b618-6bcd-4db2-8171-bb8bc2e947cd/blackgoldcoinsbg.jpeg"
-        alt="Golden Coins Background"
+        src="https://ucarecdn.com/f6029e68-9768-49db-80a9-64e41e70acff/waveblack.png"
+        alt=""
         fill
         sizes="100vw"
         quality={85}
@@ -17,40 +17,51 @@ export default function Hero() {
       />
       <div className="absolute inset-0 bg-black/60" aria-hidden="true"></div>
       <div className="relative z-10 container mx-auto px-4 py-12 text-center text-white">
-        {/* Title with gradient */}
-        <h2 className="text-sm sm:text-base md:text-lg font-semibold mb-4 bg-gradient-to-r from-sand-300 via-sand-500 to-sand-700 text-transparent bg-clip-text">
+        <h2 className="text-sm sm:text-base md:text-lg font-medium mb-4 bg-gradient-to-r from-white to-gray-50 text-transparent bg-clip-text">
           Blockchain Made Seamless
         </h2>
-        
-        {/* Main Heading */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 drop-shadow-lg">
-          Welcome to BlinkShare
+          Welcome to <span className="font-bold">Blink</span>
+          <span className="font-medium">Share</span>
         </h1>
-
-        {/* Description */}
-        <p className="text-lg sm:text-xl md:text-2xl mb-10 max-w-2xl mx-auto drop-shadow-lg">
-          Empower your Discord communities with seamless Solana-based transactions. Create, share, engage, and grow with blockchain integration.
+        <p className="text-lg sm:text-xl md:text-2xl mb-10 max-w-3xl mx-auto drop-shadow">
+          Empower your Discord communities with seamless Solana-based transactions. Share, engage, and grow with blockchain integration.
         </p>
-
-        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-          <Button 
-            asChild 
-            size="lg" 
-            className="shadow-lg hover:shadow-2xl transition-shadow bg-primary text-white hover:bg-primary/90 border px-6 py-3 text-md"
-          >
+          <Button asChild size="lg" className="shadow-lg hover:shadow-xl transition-shadow bg-white hover:bg-white text-black">
             <Link href="/get-started">Get Started</Link>
           </Button>
-          <Button 
-            asChild 
-            variant="outline" 
-            size="lg" 
-            className="shadow-lg hover:shadow-2xl transition-shadow border border-white text-black hover:bg-white/20 px-6 py-3 text-md"
-          >
-            <Link href="https://docs.blinkshare.fun" target="_blank" rel="noopener noreferrer">Documents</Link>
+          <Button asChild variant="outline" size="lg" className="shadow-lg hover:shadow-xl transition-shadow bg-white/10 hover:bg-white/20">
+            <Link href="https://docs.blinkshare.fun">Documentation</Link>
           </Button>
+        </div>
+        <div className="mt-16 flex flex-col items-center">
+          <p className="text-white/60 text-sm mb-4">Powered by</p>
+          <div className="flex items-center justify-center space-x-8">
+            <Image
+              src="https://ucarecdn.com/7b3b0c2e-f49e-4c5c-bfdc-e81df44273cc/solanaLogo.png"
+              alt="Solana"
+              width={100}
+              height={35}
+              className="opacity-75 hover:opacity-90 transition-opacity"
+            />
+            <Image
+              src="https://ucarecdn.com/e8a3c826-ba34-4f92-a55c-5700933adcb1/Privy_Brandmark_White.png"
+              alt="Privy"
+              width={80}
+              height={24}
+              className="opacity-75 hover:opacity-90 transition-opacity"
+            />
+            <Image
+              src="https://ucarecdn.com/5b42a7f6-1d4f-494b-96e4-4fe5b8b1fa3c/dialectwhitelogomark.png"
+              alt="Dialect"
+              width={100}
+              height={24}
+              className="opacity-75 hover:opacity-90 transition-opacity"
+            />
+          </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

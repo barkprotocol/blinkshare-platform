@@ -1,6 +1,6 @@
 import { NextConfig } from "next";
 
-/** 
+/**
  * @type {NextConfig}
  * Enhanced Next.js configuration with TypeScript support and error handling.
  */
@@ -16,7 +16,11 @@ const nextConfig: NextConfig = {
         hostname: "ucarecdn.com", // Allow images from Ucare CDN
       },
     ],
+    domains: ['blinkshare.fun'], // Domains where SVGs be hosted
+    formats: ['image/webp'], // Specify webp as an acceptable image format
   },
+
+  // Headers Configuration for enhanced security
   async headers() {
     try {
       return [
@@ -47,25 +51,40 @@ const nextConfig: NextConfig = {
         },
       ];
     } catch (error) {
+      // Log error and return an empty array if headers cannot be set
       console.error("Error configuring headers:", error);
-      return []; // Return empty array if error occurs
+      return [];
     }
   },
+
+  // TypeScript Configuration
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
+
   experimental: {
-    optimizeCss: false,
-    scrollRestoration: false,
+    optimizeCss: true, // Enable CSS optimization for production performance
+    scrollRestoration: true, // Enable scroll restoration for improved user experience
   },
+
+  // Webpack Configuration
   webpack(config, { isServer }) {
     if (!isServer) {
       config.cache = {
-        type: 'filesystem',
+        type: 'filesystem', // Enable filesystem caching for client-side builds
       };
     }
+
+    // Add support for importing SVG as React components
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+
     return config;
   },
+
+  // React Strict Mode for better debugging during development
   reactStrictMode: true,
 };
 
