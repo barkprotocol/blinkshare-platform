@@ -16,8 +16,8 @@ const nextConfig: NextConfig = {
         hostname: 'ucarecdn.com', // Allow images from Ucare CDN
       },
     ],
-    domains: ['blinkshare.fun'], // Domains where SVGs be hosted
-    formats: ['image/webp'], // Specify webp as an acceptable image format
+    domains: ['blinkshare.fun'], // Domains where SVGs are hosted
+    formats: ['image/webp'], // Specify WebP as an acceptable image format
   },
 
   // Headers Configuration for enhanced security
@@ -59,7 +59,7 @@ const nextConfig: NextConfig = {
 
   // TypeScript Configuration
   typescript: {
-    ignoreBuildErrors: true, // Set this to false to enable strict checking during production
+    ignoreBuildErrors: true, // Set this to true to ignore build errors (consider setting it to false in production for stricter checks)
   },
 
   experimental: {
