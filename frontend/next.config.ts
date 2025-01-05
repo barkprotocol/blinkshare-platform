@@ -1,32 +1,22 @@
-import { NextConfig } from 'next';
+import { NextConfig } from "next";
 
-/**
+/** 
  * @type {NextConfig}
- * Enhanced Next.js configuration with TypeScript support, error handling, and performance optimization.
+ * Enhanced Next.js configuration with TypeScript support and error handling.
  */
 const nextConfig: NextConfig = {
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
-
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.discordapp.com', // Allow images from Discord CDN
+        protocol: "https",
+        hostname: "cdn.discordapp.com", // Allow images from Discord CDN
       },
       {
-        protocol: 'https',
-        hostname: 'ucarecdn.com', // Allow images from Ucare CDN
+        protocol: "https",
+        hostname: "ucarecdn.com", // Allow images from Ucare CDN
       },
     ],
-    domains: ['blinkshare.fun'], // Domains where SVGs will be hosted
-    formats: ['image/webp'], // Specify webp as an acceptable image format
   },
-
-  // Headers Configuration for enhanced security
   async headers() {
     try {
       return [
@@ -57,47 +47,26 @@ const nextConfig: NextConfig = {
         },
       ];
     } catch (error) {
-      // Log error and return an empty array if headers cannot be set
-      console.error('Error configuring headers:', error);
-      return [];
+      console.error("Error configuring headers:", error);
+      return []; // Return empty array if error occurs
     }
   },
-
-  // TypeScript Configuration
   typescript: {
-    ignoreBuildErrors: true, // Set this to false to enable strict checking during production
+    ignoreBuildErrors: true,
   },
-
   experimental: {
-    optimizeCss: true, // Enable CSS optimization for production performance
-    scrollRestoration: true, // Enable scroll restoration for improved user experience
+    optimizeCss: false,
+    scrollRestoration: false,
   },
-
-  // Webpack Configuration
   webpack(config, { isServer }) {
     if (!isServer) {
-      // Remove custom minimizers for production builds
-      config.optimization.minimizer = [];
-      // Further optimization for production (tree shaking, etc.)
-      config.optimization.splitChunks = {
-        chunks: 'all', // Split code for better caching
+      config.cache = {
+        type: 'filesystem',
       };
     }
-
-    // Add support for importing SVG as React components
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
-
     return config;
   },
-
-  // React Strict Mode for better debugging during development
   reactStrictMode: true,
-
-  // Enabling SWC-based minification for better performance
-  swcMinify: false,
 };
 
 export default nextConfig;
