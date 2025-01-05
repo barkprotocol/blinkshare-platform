@@ -1,45 +1,49 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Button } from '@/components/ui/button';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import { Button } from "@/components/ui/button";
 
-export const WalletButton = () => {
-  const { connected, wallet, connect, disconnect } = useWallet();
-  const [isLoading, setIsLoading] = useState(false);
+export const WalletButton: FC = () => {
+    const { publicKey, wallet, disconnect } = useWallet();
+    const { setVisible } = useWalletModal();
+    const [copying, setCopying] = useState(false);
 
-  // Handle wallet connection or disconnection
-  const handleWalletAction = async () => {
-    setIsLoading(true);
-    try {
-      if (connected) {
-        // Disconnecting
-        console.debug(`Disconnecting from ${wallet?.adapter?.name || 'Wallet'}`);
-        await disconnect();
-      } else {
-        // Connecting
-        console.debug(`Connecting to ${wallet?.adapter?.name || 'Wallet'}`);
-        await connect();
-      }
-    } catch (error) {
-      console.error(`Failed to ${connected ? 'disconnect' : 'connect'} wallet:`, error);
-      alert(`An error occurred while trying to ${connected ? 'disconnect' : 'connect'} the wallet.`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const handleWalletClick = () => {
+        if (!wallet) {
+            setVisible?.(true);
+        } else {
+            disconnect?.();
+        }
+    };
 
-  return (
-    <Button
-      onClick={handleWalletAction}
-      disabled={isLoading}
-      className={`text-white bg-black border-1 border-white hover:bg-gray-900 hover:text-gray-100 hover:border-gray-400 ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
-    >
-      {isLoading
-        ? 'Connecting...'
-        : connected
-        ? `Disconnect from ${wallet?.adapter?.name || 'Wallet'}`
-        : 'Connect Wallet'}
-    </Button>
-  );
+    const copyAddress = async () => {
+        if (publicKey) {
+            await navigator.clipboard.writeText(publicKey.toBase58());
+            setCopying(true);
+            setTimeout(() => setCopying(false), 400);
+        }
+    };
+
+    return (
+        <div className="flex items-center space-x-2">
+            <Button
+                onClick={handleWalletClick}
+                variant="outline"
+                className="bg-black text-primary-foreground hover:bg-primary/90"
+            >
+                {publicKey ? 'Disconnect' : 'Connect Wallet'}
+            </Button>
+            {publicKey && (
+                <Button
+                    onClick={copyAddress}
+                    variant="outline"
+                    className="bg-black text-secondary-foreground hover:bg-secondary/50"
+                >
+                    {copying ? 'Copied!' : `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`}
+                </Button>
+            )}
+        </div>
+    );
 };

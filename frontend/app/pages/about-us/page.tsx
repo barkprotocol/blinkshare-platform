@@ -8,7 +8,7 @@ const AboutUsPage = () => {
   const { theme } = useTheme();
 
   return (
-    <div className={`bg-gray-100 min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
+    <div className={`bg-gray-100 min-h-screen ${theme === 'dark' ? 'bg-black text-white' : 'bg-gray-100 text-black'}`}>
       <Header />
       
       <main className="py-12 px-4 md:px-16">
@@ -16,9 +16,9 @@ const AboutUsPage = () => {
           <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
             {/* About Blinkshare */}
             <div className="bg-white p-8 rounded-lg shadow-lg">
-              <h2 className="text-3xl font-semibold mb-4">About Blinkshare</h2>
+              <h2 className="text-3xl font-semibold mb-4">About BlinkShare</h2>
               <p className="text-lg">
-                Blinkshare is a next-generation platform designed to simplify blockchain-based interactions. 
+                BlinkShare is a next-generation platform designed to simplify blockchain-based interactions. 
                 We leverage the power of the Solana blockchain to offer secure and fast NFT management, 
                 including minting, staking, and real-world asset integration. Our mission is to provide an intuitive 
                 and seamless experience for users and creators alike.

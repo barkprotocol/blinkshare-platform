@@ -87,7 +87,7 @@ export default function Servers() {
       const data = await response.json();
 
       if (response.status === 401) {
-        handleConnectDiscord(() => fetchGuilds()); // Retry fetching guilds after re-authorization
+        handleConnectDiscord(() => fetchGuilds());
       }
 
       if (data?.guild?.id) {

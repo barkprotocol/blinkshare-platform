@@ -6,16 +6,24 @@ import './styles/globals.css';
 import { Header } from '@/components/ui/layout/header';
 import Footer from '@/components/ui/layout/footer';
 import Head from 'next/head';
-import WalletProviderComponent from '@/components/ui/wallet-provider';
+import WalletProvider from '@/components/ui/wallet-provider';
 import LayoutWrapper from "@/app/layout-wrapper";
 import { supabase } from '@/lib/supabase-client';
 import { useEffect, useState } from 'react';
+
+// Define the User type based on your Supabase table structure
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  // Add other fields from your 'users' table if necessary
+}
 
 const syne = Syne({ subsets: ['latin'], variable: '--font-syne' });
 const poppins = Poppins({ weight: ['400', '600'], subsets: ['latin'], variable: '--font-poppins' });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<User[] | null>(null);  // Specify that userData can be an array of User objects or null
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -24,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         if (error) {
           console.error('Error fetching user data:', error);
         } else {
-          setUserData(data);
+          setUserData(data);  // TypeScript will now know that data is of type User[]
           console.log('User Data:', data);
         }
       } catch (error) {
@@ -53,11 +61,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body className="bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <WalletProviderComponent>
+          <WalletProvider>
             <Header />
             <main className="flex-grow w-full p-0 sm:p-0 md:p-0">{children}</main>
             <Footer />
-          </WalletProviderComponent>
+          </WalletProvider>
         </ThemeProvider>
       </body>
     </html>

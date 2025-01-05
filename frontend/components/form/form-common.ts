@@ -11,7 +11,7 @@ export const handleInputChange = <
   value: ServerFormProps["formData"][T],
   setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>
 ) => {
-  setFormData((prev) => ({ ...prev, [field]: value }));
+  setFormData((prev: any) => ({ ...prev, [field]: value }));
 };
 
 // Handle toggling of Discord roles
@@ -22,7 +22,7 @@ export const handleDiscordRoleToggle = (
   setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>,
   setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>
 ) => {
-  const role = roleData.roles.find((role) => role.id === roleId);
+  const role = roleData.roles.find((role: { id: string; }) => role.id === roleId);
 
   if (!role) return;
 
@@ -34,21 +34,21 @@ export const handleDiscordRoleToggle = (
 
   setRoleErrors((prev) => ({ ...prev, [roleId]: false }));
 
-  const updatedRoles = roleData.roles.map((r) =>
+  const updatedRoles = roleData.roles.map((r: { id: string; enabled: any; }) =>
     r.id === roleId ? { ...r, enabled: !r.enabled } : r
   );
 
   setRoleData({ ...roleData, roles: updatedRoles });
 
   const enabledRoles = updatedRoles
-    .filter((r) => r.enabled)
-    .map((r) => ({
+    .filter((r: { enabled: any; }) => r.enabled)
+    .map((r: { id: any; name: any; price: any; }) => ({
       id: r.id,
       name: r.name,
       amount: r.price,
     }));
 
-  setFormData((prev) => ({ ...prev, roles: enabledRoles }));
+  setFormData((prev: any) => ({ ...prev, roles: enabledRoles }));
 };
 
 // Handle price changes for Discord roles
@@ -60,21 +60,21 @@ export const handleDiscordRolePriceChange = (
   setFormData: Dispatch<SetStateAction<ServerFormProps["formData"]>>,
   setRoleErrors: Dispatch<SetStateAction<{ [key: string]: boolean }>>
 ) => {
-  const updatedRoles = roleData.roles.map((role) =>
+  const updatedRoles = roleData.roles.map((role: { id: string; }) =>
     role.id === roleId ? { ...role, price } : role
   );
 
   setRoleData({ ...roleData, roles: updatedRoles });
 
   const enabledRoles = updatedRoles
-    .filter((role) => role.enabled)
-    .map((role) => ({
+    .filter((role: { enabled: any; }) => role.enabled)
+    .map((role: { id: any; name: any; }) => ({
       id: role.id,
       name: role.name,
       amount: price,
     }));
 
-  setFormData((prev) => ({ ...prev, roles: enabledRoles }));
+  setFormData((prev: any) => ({ ...prev, roles: enabledRoles }));
 };
 
 // Fetch and refresh Discord roles
@@ -94,7 +94,7 @@ export const refreshRoles = async (
 
     // Merge roles to keep custom values like price and enabled state
     const mergedRoles: Role[] = allRoles.roles.map((role) => {
-      const selectedRole = roleData.roles.find((r) => r.id === role.id);
+      const selectedRole = roleData.roles.find((r: { id: any; }) => r.id === role.id);
       return selectedRole
         ? { ...role, price: selectedRole.price, enabled: selectedRole.enabled }
         : role;

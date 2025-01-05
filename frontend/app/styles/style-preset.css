@@ -1,0 +1,168 @@
+/* 
+    Use .x-dark, .x-light, .dial-light, or .custom classes 
+    .custom - does not contain any colors, radii or shadow
+*/
+.blink.x-dark {
+    /* Backgrounds */
+    --blink-bg-primary: #FFFF;
+    --blink-button: #010101;
+    --blink-button-disabled: #343230;
+    --blink-button-hover: #2e2d29;
+    --blink-button-success: #00ae661a;
+    
+    /* Icon Colors */
+    --blink-icon-error: #ff6565;
+    --blink-icon-error-hover: #ff7a7a;
+    --blink-icon-primary: #DBCFC7;
+    --blink-icon-primary-hover: #949ca4;
+    --blink-icon-warning: #ffb545;
+    --blink-icon-warning-hover: #ffc875;
+
+    /* Input Backgrounds and Borders */
+    --blink-input-bg: #202327;
+    --blink-input-stroke: #3d4144;
+    --blink-input-stroke-disabled: #2f3336;
+    --blink-input-stroke-error: #ff6565;
+    --blink-input-stroke-hover: #6e767d;
+    --blink-input-stroke-selected: #DBCFC7;
+
+    /* Stroke Colors */
+    --blink-stroke-error: #ff6565;
+    --blink-stroke-primary: #DBCFC7;
+    --blink-stroke-secondary: #3d4144;
+    --blink-stroke-warning: #ffb545;
+
+    /* Text Colors */
+    --blink-text-brand: #010101;
+    --blink-text-button: #ffffff;
+    --blink-text-button-disabled: #768088;
+    --blink-text-button-success: #12dc88;
+    --blink-text-error: #ff6565;
+    --blink-text-error-hover: #ff7a7a;
+    --blink-text-input: #ffffff;
+    --blink-text-input-disabled: #566470;
+    --blink-text-input-placeholder: #6e767d;
+    --blink-text-link: #6e767d;
+    --blink-text-link-hover: #949ca4;
+    --blink-text-primary: #ffffff;
+    --blink-text-secondary: #949ca4;
+    --blink-text-success: #12dc88;
+    --blink-text-warning: #ffb545;
+    --blink-text-warning-hover: #ffc875;
+
+    /* Transparent Colors */
+    --blink-transparent-error: #aa00001a;
+    --blink-transparent-grey: #6e767d1a;
+    --blink-transparent-warning: #a966001a;
+
+    /* Border Radius */
+    --blink-border-radius-rounded-lg: 0.25rem;
+    --blink-border-radius-rounded-xl: 0.5rem;
+    --blink-border-radius-rounded-2xl: 1.125rem;
+    --blink-border-radius-rounded-button: 624.9375rem;
+    --blink-border-radius-rounded-input: 624.9375rem;
+
+    /* Box Shadow */
+    --blink-shadow-container: 0px 2px 8px 0px rgba(156, 156, 156, 0.22), 0px 1px 48px 0px rgba(183, 183, 183, 0.24);
+}
+
+/* Light theme */
+.blink.x-light {
+    --blink-bg-primary: #f4f4f4;
+    --blink-button: #ffffff;
+    --blink-button-disabled: #d4d4d4;
+    --blink-button-hover: #e2e2e2;
+    --blink-button-success: #a0e3a0;
+    --blink-icon-error: #ff6565;
+    --blink-icon-error-hover: #ff7a7a;
+    --blink-icon-primary: #434343;
+    --blink-icon-primary-hover: #5a5a5a;
+    --blink-icon-warning: #ffb545;
+    --blink-icon-warning-hover: #ffc875;
+    --blink-input-bg: #ffffff;
+    --blink-input-stroke: #a4a4a4;
+    --blink-input-stroke-disabled: #dcdcdc;
+    --blink-input-stroke-error: #ff6565;
+    --blink-input-stroke-hover: #b3b3b3;
+    --blink-input-stroke-selected: #434343;
+    --blink-stroke-error: #ff6565;
+    --blink-stroke-primary: #434343;
+    --blink-stroke-secondary: #a4a4a4;
+    --blink-stroke-warning: #ffb545;
+    --blink-text-brand: #010101;
+    --blink-text-button: #010101;
+    --blink-text-button-disabled: #b1b1b1;
+    --blink-text-button-success: #36b636;
+    --blink-text-error: #ff6565;
+    --blink-text-error-hover: #ff7a7a;
+    --blink-text-input: #010101;
+    --blink-text-input-disabled: #a4a4a4;
+    --blink-text-input-placeholder: #a4a4a4;
+    --blink-text-link: #434343;
+    --blink-text-link-hover: #2e2e2e;
+    --blink-text-primary: #434343;
+    --blink-text-secondary: #b3b3b3;
+    --blink-text-success: #36b636;
+    --blink-text-warning: #ffb545;
+    --blink-text-warning-hover: #ffc875;
+    --blink-transparent-error: #ff00001a;
+    --blink-transparent-grey: #a4a4a41a;
+    --blink-transparent-warning: #ff88001a;
+    --blink-border-radius-rounded-lg: 0.25rem;
+    --blink-border-radius-rounded-xl: 0.5rem;
+    --blink-border-radius-rounded-2xl: 1.125rem;
+    --blink-border-radius-rounded-button: 624.9375rem;
+    --blink-border-radius-rounded-input: 624.9375rem;
+    --blink-shadow-container: 0px 2px 8px 0px rgba(156, 156, 156, 0.22), 0px 1px 48px 0px rgba(183, 183, 183, 0.24);
+}
+
+/* Custom Theme (No predefined styles) */
+.blink.custom {
+    /* No predefined color, border, or shadow styles */
+    --blink-bg-primary: inherit;
+    --blink-button: inherit;
+    --blink-button-disabled: inherit;
+    --blink-button-hover: inherit;
+    --blink-button-success: inherit;
+    --blink-icon-error: inherit;
+    --blink-icon-error-hover: inherit;
+    --blink-icon-primary: inherit;
+    --blink-icon-primary-hover: inherit;
+    --blink-icon-warning: inherit;
+    --blink-icon-warning-hover: inherit;
+    --blink-input-bg: inherit;
+    --blink-input-stroke: inherit;
+    --blink-input-stroke-disabled: inherit;
+    --blink-input-stroke-error: inherit;
+    --blink-input-stroke-hover: inherit;
+    --blink-input-stroke-selected: inherit;
+    --blink-stroke-error: inherit;
+    --blink-stroke-primary: inherit;
+    --blink-stroke-secondary: inherit;
+    --blink-stroke-warning: inherit;
+    --blink-text-brand: inherit;
+    --blink-text-button: inherit;
+    --blink-text-button-disabled: inherit;
+    --blink-text-button-success: inherit;
+    --blink-text-error: inherit;
+    --blink-text-error-hover: inherit;
+    --blink-text-input: inherit;
+    --blink-text-input-disabled: inherit;
+    --blink-text-input-placeholder: inherit;
+    --blink-text-link: inherit;
+    --blink-text-link-hover: inherit;
+    --blink-text-primary: inherit;
+    --blink-text-secondary: inherit;
+    --blink-text-success: inherit;
+    --blink-text-warning: inherit;
+    --blink-text-warning-hover: inherit;
+    --blink-transparent-error: inherit;
+    --blink-transparent-grey: inherit;
+    --blink-transparent-warning: inherit;
+    --blink-border-radius-rounded-lg: inherit;
+    --blink-border-radius-rounded-xl: inherit;
+    --blink-border-radius-rounded-2xl: inherit;
+    --blink-border-radius-rounded-button: inherit;
+    --blink-border-radius-rounded-input: inherit;
+    --blink-shadow-container: inherit;
+}

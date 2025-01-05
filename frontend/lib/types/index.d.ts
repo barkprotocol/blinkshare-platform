@@ -121,3 +121,5 @@ export const refreshRoles = async (
     setIsRefreshingRoles(false);
   }
 };
+export { RoleData };
+

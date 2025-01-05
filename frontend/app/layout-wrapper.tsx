@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import "./styles/globals.css";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -20,11 +20,13 @@ type LayoutWrapperProps = { children: React.ReactNode; };
 
 const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
   // Ensure Privy app ID is set in environment variables
-  if (!process.env.NEXT_PUBLIC_PRIVY_APP_ID) {
-    console.error("Privy app ID is missing. Please set NEXT_PUBLIC_PRIVY_APP_ID in your environment variables.");
-    // Optionally handle the case if the environment variable is missing
-    // e.g., redirect to an error page, or disable relevant features.
-  }
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_PRIVY_APP_ID) {
+      console.error("Privy app ID is missing. Please set NEXT_PUBLIC_PRIVY_APP_ID in your environment variables.");
+      // Optionally handle the case if the environment variable is missing
+      // Redirect or show an error message
+    }
+  }, []);
 
   // Setting up the Solana network and wallet adapters
   const network = WalletAdapterNetwork.Mainnet;

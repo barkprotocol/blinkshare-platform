@@ -1,103 +1,124 @@
-import { create } from 'zustand';
+import { useBlinkStore } from "@/hooks/use-store";
 
-// Type definition for form data
-interface BlinkFormData {
-  title: string;
-  description: string;
-  iconUrl: string;
-  stylePreset: 'default' | 'dark';
-  serverId: string;
-  code: string;
-  fields: { label: string; value: string }[];
-}
+const BlinkForm = () => {
+  const {
+    formData,
+    setFormData,
+    addField,
+    removeField,
+    updateField,
+    resetForm,
+    resetFields,
+  } = useBlinkStore();
 
-// Zustand store
-export const useBlinkStore = create<{
-  formData: BlinkFormData;
-  setFormData: <K extends keyof BlinkFormData>(
-    key: K,
-    value: BlinkFormData[K]
-  ) => void;
-  addField: () => void;
-  removeField: (index: number) => void;
-  updateField: (index: number, key: 'label' | 'value', newValue: string) => void; // Add specific field update
-  resetForm: () => void;
-  resetFields: () => void; // Reset only the fields array
-}>((set) => ({
-  formData: {
-    title: '',
-    description: '',
-    iconUrl: '',
-    stylePreset: 'default',
-    serverId: '',
-    code: '',
-    fields: [{ label: '', value: '' }], // Start with one field
-  },
-  
-  // Set individual form data
-  setFormData: (key, value) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        [key]: value,
-      },
-    }));
-  },
+  const handleFieldUpdate = (index: number, key: 'label' | 'value', newValue: string) => {
+    updateField(index, key, newValue);
+  };
 
-  // Add a new field
-  addField: () => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        fields: [...state.formData.fields, { label: '', value: '' }],
-      },
-    }));
-  },
+  const handleInputChange = (key: keyof typeof formData, value: string) => {
+    setFormData(key, value);
+  };
 
-  // Remove a specific field
-  removeField: (index) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        fields: state.formData.fields.filter((_, i) => i !== index),
-      },
-    }));
-  },
+  return (
+    <form>
+      <div>
+        <label htmlFor="title">Title</label>
+        <input
+          id="title"
+          type="text"
+          value={formData.title}
+          onChange={(e) => handleInputChange('title', e.target.value)}
+        />
+      </div>
 
-  // Update a specific field's label or value
-  updateField: (index, key, newValue) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        fields: state.formData.fields.map((field, i) =>
-          i === index ? { ...field, [key]: newValue } : field
-        ),
-      },
-    }));
-  },
+      <div>
+        <label htmlFor="description">Description</label>
+        <input
+          id="description"
+          type="text"
+          value={formData.description}
+          onChange={(e) => handleInputChange('description', e.target.value)}
+        />
+      </div>
 
-  // Reset the entire form
-  resetForm: () => {
-    set({
-      formData: {
-        title: '',
-        description: '',
-        iconUrl: '',
-        stylePreset: 'default',
-        serverId: '',
-        code: '',
-        fields: [{ label: '', value: '' }],
-      },
-    });
-  },
+      <div>
+        <label htmlFor="iconUrl">Icon URL</label>
+        <input
+          id="iconUrl"
+          type="text"
+          value={formData.iconUrl}
+          onChange={(e) => handleInputChange('iconUrl', e.target.value)}
+        />
+      </div>
 
-  // Reset only the fields array
-  resetFields: () => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        fields: [{ label: '', value: '' }],
-      },
-    }));
-  },
-}));
+      <div>
+        <label htmlFor="stylePreset">Style Preset</label>
+        <select
+          id="stylePreset"
+          value={formData.stylePreset}
+          onChange={(e) => handleInputChange('stylePreset', e.target.value)}
+        >
+          <option value="default">Default</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="serverId">Server ID</label>
+        <input
+          id="serverId"
+          type="text"
+          value={formData.serverId}
+          onChange={(e) => handleInputChange('serverId', e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="code">Code</label>
+        <input
+          id="code"
+          type="text"
+          value={formData.code}
+          onChange={(e) => handleInputChange('code', e.target.value)}
+        />
+      </div>
+
+      <div>
+        <h3>Fields</h3>
+        {formData.fields.map((field, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              placeholder="Label"
+              value={field.label}
+              onChange={(e) => handleFieldUpdate(index, 'label', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Value"
+              value={field.value}
+              onChange={(e) => handleFieldUpdate(index, 'value', e.target.value)}
+            />
+            <button type="button" onClick={() => removeField(index)}>
+              Remove Field
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={addField}>
+          Add Field
+        </button>
+      </div>
+
+      <div>
+        <button type="button" onClick={resetForm}>Reset Form</button>
+        <button type="button" onClick={resetFields}>Reset Fields</button>
+      </div>
+
+      <div>
+        <pre>{JSON.stringify(formData, null, 2)}</pre>
+      </div>
+    </form>
+  );
+};
+
+export default BlinkForm;

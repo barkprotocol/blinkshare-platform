@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 import { WalletButton } from '@/components/ui/wallet-button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cog, Store, MessageCircle, User, HelpCircle } from 'lucide-react';
+import { FaDiscord } from 'react-icons/fa';
 
 const navItems = [
-  { href: "#features", icon: Cog, label: "Features" },
+  { href: "/#features", icon: Cog, label: "Features" },
   { href: "/marketplace", icon: Store, label: "Marketplace" },
-  { href: "https://discord.gg/invite/CjUeKEB7b6", icon: MessageCircle, label: "Discord" },
+  { href: "https://discord.gg/invite/CjUeKEB7b6", icon: FaDiscord, label: "Discord" },
   { href: "/my-blinks", icon: User, label: "My Blinks" },
-  { href: "#faq", icon: HelpCircle, label: "FAQ" },
 ];
 
 export default function Navbar() {
@@ -117,7 +117,7 @@ export default function Navbar() {
               <WalletButton />
             </div>
             <Button asChild className="w-full text-white bg-black border border-white hover:bg-gray-900 hover:text-gray-100 transition-colors duration-200">
-              <Link href="/create-blink" onClick={closeMenu}>Create a Blink</Link>
+              <Link href="/create-a-blink" onClick={closeMenu}>Create a Blink</Link>
             </Button>
           </motion.div>
         )}
