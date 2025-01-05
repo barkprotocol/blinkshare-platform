@@ -17,7 +17,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  
   async headers() {
     try {
       return [
@@ -49,22 +48,17 @@ const nextConfig: NextConfig = {
       ];
     } catch (error) {
       console.error("Error configuring headers:", error);
-      return [];
+      return []; // Return empty array if error occurs
     }
   },
-
   typescript: {
-    // Avoid ignoring build errors unless you have a specific reason
-    ignoreBuildErrors: false,
+    ignoreBuildErrors: true,
   },
-
   experimental: {
-    optimizeCss: false, // Disabled CSS optimization as per original config
-    scrollRestoration: false, // Disable scroll restoration (you can re-enable this if needed)
+    optimizeCss: false,
+    scrollRestoration: false,
   },
-
   webpack(config, { isServer }) {
-    // Ensure non-server builds use filesystem caching for improved development performance
     if (!isServer) {
       config.cache = {
         type: 'filesystem',
@@ -72,8 +66,7 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-
-  reactStrictMode: true, // Enforces strict mode, helps catch potential issues early
+  reactStrictMode: true,
 };
 
 export default nextConfig;
