@@ -1,6 +1,5 @@
 'use client';
 
-import { Poppins, Syne } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import './styles/globals.css';
 import { Header } from '@/components/ui/layout/header';
@@ -10,6 +9,10 @@ import WalletProvider from '@/components/ui/wallet-provider';
 import LayoutWrapper from "@/app/layout-wrapper";
 import { supabase } from '@/lib/supabase-client';
 import { useEffect, useState } from 'react';
+import { Poppins, Syne } from 'next/font/google';
+
+const syne = Syne({ subsets: ['latin'], variable: '--font-syne' });
+const poppins = Poppins({ weight: ['400', '600'], subsets: ['latin'], variable: '--font-poppins' });
 
 // Define the User type based on your Supabase table structure
 interface User {
@@ -18,9 +21,6 @@ interface User {
   name: string;
   // Add other fields from your 'users' table if necessary
 }
-
-const syne = Syne({ subsets: ['latin'], variable: '--font-syne' });
-const poppins = Poppins({ weight: ['400', '600'], subsets: ['latin'], variable: '--font-poppins' });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [userData, setUserData] = useState<User[] | null>(null);  // Specify that userData can be an array of User objects or null

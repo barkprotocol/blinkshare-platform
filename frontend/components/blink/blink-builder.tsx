@@ -3,10 +3,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { ReactElement, Key, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
 
-const BlinkMock = () => {
-  const { formData, addField } = useBlinkStore();
-  
+const BlinkForm = () => {
+  const { formData, addField, updateField, removeField } = useBlinkStore();
   const { iconUrl, title, description, fields } = formData;
 
   return (
@@ -30,25 +30,38 @@ const BlinkMock = () => {
         <p className="text-sm text-gray-400 mb-4">{description || 'Your Blink Description'}</p>
         
         {/* Dynamic Field Rendering */}
-        {fields.map((field, index) => (
-          <div key={index} className="mb-4">
-            <label className="block text-sm text-gray-300">{field.label}</label>
+        {fields.map((field, index) => {
+          // Ensure the key is valid (never null or undefined)
+          const fieldKey = index.toString(); 
 
-            {/* Dynamically render input fields based on the field type */}
-            {field.valueOf === "textarea" ? (
-              <Textarea
-                placeholder={`Enter your ${field.label}`}
-                className="text-white"
-              />
-            ) : (
-              <Input
-                placeholder={`Enter your ${field.label}`}
-                className="text-white"
-                type={field.valueOf} // Dynamically set the input type
-              />
-            )}
-          </div>
-        ))}
+          return (
+            <div key={fieldKey} className="mb-4">
+              <label className="block text-sm text-gray-300">{field.label}</label>
+
+              {/* Render Input or Textarea based on field type */}
+              {field.type === 'textarea' ? (
+                <Textarea
+                  placeholder={`Enter your ${field.label}`}
+                  className="text-white"
+                  value={field.label || ''} // Ensure value is treated as string
+                  onChange={(e) => updateField(index, e.target.value)} // Handle value update
+                />
+              ) : (
+                <Input
+                  placeholder={`Enter your ${field.label}`}
+                  className="text-white"
+                  value={field.label || ''} // Ensure value is treated as string
+                  onChange={(e) => updateField(index, e.target.value)}
+                />
+              )}
+
+              {/* Remove Field Button */}
+              <Button onClick={() => removeField(index)} className="mt-2">
+                Remove Field
+              </Button>
+            </div>
+          );
+        })}
         
         {/* Add Field Button */}
         <Button onClick={addField} className="mt-4">
@@ -59,4 +72,4 @@ const BlinkMock = () => {
   );
 };
 
-export default BlinkMock;
+export default BlinkForm;
