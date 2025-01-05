@@ -93,17 +93,20 @@ export default function ImageUpload() {
     setUploadedFiles((prev) => prev.filter((item) => item !== file));
   };
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    setFilesToUpload((prev) => [
-      ...prev,
-      ...acceptedFiles.map((file) => {
-        const cancelSource = axios.CancelToken.source();
-        uploadFileToCloudinary(file, cancelSource);
-
-        return { progress: 0, file, source: cancelSource };
-      }),
-    ]);
-  }, []);
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      setFilesToUpload((prev) => [
+        ...prev,
+        ...acceptedFiles.map((file) => {
+          const cancelSource = axios.CancelToken.source();
+          uploadFileToCloudinary(file, cancelSource);
+  
+          return { progress: 0, file, source: cancelSource };
+        }),
+      ]);
+    },
+    [uploadFileToCloudinary]
+  );  
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -155,9 +158,10 @@ export default function ImageUpload() {
                         <span className="text-xs">{fileUploadProgress.progress}%</span>
                       </div>
                       <Progress
-                        onProgress={fileUploadProgress.progress}
-                        className={getFileIconAndColor(fileUploadProgress.file).color}
+                       value={fileUploadProgress.progress}
+                       className={getFileIconAndColor(fileUploadProgress.file).color}
                       />
+                    /&gt;
                     </div>
                   </div>
                   <button

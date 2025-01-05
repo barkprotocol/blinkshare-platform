@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { jwtDecode } from 'jwt-decode';
 
 // Define the BlinkFormData interface
@@ -22,7 +22,7 @@ interface BlinkStore {
   removeField: (index: number) => void;
 }
 
-export const useBlinkStore = create<BlinkStore>((set: (arg0: { (state: any): { formData: any; }; (state: any): { formData: any; }; (state: any): { formData: any; }; (state: any): { formData: any; }; }) => any) => ({
+export const useBlinkStore = create<BlinkStore>((set) => ({
   formData: {
     title: '',
     description: '',
@@ -34,7 +34,7 @@ export const useBlinkStore = create<BlinkStore>((set: (arg0: { (state: any): { f
     font: undefined,
     image: null,
   },
-  setFormData: (key: any, value: any) =>
+  setFormData: (key, value) =>
     set((state) => ({
       formData: {
         ...state.formData,
@@ -48,7 +48,7 @@ export const useBlinkStore = create<BlinkStore>((set: (arg0: { (state: any): { f
         fields: [...state.formData.fields, { label: '', type: 'text' }],
       },
     })),
-  updateField: (index: string | number, value: any) =>
+  updateField: (index, value) =>
     set((state) => {
       const newFields = [...state.formData.fields];
       newFields[index] = { ...newFields[index], label: value };
@@ -59,9 +59,9 @@ export const useBlinkStore = create<BlinkStore>((set: (arg0: { (state: any): { f
         },
       };
     }),
-  removeField: (index: any) =>
+  removeField: (index) =>
     set((state) => {
-      const newFields = state.formData.fields.filter((_: any, i: any) => i !== index);
+      const newFields = state.formData.fields.filter((_, i) => i !== index);
       return {
         formData: {
           ...state.formData,
@@ -85,10 +85,10 @@ interface DecodedToken {
   [key: string]: any; // Other properties in the token
 }
 
-export const useUserStore = create<UserStore>((set: (arg0: { token: any; }) => void, get: () => { (): any; new(): any; token: any; }) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   token: null,
   isUserLoggedIn: () => !!get().token,
-  setToken: (token: any) => set({ token }),
+  setToken: (token) => set({ token }),
   clearUserData: () => set({ token: null }),
   checkTokenExpiry: () => {
     const token = get().token;

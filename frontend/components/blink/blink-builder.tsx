@@ -30,7 +30,7 @@ const BlinkForm = () => {
         <p className="text-sm text-gray-400 mb-4">{description || 'Your Blink Description'}</p>
         
         {/* Dynamic Field Rendering */}
-        {fields.map((field: { label: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; type: string; }, index: { toString: () => any; }) => {
+        {fields.map((field: { label: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; type: string; }, index: number) => {
           const fieldKey = index.toString();
 
           // Handle value conversion to ensure it's a valid input type
@@ -47,15 +47,15 @@ const BlinkForm = () => {
                 <Textarea
                   placeholder={`Enter your ${field.label}`}
                   className="text-white"
-                  value={fieldValue}  // Use the stringified value
-                  onChange={(e) => updateField(index, e.target.value)}  // Handle value update
+                  value={fieldValue}
+                  onChange={(e) => updateField(index, e.target.value)}
                 />
               ) : (
                 <Input
                   placeholder={`Enter your ${field.label}`}
                   className="text-white"
-                  value={fieldValue}  // Use the stringified value
-                  onChange={(e) => updateField(index, e.target.value)}  // Handle value update
+                  value={fieldValue}
+                  onChange={(e) => updateField(index, e.target.value)}
                 />
               )}
 

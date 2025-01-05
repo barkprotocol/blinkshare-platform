@@ -74,7 +74,7 @@ const RedirectComponent = () => {
     controls.start('visible');
   
     return () => clearTimeout(timer);
-  }, [callbackHandled, router, controls]);
+  }, [callbackHandled, router, controls, handleCodeCallback]); // Added handleCodeCallback to dependencies
 
   // Define the containerVariants for the animation
   const containerVariants = {
