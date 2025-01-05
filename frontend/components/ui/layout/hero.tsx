@@ -16,20 +16,21 @@ export default function Hero() {
         aria-hidden="true"
       />
       <div className="absolute inset-0 bg-black/60" aria-hidden="true"></div>
-      <div className="relative z-10 container mx-auto px-4 py-12 text-center text-white">
+      <div className="relative z-10 container mx-auto px-4 py-16 text-center text-white">
         <h2 className="text-sm sm:text-base md:text-lg font-medium mb-4 bg-gradient-to-r from-white to-gray-50 text-transparent bg-clip-text">
-          Blockchain Made Seamless
+         Empower Your Discord Community With
         </h2>
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 drop-shadow-lg">
-          Welcome to <span className="font-bold">Blink</span>
-          <span className="font-medium">Share</span>
+          <span className="font-bold">Blink</span>
+          <span className="font-medium">Share</span> Platform
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl mb-10 max-w-3xl mx-auto drop-shadow">
-          Empower your Discord communities with seamless Solana-based transactions. Share, engage, and grow with blockchain integration.
+        <p className="text-lg sm:text-xl md:text-1xl mb-10 max-w-3xl mx-auto drop-shadow">
+         Unlock the full potential of your Discord community by integrating Solana-based transactions into your Blink platform.
+         With our streamlined blockchain integration, you can effortlessly share, engage, and grow your community.
         </p>
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
           <Button asChild size="lg" className="shadow-lg hover:shadow-xl transition-shadow bg-white hover:bg-white text-black">
-            <Link href="/get-started">Get Started</Link>
+            <Link href="https://discord.com/oauth2/authorize?client_id=1324299574336290866&redirect_uri=https%3A%2F%2Fblinkshare.fun%2Fredirect&response_type=code&scope=identify+guilds">Get Started</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="shadow-lg hover:shadow-xl transition-shadow bg-white/10 hover:bg-white/20">
             <Link href="https://docs.blinkshare.fun">Documentation</Link>

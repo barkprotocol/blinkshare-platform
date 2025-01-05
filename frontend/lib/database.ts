@@ -1,4 +1,4 @@
-import { createBlink } from "@/lib/server/create-a-blink"
+import { createBlink } from "@/app/servers/create/create-a-blink"
 import { database } from "@/lib/database"
 
 // Creating a new Blink
@@ -25,3 +25,5 @@ console.log("Blink by ID:", blinkById)
 
 // Reset the database (for testing or clearing data)
 await database.reset()
+export { database }
+

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateBlink } from "@/lib/blink/generate-blink";
+import { generateBlinkId } from "@/lib/blink/generate-blink";
 
 const BlinkSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const validatedData = BlinkSchema.parse(body);
 
     // Call the function to generate the Blink
-    const blink = await generateBlink(validatedData);
+    const blink = await generateBlinkId(validatedData);
 
     // Return success response
     return NextResponse.json(

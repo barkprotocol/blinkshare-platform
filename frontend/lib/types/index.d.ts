@@ -70,14 +70,14 @@ export const handleDiscordRolePriceChange = (
   setRoleData({ ...roleData, roles: updatedRoles });
 
   const enabledRoles = updatedRoles
-    .filter((role) => role.enabled)
-    .map((role) => ({
+    .filter((role => role.enabled))
+    .map(role => ({
       id: role.id,
       name: role.name,
       amount: price,
     }));
 
-  setFormData((prev) => ({ ...prev, roles: enabledRoles }));
+  setFormData(prev => ({ ...prev, roles: enabledRoles }));
 };
 
 // ========================================
@@ -106,9 +106,9 @@ export const refreshRoles = async (
 
     // Ensure the updated role data contains the correct `blinkShareRolePosition`
     setRoleData({
-      ...roleData, // Keep the existing data
+      ...roleData,
       roles: mergedRoles,
-      blinkShareRolePosition: roleData.blinkShareRolePosition, // Ensure this property is passed
+      blinkShareRolePosition: roleData.blinkShareRolePosition,
     });
 
     setRoleErrors({}); // Clear any previous role errors
@@ -121,5 +121,5 @@ export const refreshRoles = async (
     setIsRefreshingRoles(false);
   }
 };
-export { RoleData };
 
+export { RoleData };

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+// Define the store's state and methods
 interface UserState {
   token: string | null;
   userData: any;
@@ -11,6 +12,7 @@ interface UserState {
   setDiscordDisconnected: (disconnected: boolean) => void;
 }
 
+// Create the store with Zustand
 export const useUserStore = create<UserState>((set) => ({
   token: null,
   userData: null,

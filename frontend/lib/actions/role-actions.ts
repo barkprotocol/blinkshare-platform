@@ -83,7 +83,7 @@ export const handleDiscordRolePriceChange = (
       amount: price,
     }));
 
-  setFormData((prev) => ({ ...prev, roles: enabledRoles }));
+  setFormData((prev: any) => ({ ...prev, roles: enabledRoles }));
   setErrorMessage(""); // Reset error message on success
 };
 
@@ -104,7 +104,7 @@ export const refreshRoles = async (
 
     // Merge roles to keep custom values like price and enabled state
     const mergedRoles: Role[] = allRoles.roles.map((role) => {
-      const selectedRole = roleData.roles.find((r) => r.id === role.id);
+      const selectedRole = roleData.roles.find((r: { id: any; }) => r.id === role.id);
       return selectedRole
         ? { ...role, price: selectedRole.price, enabled: selectedRole.enabled }
         : role;

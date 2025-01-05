@@ -21,11 +21,11 @@ export const generateBlinkFormData = (customData?: Partial<BlinkFormData>): Blin
   // Merge customData with the default data, ensuring fields are correctly merged
   return {
     ...defaultData,
-    ...customData,
+    ...customData,  // Merge other properties like title, description
     fields: [
       ...defaultData.fields, 
-      ...(customData?.fields || []),
-    ], // Ensure custom fields are merged properly
+      ...(customData?.fields || []), // Ensure custom fields are merged properly
+    ], // Fields should be merged to preserve default and add custom ones
   };
 };
 
@@ -45,13 +45,13 @@ export const generateUniqueBlinkTemplate = (userData: { username: string; userEm
     ],
   };
 
-  return generateBlinkFormData(customData);
+  return generateBlinkFormData(customData);  // Generate custom Blink form data
 };
 
 /**
  * Example of generating a unique ID for a Blink instance
  * @returns A unique ID string for the Blink instance.
  */
-export const generateBlinkId = (): string => {
-  return uuidv4();
+export const generateBlinkId = (validatedData: { title: string; description: string; amount: number; currency: "SOL" | "USDC" | "BARK"; memo?: string | undefined; }): string => {
+  return uuidv4();  // Generates a unique ID using uuidv4
 };

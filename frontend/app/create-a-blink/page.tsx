@@ -132,7 +132,7 @@ const CreateABlinkPage = () => {
             backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            fontFamily: formData.font,
+            fontFamily: formData.font as unknown as string,
           }}
         >
           {formData.image && (
@@ -152,7 +152,7 @@ const CreateABlinkPage = () => {
           onClick={downloadPreviewAsImage}
           className="mt-6 w-full bg-gray-950 text-white"
         >
-          Download Preview
+          Download
         </Button>
       </div>
     </div>

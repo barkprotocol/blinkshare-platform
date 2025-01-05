@@ -155,7 +155,7 @@ export default function ImageUpload() {
                         <span className="text-xs">{fileUploadProgress.progress}%</span>
                       </div>
                       <Progress
-                        Progress={fileUploadProgress.progress}
+                        onProgress={fileUploadProgress.progress}
                         className={getFileIconAndColor(fileUploadProgress.file).color}
                       />
                     </div>

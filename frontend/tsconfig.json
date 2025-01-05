@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -20,8 +20,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": ["./*"],
+      "@components/*": ["src/components/*"],
+      "@lib/*": ["lib/*"],
+      "@styles/*": ["styles/*"]
+    },
+    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",
@@ -30,9 +34,8 @@
     ".next/types/**/*.ts",
     "types",
     "/lib/types",
-    "src/components/ui/spotlight-card.jsx"
+    "src/components/ui/spotlight-card.jsx",
+    "**/*.json"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

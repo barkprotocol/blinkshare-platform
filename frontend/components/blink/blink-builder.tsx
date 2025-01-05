@@ -27,7 +27,7 @@ const BlinkMock = () => {
             <label className="block text-sm text-gray-300">{field.label}</label>
             
             {/* Render different input types based on field value */}
-            {field.value === "textarea" ? (
+            {field.valueOf === "textarea" ? (
               <Textarea
                 placeholder={`Enter your ${field.label}`}
                 className="text-white"
@@ -36,7 +36,7 @@ const BlinkMock = () => {
               <Input
                 placeholder={`Enter your ${field.label}`}
                 className="text-white"
-                type={field.value} // Dynamically set input type (text, email, etc.)
+                type={field.valueOf} // Dynamically set input type (text, email, etc.)
               />
             )}
           </div>

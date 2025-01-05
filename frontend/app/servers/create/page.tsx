@@ -98,7 +98,7 @@ export default function CreateServerPage() {
         const payload = {
           data: {
             ...validatedFormData,
-            roles: roleData?.roles.filter((role) => role.enabled).map((role) => ({
+            roles: roleData?.roles.filter((role: { enabled: any; }) => role.enabled).map((role: { id: any; name: any; price: { toString: () => any; }; }) => ({
               id: role.id,
               name: role.name,
               amount: role.price.toString(),

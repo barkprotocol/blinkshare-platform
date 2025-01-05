@@ -1,6 +1,33 @@
+import { FontFamily } from 'html2canvas/dist/types/css/property-descriptors/font-family';
 import { create } from 'zustand';
 
-interface BlinkFormData {
+// Define the store
+interface UserStore {
+  token: string | null;
+  isUserLoggedIn: () => boolean;
+  setToken: (token: string) => void;
+  clearUserData: () => void;
+  checkTokenExpiry: () => void;
+}
+
+export const useUserStore = create<UserStore>((set) => ({
+  token: null,
+  isUserLoggedIn: () => !!set.getState().token,
+  setToken: (token) => set({ token }),
+  clearUserData: () => set({ token: null }),
+  checkTokenExpiry: () => {
+    const token = set.getState().token;
+    if (token) {
+      // Logic to check token expiry (e.g., decode token and check expiry)
+      console.log("Checking token expiry...");
+    }
+  },
+}));
+
+export interface BlinkFormData {
+  image: any;
+  backgroundImage: any;
+  font: FontFamily | undefined;
   title: string;
   description: string;
   fields: string[];
@@ -28,6 +55,9 @@ export const useBlinkStore = create<BlinkStore>((set) => ({
     stylePreset: 'default',
     serverId: '',
     code: '',
+    image: undefined,
+    font: undefined,
+    backgroundImage: undefined
   },
   
   // Set form data for specific keys
@@ -82,6 +112,9 @@ export const useBlinkStore = create<BlinkStore>((set) => ({
         stylePreset: 'default',
         serverId: '',
         code: '',
+        image: undefined,
+        font: undefined,
+        backgroundImage: undefined
       },
     }),
 }));
