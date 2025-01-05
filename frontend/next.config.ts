@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
         hostname: 'ucarecdn.com', // Allow images from Ucare CDN
       },
     ],
-    domains: ['blinkshare.fun'], // Domains where SVGs be hosted
+    domains: ['blinkshare.fun'], // Domains where SVGs will be hosted
     formats: ['image/webp'], // Specify webp as an acceptable image format
   },
 
@@ -70,8 +70,11 @@ const nextConfig: NextConfig = {
   // Webpack Configuration
   webpack(config, { isServer }) {
     if (!isServer) {
-      config.cache = {
-        type: 'filesystem', // Enable filesystem caching for client-side builds
+      // Remove custom minimizers for production builds
+      config.optimization.minimizer = [];
+      // Further optimization for production (tree shaking, etc.)
+      config.optimization.splitChunks = {
+        chunks: 'all', // Split code for better caching
       };
     }
 
@@ -80,15 +83,6 @@ const nextConfig: NextConfig = {
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
-
-    // Further optimization for production (tree shaking, etc.)
-    if (!isServer) {
-      config.optimization = {
-        splitChunks: {
-          chunks: 'all', // Split code for better caching
-        },
-      };
-    }
 
     return config;
   },
