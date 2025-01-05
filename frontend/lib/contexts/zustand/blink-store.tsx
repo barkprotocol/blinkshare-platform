@@ -1,8 +1,10 @@
-import { create } from 'zustand';
+import create from 'zustand';
 import { jwtDecode } from 'jwt-decode';
 
 // Define the BlinkFormData interface
 interface BlinkFormData {
+  font: string | number | readonly string[] | undefined;
+  image: string | null;
   title: string;
   description: string;
   fields: { label: string; type: string }[];
@@ -12,15 +14,15 @@ interface BlinkFormData {
   code: string;
 }
 
-// Define the BlinkStore interface
 interface BlinkStore {
   formData: BlinkFormData;
+  setFormData: (key: keyof BlinkFormData, value: BlinkFormData[keyof BlinkFormData]) => void;
   addField: () => void;
   updateField: (index: number, value: string) => void;
   removeField: (index: number) => void;
 }
 
-export const useBlinkStore = create<BlinkStore>((set) => ({
+export const useBlinkStore = create<BlinkStore>((set: (arg0: { (state: any): { formData: any; }; (state: any): { formData: any; }; (state: any): { formData: any; }; (state: any): { formData: any; }; }) => any) => ({
   formData: {
     title: '',
     description: '',
@@ -28,33 +30,45 @@ export const useBlinkStore = create<BlinkStore>((set) => ({
     iconUrl: '',
     stylePreset: '',
     serverId: '',
-    code: ''
+    code: '',
+    font: undefined,
+    image: null,
   },
-  addField: () => set((state) => ({
-    formData: {
-      ...state.formData,
-      fields: [...state.formData.fields, { label: '', type: 'text' }],
-    },
-  })),
-  updateField: (index, value) => set((state) => {
-    const newFields = [...state.formData.fields];
-    newFields[index] = { ...newFields[index], label: value };
-    return {
+  setFormData: (key: any, value: any) =>
+    set((state) => ({
       formData: {
         ...state.formData,
-        fields: newFields,
+        [key]: value,
       },
-    };
-  }),
-  removeField: (index) => set((state) => {
-    const newFields = state.formData.fields.filter((_, i) => i !== index);
-    return {
+    })),
+  addField: () =>
+    set((state) => ({
       formData: {
         ...state.formData,
-        fields: newFields,
+        fields: [...state.formData.fields, { label: '', type: 'text' }],
       },
-    };
-  }),
+    })),
+  updateField: (index: string | number, value: any) =>
+    set((state) => {
+      const newFields = [...state.formData.fields];
+      newFields[index] = { ...newFields[index], label: value };
+      return {
+        formData: {
+          ...state.formData,
+          fields: newFields,
+        },
+      };
+    }),
+  removeField: (index: any) =>
+    set((state) => {
+      const newFields = state.formData.fields.filter((_: any, i: any) => i !== index);
+      return {
+        formData: {
+          ...state.formData,
+          fields: newFields,
+        },
+      };
+    }),
 }));
 
 // User Authentication Store
@@ -71,10 +85,10 @@ interface DecodedToken {
   [key: string]: any; // Other properties in the token
 }
 
-export const useUserStore = create<UserStore>((set, get) => ({
+export const useUserStore = create<UserStore>((set: (arg0: { token: any; }) => void, get: () => { (): any; new(): any; token: any; }) => ({
   token: null,
   isUserLoggedIn: () => !!get().token,
-  setToken: (token) => set({ token }),
+  setToken: (token: any) => set({ token }),
   clearUserData: () => set({ token: null }),
   checkTokenExpiry: () => {
     const token = get().token;

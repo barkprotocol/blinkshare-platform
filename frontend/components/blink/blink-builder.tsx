@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ReactElement, Key, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
+import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from 'react';
 
 const BlinkForm = () => {
   const { formData, addField, updateField, removeField } = useBlinkStore();
@@ -30,9 +30,13 @@ const BlinkForm = () => {
         <p className="text-sm text-gray-400 mb-4">{description || 'Your Blink Description'}</p>
         
         {/* Dynamic Field Rendering */}
-        {fields.map((field, index) => {
-          // Ensure the key is valid (never null or undefined)
-          const fieldKey = index.toString(); 
+        {fields.map((field: { label: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; type: string; }, index: { toString: () => any; }) => {
+          const fieldKey = index.toString();
+
+          // Handle value conversion to ensure it's a valid input type
+          const fieldValue = field.label === undefined || field.label === null
+            ? ''
+            : field.label.toString();  // Convert to string to avoid type errors
 
           return (
             <div key={fieldKey} className="mb-4">
@@ -43,15 +47,15 @@ const BlinkForm = () => {
                 <Textarea
                   placeholder={`Enter your ${field.label}`}
                   className="text-white"
-                  value={field.label || ''} // Ensure value is treated as string
-                  onChange={(e) => updateField(index, e.target.value)} // Handle value update
+                  value={fieldValue}  // Use the stringified value
+                  onChange={(e) => updateField(index, e.target.value)}  // Handle value update
                 />
               ) : (
                 <Input
                   placeholder={`Enter your ${field.label}`}
                   className="text-white"
-                  value={field.label || ''} // Ensure value is treated as string
-                  onChange={(e) => updateField(index, e.target.value)}
+                  value={fieldValue}  // Use the stringified value
+                  onChange={(e) => updateField(index, e.target.value)}  // Handle value update
                 />
               )}
 
