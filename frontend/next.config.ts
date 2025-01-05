@@ -97,7 +97,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   // Enabling SWC-based minification for better performance
-  swcMinify: true,
+  swcMinify: false,
 };
 
 export default nextConfig;
