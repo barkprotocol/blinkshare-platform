@@ -8,32 +8,32 @@ import { Zap, Link, CreditCard, UserCheck, BarChart3, Shield } from 'lucide-reac
 const features = [
   {
     title: "Instant Payments",
-    description: "Process Solana-based transactions instantly, providing a seamless experience for your community members.",
+    description: "Process Solana-based transactions instantly.",
     icon: Zap,
   },
   {
     title: "Custom Links",
-    description: "Create unique, branded payment links for your Discord server to streamline the subscription process.",
+    description: "Create unique, branded payment links for Discord.",
     icon: Link,
   },
   {
     title: "Flexible Subscriptions",
-    description: "Set up and manage various subscription tiers to cater to different levels of access and benefits.",
+    description: "Manage tiers for varying access and benefits.",
     icon: CreditCard,
   },
   {
-    title: "Automatic Role Assignment",
-    description: "Automatically assign Discord roles based on subscription status, saving you time and effort.",
+    title: "Auto Role Assignment",
+    description: "Assign Discord roles based on subscription status.",
     icon: UserCheck,
   },
   {
     title: "Analytics Dashboard",
-    description: "Gain insights into your community's growth and engagement with our comprehensive analytics tools.",
+    description: "Gain insights into growth and engagement.",
     icon: BarChart3,
   },
   {
     title: "Secure Transactions",
-    description: "Enjoy peace of mind with our robust security measures ensuring safe and reliable transactions.",
+    description: "Robust measures ensure safe payments.",
     icon: Shield,
   },
 ]
@@ -45,40 +45,40 @@ export function Features() {
     <section className="py-16">
       <div className="container mx-auto px-4">
         {/* Main Title */}
-        <h2 className="text-4xl font-extrabold mb-4 text-center text-black dark:text-white">
-          Our Powerful Features
+        <h2 className="text-4xl font-extrabold mb-6 text-center text-black dark:text-white">
+          Features That Empower
         </h2>
 
         {/* Main Description */}
-        <p className="text-lg text-muted-foreground dark:text-gray-300 text-center mb-10">
-          Unlock the full potential of your community with our robust set of features designed to enhance user experience, streamline processes, and provide insightful analytics.
+        <p className="text-lg text-muted-foreground dark:text-gray-400 text-center mb-12">
+          Elevate your community experience with our cutting-edge tools.
         </p>
 
         {/* Features Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <Card 
               key={index}
               className={cn(
-                "transition-all duration-300 cursor-pointer",
-                hoveredIndex === index ? "shadow-2xl scale-105" : "shadow-lg",
-                "bg-white dark:bg-black",
+                "transition-transform duration-300 cursor-pointer",
+                hoveredIndex === index ? "shadow-2xl scale-105" : "shadow-md",
+                "bg-white dark:bg-neutral-900",
                 "text-black dark:text-white",
-                "border border-gray-200 dark:border-gray-800",
-                "p-6 rounded-lg"
+                "border border-gray-200 dark:border-gray-700",
+                "p-6 rounded-xl"
               )}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <CardHeader className="flex items-center space-x-4">
-                {/* Icon with #DBCFC7 color */}
-                <feature.icon className="w-10 h-10 text-[#DBCFC7]" />
-                <CardTitle className="text-lg font-semibold text-black dark:text-white">
+                {/* Icon */}
+                <feature.icon className="w-12 h-12 text-[#DBCFC7]" />
+                <CardTitle className="text-lg font-medium">
                   {feature.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base text-muted-foreground dark:text-gray-300 leading-relaxed mt-4">
+                <CardDescription className="mt-2 text-sm text-muted-foreground dark:text-gray-400 leading-relaxed">
                   {feature.description}
                 </CardDescription>
               </CardContent>

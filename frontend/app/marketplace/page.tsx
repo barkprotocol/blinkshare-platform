@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BlinkDisplay } from "@/components/blink/blink-display";
 import { Button } from "@/components/ui/button";
 import { InfoIcon, Plus } from 'lucide-react';
@@ -93,22 +93,22 @@ const BlinkMarketplaceComponent = () => {
 
             {!code && (
               <div className="flex flex-col sm:flex-row justify-center items-center mb-6 space-y-4 sm:space-y-0 sm:space-x-6">
-                <Alert className="w-full sm:w-1/2 mx-auto text-center bg-gray-900 text-black p-4 rounded-lg shadow-md">
+                <Alert className="w-full sm:w-1/2 mx-auto text-center bg-gray-900 text-white p-4 rounded-lg shadow-md">
                   <div className="flex flex-col items-center">
                     <AlertTitle className="text-lg font-semibold flex items-center mb-4">
-                      <InfoIcon className="h-7 w-7 mr-2 text-black" />
+                      <InfoIcon className="h-7 w-7 mr-2 text-white" />
                       Discord Connection Required
                     </AlertTitle>
-                    <AlertDescription className="mt-2 text-sm text-black">
+                    <AlertDescription className="mt-2 text-sm text-gray-300">
                       BlinkShare requires you to connect your Discord in order to assign you the purchased roles.
                     </AlertDescription>
                     <Button
                       onClick={() => onConnect(false)}
-                      className="mt-4 w-48 sm:w-64 py-2 px-4 sm:px-6 rounded-full bg-gray-900 hover:bg-gray-950 text-white font-semibold shadow-lg transform transition duration-300 ease-in-out"
+                      className="mt-4 w-48 sm:w-64 py-2 px-4 sm:px-6 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg transform transition duration-300 ease-in-out"
                     >
                       <Image
                         className="mr-3 h-5 w-5"
-                        src="https://ucarecdn.com/0da96123-0acb-43a5-b3d8-571629377d1b/discord.png"
+                        src="/images/discord-icon.svg"
                         alt="Discord Logo"
                         width={20}
                         height={20}
@@ -135,7 +135,7 @@ const BlinkMarketplaceComponent = () => {
 
           <Button
             onClick={() => onConnect(true)}
-            className="fixed h-16 w-16 sm:h-auto sm:w-auto bottom-16 right-8 sm:bottom-16 sm:right-12 bg-gray-900 hover:bg-gray-950 text-white font-bold rounded-full flex items-center justify-center shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-opacity-50 z-20"
+            className="fixed h-16 w-16 sm:h-auto sm:w-auto bottom-16 right-8 sm:bottom-16 sm:right-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full flex items-center justify-center shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 z-20"
           >
             <Plus className="h-7 w-7 sm:mr-2" aria-hidden="true" />
             <span className="hidden sm:block text-lg">Add a Blink</span>
@@ -149,8 +149,9 @@ const BlinkMarketplaceComponent = () => {
 
 export default function BlinkMarketplace() {
   return (
-    <Suspense fallback={<OverlaySpinner />}>
+    <React.Suspense fallback={<OverlaySpinner />}>
       <BlinkMarketplaceComponent />
-    </Suspense>
+    </React.Suspense>
   );
 }
+

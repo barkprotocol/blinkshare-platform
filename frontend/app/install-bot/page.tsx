@@ -6,6 +6,7 @@ import Redirect from "../redirect/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { toast } from "sonner";
 
 export default function InstallBot() {
   const router = useRouter();
@@ -13,27 +14,19 @@ export default function InstallBot() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Ensure window-related code runs only in the browser
-    if (typeof window === "undefined") return;
-
     const installBot = async () => {
       try {
         const url = new URL(window.location.href);
         const redirect = url.searchParams.get("redirect") === "true";
         const guild_id = url.searchParams.get("guild_id");
 
-        // Load environment variables
         const DISCORD_CLIENT_ID = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
         const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
-        // Validate required environment variables
         if (!DISCORD_CLIENT_ID || !APP_BASE_URL) {
-          throw new Error(
-            "Missing required environment variables: DISCORD_CLIENT_ID or APP_BASE_URL."
-          );
+          throw new Error("Missing required environment variables: DISCORD_CLIENT_ID or APP_BASE_URL.");
         }
 
-        // Construct Discord OAuth URL
         const baseUrl = new URL("https://discord.com/oauth2/authorize");
         baseUrl.searchParams.set("client_id", DISCORD_CLIENT_ID);
         baseUrl.searchParams.set("permissions", "268463105");
@@ -49,11 +42,12 @@ export default function InstallBot() {
           baseUrl.searchParams.set("response_type", "code");
         }
 
-        // Redirect user to Discord OAuth
         await router.push(baseUrl.toString());
       } catch (err) {
-        console.error("Error in Install Bot:", err);
-        setError(err instanceof Error ? err.message : "An unknown error occurred");
+        console.error("Error in InstallBot:", err);
+        const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -64,12 +58,9 @@ export default function InstallBot() {
 
   if (isLoading) {
     return (
-      <div
-        className="flex items-center justify-center h-screen"
-        aria-live="polite"
-        aria-busy="true"
-      >
-        <Skeleton className="w-[300px] h-[20px]" />
+      <div className="flex flex-col items-center justify-center h-screen" aria-live="polite" aria-busy="true">
+        <Skeleton className="w-[300px] h-[20px] mb-4" />
+        <Skeleton className="w-[200px] h-[20px]" />
         <span className="sr-only">Loading bot installation page...</span>
       </div>
     );
@@ -78,7 +69,7 @@ export default function InstallBot() {
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="max-w-md">
           <InfoCircledIcon className="h-4 w-4" aria-hidden="true" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
@@ -89,3 +80,4 @@ export default function InstallBot() {
 
   return <Redirect />;
 }
+

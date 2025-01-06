@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useEffect, useState, useContext, Suspense } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useUserStore } from '@/lib/contexts/zustand/user-store';
 import { ThemeContext } from '@/lib/contexts/theme-provider';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { toast } from 'sonner';
 
 const RedirectComponent = () => {
   const router = useRouter();
@@ -15,7 +16,6 @@ const RedirectComponent = () => {
   const { isDark } = useContext(ThemeContext);
   const { setToken, setUserData, setDiscordConnected, setDiscordDisconnected } = useUserStore();
   
-  // Initialize searchParams on the client side
   const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
 
   const handleCodeCallback = async (code: string, state: string | null) => {
@@ -40,6 +40,7 @@ const RedirectComponent = () => {
         localStorage.setItem('discordToken', data.token);
         localStorage.setItem('guilds', JSON.stringify(data.guilds));
         setUserData(data);
+        toast.success('Successfully connected to Discord!');
       } else if (state) {
         localStorage.setItem('state', state);
       }
@@ -48,13 +49,13 @@ const RedirectComponent = () => {
     } catch (error) {
       console.error('Error in handleCodeCallback:', error);
       setDiscordDisconnected(true);
+      toast.error('Failed to connect to Discord. Please try again.');
     } finally {
       setCallbackHandled(true);
     }
   };
 
   useEffect(() => {
-    // Initialize searchParams on the client side
     const params = new URLSearchParams(window.location.search);
     setSearchParams(params);
   
@@ -63,7 +64,10 @@ const RedirectComponent = () => {
   
     if (!code) {
       router.push('/error');
-    } else if (code && !callbackHandled) {
+      return;
+    }
+
+    if (code && !callbackHandled) {
       handleCodeCallback(code, state);
     }
   
@@ -74,9 +78,8 @@ const RedirectComponent = () => {
     controls.start('visible');
   
     return () => clearTimeout(timer);
-  }, [callbackHandled, router, controls, handleCodeCallback]); // Added handleCodeCallback to dependencies
+  }, [callbackHandled, router, controls]);
 
-  // Define the containerVariants for the animation
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

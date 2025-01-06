@@ -11,7 +11,11 @@ import { supabase } from "@/lib/supabase-client";
 import { Syne, Poppins } from "next/font/google";
 
 const syne = Syne({ subsets: ["latin"], variable: "--font-syne" });
-const poppins = Poppins({ weight: ["400", "600"], subsets: ["latin"], variable: "--font-poppins" });
+const poppins = Poppins({
+  weight: ["400", "600"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
+});
 
 interface User {
   id: string;
@@ -27,12 +31,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       try {
         const { data, error } = await supabase.from("users").select("*");
         if (error) {
-          console.error("Error fetching user data:", error);
+          console.error("Error fetching user data:", error.message);
         } else {
-          setUserData(data);
+          setUserData(data || []);
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Unexpected error fetching user data:", error);
       }
     };
 
@@ -42,11 +46,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${syne.variable} ${poppins.variable}`} suppressHydrationWarning>
       <Head>
-        <title>Default Title</title>
-        <meta name="description" content="Default description" />
-        <meta property="og:title" content="Default Title" />
-        <meta property="og:description" content="Default description" />
-        <meta property="og:image" content="/default-og-image.png" />
+        <title>Blink Share | Community Experience Redefined</title>
+        <meta
+          name="description"
+          content="Enhance your community experience with Blink Share's robust tools for payments, analytics, and management."
+        />
+        <meta property="og:title" content="Blink Share | Community Tools" />
+        <meta
+          property="og:description"
+          content="Seamless Solana-based transactions, insightful analytics, and role management for your community."
+        />
+        <meta property="og:image" content="/assets/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href="https://blinkshare.fun" />
@@ -55,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <WalletProvider>
             <Header />
-            <main className="flex-grow w-full">{children}</main>
+            <main className="flex-grow w-full px-0 md:px-8 lg:px-0 py-0">{children}</main>
             <Footer />
           </WalletProvider>
         </ThemeProvider>
