@@ -88,7 +88,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-4">
           <WalletButton />
           <Button asChild className="text-white bg-black border border-white hover:bg-gray-900 hover:text-gray-100 transition-colors duration-200">
-            <Link href="/create-blink">Create a Blink</Link>
+            <Link href="https://raydium.io/swap/?inputMint=sol&outputMint=2NTvEssJ2i998V2cMGT4Fy3JhyFnAzHFonDo9dbAkVrg">Buy BARK</Link>
           </Button>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-black/90 text-[#DBCFC7] p-4 space-y-4"
+            className="md:hidden bg-black/90 text-white p-4 space-y-4"
           >
             {navItems.map((item) => (
               <Link 
@@ -117,7 +117,7 @@ export default function Navbar() {
               <WalletButton />
             </div>
             <Button asChild className="w-full text-white bg-black border border-white hover:bg-gray-900 hover:text-gray-100 transition-colors duration-200">
-              <Link href="/create-a-blink" onClick={closeMenu}>Create a Blink</Link>
+              <Link href="https://raydium.io/swap/?inputMint=sol&outputMint=2NTvEssJ2i998V2cMGT4Fy3JhyFnAzHFonDo9dbAkVrg" onClick={closeMenu}>Buy BARK</Link>
             </Button>
           </motion.div>
         )}
