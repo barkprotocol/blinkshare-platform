@@ -69,7 +69,7 @@ export default function TransitionsModal() {
               components to the BARK Protocol´s Solana dApp Scaffold.
             </Typography>
             <Button
-              href="https://github.com/bark-protocol/olana-dapp-scaffold"
+              href="https://github.com/bark-protocol/bark-dapp-scaffold"
               target="__blank"
               variant="outlined"
               color="secondary"

@@ -29,7 +29,7 @@
 ## Installation and Setup
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) >= 18
+- [Node.js](https://nodejs.org/) >= 20
 - [pnpm](https://pnpm.io/) installed globally
 - Solana CLI installed locally
 - Supabase project set up ([Supabase Documentation](https://supabase.com/docs))
@@ -37,7 +37,7 @@
 ### Clone the Repository
 ```bash
 git clone https://github.com/your-repo/blinkshare.git
-cd blinkshare
+cd frontend
 ```
 
 ### Install Dependencies
@@ -73,7 +73,7 @@ The app will be running at `http://localhost:3000`.
 ---
 
 ## BlinkShare Bot
-### Adding the Bot to Your Discord Server
+****Adding the Bot to Your Discord Server**
 1. Visit [BlinkShare Bot Invite Link](#).
 2. Select your server and grant the necessary permissions.
 3. Configure the bot using `/blinksetup` for roles and `/blinklink` for Solana wallet linking.
