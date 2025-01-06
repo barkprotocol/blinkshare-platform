@@ -30,7 +30,7 @@ export default function Hero() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
           <Button asChild size="lg" className="shadow-lg hover:shadow-xl transition-shadow bg-white hover:bg-white text-black">
-            <Link href="https://discord.com/oauth2/authorize?client_id=1324299574336290866&redirect_uri=https%3A%2F%2Fblinkshare.fun%2Fredirect&response_type=code&scope=identify+guilds">Get Started</Link>
+            <Link href="https://discord.com/oauth2/authorize?client_id=1324299574336290866">Get Started</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="shadow-lg hover:shadow-xl transition-shadow bg-white/10 hover:bg-white/20">
             <Link href="https://docs.blinkshare.fun">Documentation</Link>
