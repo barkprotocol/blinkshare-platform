@@ -1,93 +1,112 @@
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
-import { DiscordRole } from "@/lib/types";
+import { DiscordRole } from "@/lib/types/discord-role";
 
-// Define response interface for roles fetch
-interface RolesResponse {
-  roles: DiscordRole[];
-  blinkShareRolePosition: number;
-  [key: string]: number | DiscordRole[];
-}
+// Utility to retrieve the token
+const getToken = (): string | null => {
+  const token = useUserStore.getState().token;
+  
+  // Check if token is a valid string, otherwise return null
+  if (typeof token === 'string' && token) {
+    return token;
+  }
 
-// Fetch roles for a given guild with enhanced error handling
-export const fetchRoles = async (guildId: string): Promise<RolesResponse> => {
-  const token = typeof window !== 'undefined' 
-    ? useUserStore.getState().token || localStorage.getItem("discordToken")
-    : null;
+  // Fallback to retrieving token from localStorage if it's not available in the store
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("discordToken");
+  }
+
+  return null;
+};
+
+// Fetch roles for a given guild
+export const fetchRoles = async (
+  guildId: string
+): Promise<{ roles: DiscordRole[]; blinkShareRolePosition: number }> => {
+  const token = getToken();
 
   if (!token) {
     console.error("No authorization token found.");
-    throw new Error("Authorization token is missing");
+    return { roles: [], blinkShareRolePosition: -1 };
+  }
+
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!apiBaseUrl) {
+    console.error("API base URL is missing.");
+    return { roles: [], blinkShareRolePosition: -1 };
   }
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/guilds/${guildId}/roles`,
-      { 
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        } 
+      `${apiBaseUrl}/discord/guilds/${guildId}/roles`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error(
+        `Failed to fetch roles for guild ${guildId}: ${response.status} - ${response.statusText}`,
+        errorText
+      );
+      return { roles: [], blinkShareRolePosition: -1 };
     }
 
-    const data: RolesResponse = await response.json();
+    const data = await response.json();
 
-    // Validate the roles data structure
     if (!Array.isArray(data.roles)) {
-      throw new Error("Invalid response format: roles is not an array");
+      console.error("Invalid response format: 'roles' is not an array.");
+      return { roles: [], blinkShareRolePosition: -1 };
     }
 
-    return data;
+    return {
+      roles: data.roles,
+      blinkShareRolePosition: data.blinkShareRolePosition ?? -1,
+    };
   } catch (error) {
-    console.error(`Error fetching roles for guild ${guildId}:`, error);
-    throw error; // rethrow the error after logging it
+    console.error(`Error fetching roles for guild ${guildId}`, error);
+    return { roles: [], blinkShareRolePosition: -1 };
   }
 };
 
-// Define response interface for creating an embedded wallet
-interface EmbeddedWalletResponse {
-  success: boolean;
-  error?: string;
-}
-
-// Create an embedded wallet for a Discord user with added checks
+// Create an embedded wallet for a Discord user
 export const createEmbeddedWallet = async (
   accessToken: string,
   discordUserId: string,
   address: string
-): Promise<EmbeddedWalletResponse> => {
-  if (!accessToken || !discordUserId || !address) {
-    throw new Error("Missing required parameters");
+): Promise<{ success: boolean; error?: string }> => {
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!apiBaseUrl) {
+    console.error("API base URL is missing.");
+    return { success: false, error: "API base URL is not configured." };
   }
 
   try {
+    const payload = { discordUserId, address };
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/discord/embedded-wallet`,
+      `${apiBaseUrl}/discord/embedded-wallet`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ discordUserId, address }),
+        body: JSON.stringify(payload),
       }
     );
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      console.error(
+        `Failed to create embedded wallet: ${response.status} - ${response.statusText}`,
+        errorData
+      );
+      return { success: false, error: errorData.error || "Unknown error occurred." };
     }
 
     return { success: true };
   } catch (error) {
-    console.error(`Error creating embedded wallet for user ${discordUserId}:`, error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : String(error)
-    };
+    console.error(`Error creating embedded wallet`, error);
+    return { success: false, error: `${error}` };
   }
 };

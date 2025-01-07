@@ -1,41 +1,48 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "target": "es6", // ES6 for better compatibility with modern JavaScript
+    "lib": [
+      "dom",                // DOM library for web APIs
+      "dom.iterable",       // Iterable DOM APIs
+      "esnext",              // Latest ECMAScript features
+      "webworker",           // Web Worker API support    
+      "scripthost"           // Script host APIs (Windows Script Host, etc.)
+    ],
+    "baseUrl": ".", // Base directory for non-relative imports
+    "allowJs": true, // Allow JavaScript files to be imported
+    "skipLibCheck": true, // Skip type checking of declaration files for faster builds
+    "strict": true, // Enable strict type-checking options
+    "forceConsistentCasingInFileNames": true, // Ensure file name casing consistency
+    "noEmit": true, // Prevent emitting output (useful for type-checking)
+    "esModuleInterop": true, // Enables compatibility with CommonJS-style modules
+    "module": "esnext", // Use the latest ECMAScript module syntax
+    "moduleResolution": "node", // Use Node's module resolution strategy
+    "resolveJsonModule": true, // Allow importing JSON files as modules
+    "isolatedModules": true, // Ensures every file can be safely transpiled independently
+    "jsx": "preserve", // Preserve JSX syntax for Next.js to handle
+    "incremental": true, // Enable incremental compilation for faster builds
     "plugins": [
       {
-        "name": "next"
+        "name": "next" // Ensure the "next" plugin is used for Next.js support
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@components/*": ["src/components/*"],
-      "@lib/*": ["lib/*"],
-      "@styles/*": ["styles/*"]
+      "@/*": ["./*"] // Alias '@' to refer to the root directory (useful for cleaner imports)
     },
-    "baseUrl": "."
+    "types": [
+      "node",         // Node.js types for backend support
+      "react",        // React types for JSX/TSX support
+      "next",         // Next.js types for Next.js-specific features
+      "jest"          // Jest types for testing support
+    ]
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "types",
-    "/lib/types",
-    "src/components/ui/spotlight-card.jsx",
-    "**/*.json"
+    "next-env.d.ts", // Include Next.js environment types
+    "**/*.ts", // Include TypeScript files
+    "**/*.tsx", // Include TypeScript React files
+    ".next/types/**/*.ts" // Include Next.js types
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules" // Exclude node_modules from compilation
+  ]
 }

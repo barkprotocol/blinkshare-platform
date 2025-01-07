@@ -1,0 +1,129 @@
+datasource db {
+  provider = "postgresql"  // Change this to your actual database provider
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique
+  email       String    @unique
+  passwordHash String
+  discordId   String    @unique
+  telegramId  String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  servers     Server[]
+  roles       UserRole[]
+  transactions Transaction[]
+}
+
+model Server {
+  id          Int       @id @default(autoincrement())
+  name        String
+  discordId   String    @unique
+  userId      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  roles       UserRole[]
+  botInteractions DiscordBotInteraction[]
+  botEvents   DiscordBotEvent[]
+}
+
+model Guild {
+  guildId     String    @id
+  guildName   String
+  guildOwnerId String
+  createdAt   DateTime  @default(now())
+}
+
+model Airdrop {
+  id        Int       @id @default(autoincrement())
+  blinkId   Int
+  userId    Int
+  amount    Int
+  status    String    @default("pending")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id              Int       @id @default(autoincrement())
+  blinkId         Int
+  fromUserId      Int
+  toUserId        Int
+  amount          Int
+  transactionType String?
+  status          String    @default("pending")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  fromUser        User      @relation("TransactionFromUser", fields: [fromUserId], references: [id])
+  toUser          User      @relation("TransactionToUser", fields: [toUserId], references: [id])
+}
+
+model UserRole {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  serverId  Int
+  role      String
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  server    Server    @relation(fields: [serverId], references: [id])
+}
+
+model DiscordBotInteraction {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  serverId  Int
+  command   String
+  response  String?
+  timestamp DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  server    Server    @relation(fields: [serverId], references: [id])
+}
+
+model TelegramBotInteraction {
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  command         String
+  response        String?
+  telegramChatId  String
+  timestamp       DateTime  @default(now())
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+model DiscordBotEvent {
+  id        Int       @id @default(autoincrement())
+  eventType String
+  serverId  Int
+  userId    Int
+  data      Json?
+  timestamp DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  server    Server    @relation(fields: [serverId], references: [id])
+}
+
+model TelegramBotEvent {
+  id              Int       @id @default(autoincrement())
+  eventType       String
+  telegramChatId  String
+  userId          Int
+  data            Json?
+  timestamp       DateTime  @default(now())
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+model Wallet {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  walletAddress String
+  network       String    @default("solana")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User      @relation(fields: [userId], references: [id])
+}

@@ -7,8 +7,9 @@ import { Header } from "@/components/ui/layout/header";
 import Footer from "@/components/ui/layout/footer";
 import Head from "next/head";
 import WalletProvider from "@/components/ui/wallet-provider";
-import { supabase } from "@/lib/supabase-client";
 import { Syne, Poppins } from "next/font/google";
+import { useRouter } from 'next/navigation';
+import { toast } from "sonner";
 
 const syne = Syne({ subsets: ["latin"], variable: "--font-syne" });
 const poppins = Poppins({
@@ -17,41 +18,34 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [userData, setUserData] = useState<User[] | null>(null);
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+  const router = useRouter();
+
+  const [isPrivyAppIdMissing, setPrivyAppIdMissing] = useState(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const { data, error } = await supabase.from("users").select("*");
-        if (error) {
-          console.error("Error fetching user data:", error.message);
-        } else {
-          setUserData(data || []);
-        }
-      } catch (error) {
-        console.error("Unexpected error fetching user data:", error);
-      }
-    };
+    if (!privyAppId) {
+      console.error("Privy app ID is missing. Please set NEXT_PUBLIC_PRIVY_APP_ID in your environment variables.");
+      toast.error("Configuration error. Please contact support.");
+      setPrivyAppIdMissing(true);
+      router.push('/support');
+    }
+  }, [privyAppId, router]);
 
-    fetchUserData();
-  }, []);
+  if (isPrivyAppIdMissing) {
+    return null;
+  }
 
   return (
     <html lang="en" className={`${syne.variable} ${poppins.variable}`} suppressHydrationWarning>
       <Head>
-        <title>Blink Share | Community Experience Redefined</title>
+        <title>BlinkShare | Community Experience Redefined</title>
         <meta
           name="description"
-          content="Enhance your community experience with Blink Share's robust tools for payments, analytics, and management."
+          content="Enhance your community experience with BlinkShare's robust tools for payments, analytics, and management."
         />
-        <meta property="og:title" content="Blink Share | Community Tools" />
+        <meta property="og:title" content="BlinkShare | Community Tools" />
         <meta
           property="og:description"
           content="Seamless Solana-based transactions, insightful analytics, and role management for your community."

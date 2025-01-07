@@ -13,10 +13,14 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const network = WalletAdapterNetwork.Mainnet; // Or use devnet/testnet as required
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  // Define available wallets
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter({ network }),
+      // Optionally, add more wallets such as Backpack:
+      // new BackpackWalletAdapter(),
     ],
     [network]
   );

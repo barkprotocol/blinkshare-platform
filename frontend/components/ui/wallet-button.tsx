@@ -14,6 +14,8 @@ export const WalletButton: FC = () => {
     useEffect(() => {
         if (connected) {
             toast.success('Wallet connected successfully!');
+        } else {
+            toast.info('Wallet disconnected.');
         }
     }, [connected]);
 
@@ -65,4 +67,3 @@ export const WalletButton: FC = () => {
         </div>
     );
 };
-

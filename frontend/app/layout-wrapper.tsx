@@ -5,11 +5,7 @@ import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
-import ContextProvider from "@/lib/contexts/context-provider";
+import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { ThemeProvider } from "@/lib/contexts/theme-provider";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { ErrorBoundary } from "@/components/error-boundary";
@@ -17,7 +13,7 @@ import { toast } from "sonner";
 
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-type LayoutWrapperProps = { children: React.ReactNode; };
+type LayoutWrapperProps = { children: React.ReactNode };
 
 const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
   const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -40,25 +36,23 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <ContextProvider>
-              <ThemeProvider>
-                <PrivyProvider
-                  appId={privyAppId}
-                  config={{
-                    appearance: {
-                      landingHeader: 'Sign in with Discord',
-                      showWalletLoginFirst: false,
-                      walletChainType: "solana-only",
-                      walletList: ["detected_solana_wallets", "phantom"]
-                    },
-                    loginMethods: ["discord"],
-                    embeddedWallets: { createOnLogin: "all-users" },
-                  }}
-                >
-                  {children}
-                </PrivyProvider>
-              </ThemeProvider>
-            </ContextProvider>
+            <ThemeProvider>
+              <PrivyProvider
+                appId={privyAppId}
+                config={{
+                  appearance: {
+                    landingHeader: 'Sign in with Discord',
+                    showWalletLoginFirst: false,
+                    walletChainType: "solana-only",
+                    walletList: ["detected_solana_wallets", "phantom"],
+                  },
+                  loginMethods: ["discord"],
+                  embeddedWallets: { createOnLogin: "all-users" },
+                }}
+              >
+                {children}
+              </PrivyProvider>
+            </ThemeProvider>
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>

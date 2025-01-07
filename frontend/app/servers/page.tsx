@@ -25,14 +25,29 @@ interface Guild {
 export default function Servers() {
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [isFetchingGuilds, setIsFetchingGuilds] = useState(false);
+  const [loading, setLoading] = useState<{ [guildId: string]: boolean }>({});
+  const [error, setError] = useState<string | null>(null); // Error state
   const router = useRouter();
   const discordConnected = useUserStore((state) => state.discordConnected);
   const { isDark } = useContext(ThemeContext);
-  const [loading, setLoading] = useState<{ [guildId: string]: boolean }>({});
 
-  const handleConfigureClick = (guildId: string, guildName: string, guildImage: string | null) => {
-    setLoading((prev) => ({ ...prev, [guildId]: true }));
-    handleServerSelect(guildId, guildName, guildImage);
+  const fetchGuilds = async () => {
+    setIsFetchingGuilds(true);
+    setError(null); // Reset error state before fetching
+    const userData = useUserStore.getState().userData;
+
+    try {
+      if (userData?.guilds) {
+        setGuilds(userData.guilds.sort((a: Guild, b: Guild) => a.name.localeCompare(b.name)));
+      } else {
+        throw new Error("No guild data available.");
+      }
+    } catch (error) {
+      setError("Failed to fetch guilds. Please try again.");
+      console.error("Error fetching guilds:", error);
+    } finally {
+      setIsFetchingGuilds(false);
+    }
   };
 
   useEffect(() => {
@@ -50,20 +65,9 @@ export default function Servers() {
         }
       }
 
-      // Updated handleConnectDiscord callback to return a Promise<void>
       handleConnectDiscord(() => fetchGuilds());
     }
   }, [discordConnected]);
-
-  const fetchGuilds = async () => {
-    setIsFetchingGuilds(true);
-    const userData = useUserStore.getState().userData;
-
-    if (userData?.guilds) {
-      setGuilds(userData.guilds.sort((a: Guild, b: Guild) => a.name.localeCompare(b.name)));
-    }
-    setIsFetchingGuilds(false);
-  };
 
   const handleServerSelect = async (
     guildId: string,
@@ -96,6 +100,7 @@ export default function Servers() {
         router.push(`/servers/${guildId}/create`);
       }
     } catch (error) {
+      setError("Error selecting the server. Please try again.");
       console.error("Error during server selection:", error);
       setLoading((prev) => ({ ...prev, [guildId]: false }));
     }
@@ -232,22 +237,27 @@ export default function Servers() {
   return (
     <div className="px-4 py-8 sm:px-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-800">Your Servers</h1>
-        <p className="text-lg text-gray-500 mt-2">Select a server to configure or create a new one.</p>
+        <h1 className="text-3xl font-bold text-gray-800">Insufficient Permissions: You Need Admin or Owner Access</h1>
+        <p className="text-lg text-gray-600">It seems like you're not currently an owner or admin of this guild. Please ensure that your Discord permissions are correct or consider creating a new server to proceed..</p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-        {guilds.length === 0 ? (
-          <div className="col-span-full text-center">
-            {isFetchingGuilds ? (
-              <LoadingSpinner />
-            ) : (
-              <p className="text-lg text-gray-500">No servers found. Connect your Discord to view them!</p>
-            )}
-          </div>
-        ) : (
-          guilds.map(renderGuildCard)
-        )}
-      </div>
+
+      {error && (
+        <div className="text-red-500 text-center my-4">{error}</div>
+      )}
+
+      {isFetchingGuilds || !guilds.length ? (
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <div className="grid gap-8 mt-8 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">
+          {guilds.map((guild, index) => renderGuildCard(guild, index))}
+        </div>
+      )}
     </div>
   );
 }
+function handleConfigureClick(id: string, name: string, image: string | null): void {
+  throw new Error("Function not implemented.");
+}
+

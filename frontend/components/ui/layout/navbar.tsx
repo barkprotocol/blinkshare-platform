@@ -6,12 +6,12 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { WalletButton } from '@/components/ui/wallet-button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cog, Store, MessageCircle, User, HelpCircle } from 'lucide-react';
+import { Home, Store, User } from 'lucide-react';
 import { FaDiscord } from 'react-icons/fa';
 
 const navItems = [
-  { href: "/#features", icon: Cog, label: "Features" },
-  { href: "/marketplace", icon: Store, label: "Marketplace" },
+  { href: "/", icon: Home, label: "Home" },
+  { href: "/servers", icon: Store, label: "Marketplace" },
   { href: "https://discord.gg/invite/CjUeKEB7b6", icon: FaDiscord, label: "Discord" },
   { href: "/my-blinks", icon: User, label: "My Blinks" },
 ];
@@ -20,6 +20,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Scroll effect for navbar
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -30,12 +31,12 @@ export default function Navbar() {
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header className={`w-full py-4 px-6 fixed top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-sm' : 'bg-transparent'}`}>
       <div className="container mx-auto flex justify-between items-center">
+        {/* Logo and title */}
         <Link href="/" className="flex items-center space-x-2">
           <Image
             src="https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"
@@ -87,7 +88,7 @@ export default function Navbar() {
         {/* Desktop Action Buttons */}
         <div className="hidden md:flex items-center space-x-4">
           <WalletButton />
-          <Button asChild className="text-white bg-black border border-white hover:bg-gray-900 hover:text-gray-100 transition-colors duration-200">
+          <Button asChild className="text-white bg-black border border-white hover:bg-gray-900 hover:text-white transition-colors duration-200">
             <Link href="https://raydium.io/swap/?inputMint=sol&outputMint=2NTvEssJ2i998V2cMGT4Fy3JhyFnAzHFonDo9dbAkVrg">Buy BARK</Link>
           </Button>
         </div>
@@ -125,4 +126,3 @@ export default function Navbar() {
     </header>
   );
 }
-

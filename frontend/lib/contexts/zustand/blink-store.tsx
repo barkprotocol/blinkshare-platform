@@ -1,13 +1,9 @@
 import { create } from 'zustand';
-import { jwtDecode } from 'jwt-decode';
 
-// Define the BlinkFormData interface
 interface BlinkFormData {
-  font: string | number | readonly string[] | undefined;
-  image: string | null;
   title: string;
   description: string;
-  fields: { label: string; type: string }[];
+  fields: string[];
   iconUrl: string;
   stylePreset: string;
   serverId: string;
@@ -16,42 +12,52 @@ interface BlinkFormData {
 
 interface BlinkStore {
   formData: BlinkFormData;
-  setFormData: (key: keyof BlinkFormData, value: BlinkFormData[keyof BlinkFormData]) => void;
+  setFormData: (key: keyof BlinkFormData, value: string | string[]) => void;
   addField: () => void;
-  updateField: (index: number, value: string) => void;
   removeField: (index: number) => void;
+  updateFieldLabel: (index: number, label: string) => void;
+  validateForm: () => boolean;
 }
 
 export const useBlinkStore = create<BlinkStore>((set) => ({
   formData: {
     title: '',
     description: '',
-    fields: [],
+    fields: ['Field 1'],
     iconUrl: '',
-    stylePreset: '',
+    stylePreset: 'default',
     serverId: '',
     code: '',
-    font: undefined,
-    image: null,
   },
   setFormData: (key, value) =>
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        [key]: value,
-      },
-    })),
+    set((state) => {
+      // Simple validation for title and description
+      if ((key === 'title' || key === 'description') && !value) {
+        console.error(`${key} cannot be empty`);
+        return state;
+      }
+      return {
+        formData: { ...state.formData, [key]: value },
+      };
+    }),
   addField: () =>
     set((state) => ({
       formData: {
         ...state.formData,
-        fields: [...state.formData.fields, { label: '', type: 'text' }],
+        fields: [...state.formData.fields, `Field ${state.formData.fields.length + 1}`],
       },
     })),
-  updateField: (index, value) =>
+  removeField: (index) =>
+    set((state) => ({
+      formData: {
+        ...state.formData,
+        fields: state.formData.fields.filter((_, i) => i !== index),
+      },
+    })),
+  updateFieldLabel: (index, label) =>
     set((state) => {
       const newFields = [...state.formData.fields];
-      newFields[index] = { ...newFields[index], label: value };
+      newFields[index] = label;
       return {
         formData: {
           ...state.formData,
@@ -59,54 +65,12 @@ export const useBlinkStore = create<BlinkStore>((set) => ({
         },
       };
     }),
-  removeField: (index) =>
-    set((state) => {
-      const newFields = state.formData.fields.filter((_, i) => i !== index);
-      return {
-        formData: {
-          ...state.formData,
-          fields: newFields,
-        },
-      };
-    }),
-}));
-
-// User Authentication Store
-interface UserStore {
-  token: string | null;
-  isUserLoggedIn: () => boolean;
-  setToken: (token: string) => void;
-  clearUserData: () => void;
-  checkTokenExpiry: () => void;
-}
-
-interface DecodedToken {
-  exp: number; // Expiry timestamp in seconds
-  [key: string]: any; // Other properties in the token
-}
-
-export const useUserStore = create<UserStore>((set, get) => ({
-  token: null,
-  isUserLoggedIn: () => !!get().token,
-  setToken: (token) => set({ token }),
-  clearUserData: () => set({ token: null }),
-  checkTokenExpiry: () => {
-    const token = get().token;
-    if (token) {
-      try {
-        const decoded: DecodedToken = jwtDecode(token); // Decode the token
-        const expiry = decoded.exp * 1000; // Convert expiry time to milliseconds
-        const now = Date.now();
-        
-        if (now > expiry) {
-          console.log("Token has expired.");
-          set({ token: null }); // Clear expired token
-        } else {
-          console.log("Token is still valid.");
-        }
-      } catch (error) {
-        console.error("Failed to decode token:", error);
-      }
+  validateForm: () => {
+    const { title, description } = set.getState().formData;
+    if (!title || !description) {
+      console.error('Title and description are required.');
+      return false;
     }
+    return true;
   },
 }));

@@ -54,6 +54,7 @@ export default function GetStartedButton({
     } catch (error) {
       // We handled the error in the handleConnectDiscord function already.
       // This is just to ensure state is reset if needed.
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -71,6 +72,7 @@ export default function GetStartedButton({
       )}
       disabled={loading}
       aria-label={loading ? "Connecting to Discord..." : "Get Started with Discord"}
+      title="Click to connect your Discord account."
     >
       {loading ? (
         <Loader className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />

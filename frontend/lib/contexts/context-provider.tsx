@@ -30,16 +30,15 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children
     return availableWallets;
   }, []);
 
+  // Error handling function for wallet-related errors
   const onError = useCallback((error: WalletError) => {
-    // Log the error and show feedback to the user
     console.error("Wallet error:", error);
-    // Display an error toast or alert
     toast.error(`Wallet error: ${error.message || "Unknown error"}`);
   }, []);
 
   return (
     <ConnectionProvider endpoint={process.env.NEXT_PUBLIC_HELIUS_URL || "https://api.mainnet-beta.solana.com"}>
-      <WalletProvider wallets={wallets} onError={onError} autoConnect={false}>
+      <WalletProvider wallets={wallets} onError={onError} autoConnect={true}>
         <ReactUIWalletModalProvider>{children}</ReactUIWalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

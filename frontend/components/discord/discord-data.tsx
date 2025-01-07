@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DISCORD_API_BASE_URL } from '@/lib/constants';
+import { DISCORD_API_BASE_URL } from '@/lib/actions/constants';
 
 const fetchDiscordData = async () => {
   const response = await fetch(`${DISCORD_API_BASE_URL}/discord-endpoint`);

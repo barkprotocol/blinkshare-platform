@@ -1,6 +1,5 @@
-'use client';
+"use client";
 
-import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { ServerFormSkeleton } from "@/components/skeletons/server-form";
@@ -23,7 +22,7 @@ import {
   handleDiscordRolePriceChange,
   refreshRoles,
 } from "./form-common";
-import { HelpTooltip } from "../ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { SpinnerSvg } from "../loading";
 
 // Dynamically load WalletMultiButton for client-side rendering
@@ -132,7 +131,14 @@ function ServerFormEdit({
         <div>
           <div className="flex items-center">
             <Label htmlFor="notificationChannelId" className="mr-2">Notifications Channel (optional)</Label>
-            {HelpTooltip("Notifications for new role purchases will be sent to this channel on your Discord server")}
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="cursor-pointer">?</span>
+              </TooltipTrigger>
+              <TooltipContent>
+                Notifications for new role purchases will be sent to this channel on your Discord server.
+              </TooltipContent>
+            </Tooltip>
           </div>
           <select
             id="notificationChannelId"
@@ -160,7 +166,7 @@ function ServerFormEdit({
           disabled={isLoading}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300 }}
-          className="flex items-center px-4 py-2 bg-blue-500 text-white rounded"
+          className="flex items-center px-4 py-2 bg-gray-700 text-white rounded"
         >
           {isLoading ? (
             <SpinnerSvg />

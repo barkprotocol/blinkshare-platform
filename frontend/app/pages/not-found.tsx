@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import { Button } from "@/components/ui/button"
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function NotFound() {
   return (
@@ -11,14 +11,18 @@ export default function NotFound() {
           Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
         <div className="space-y-4 sm:space-y-0 sm:space-x-4">
-          <Button size="lg" className="bg-[#d0c8b9] hover:bg-[#c5bdae] text-gray-900">
-            <Link href="/">Return Home</Link>
-          </Button>
-          <Button variant="outline" size="lg" className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30">
-            <Link href="/marketplace">Explore Marketplace</Link>
-          </Button>
+          <Link href="/">
+            <Button size="lg" className="bg-[#d0c8b9] hover:bg-[#c5bdae] text-gray-900" aria-label="Return to Home Page">
+              Return Home
+            </Button>
+          </Link>
+          <Link href="/marketplace">
+            <Button variant="outline" size="lg" className="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30" aria-label="Explore the Marketplace">
+              Explore Marketplace
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }

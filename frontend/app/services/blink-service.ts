@@ -1,4 +1,4 @@
-import { createBlink } from "../create/create-a-blink"
+import { createBlink } from "../[serverId]/create/create-a-blink"
 import database from "@/lib/database"
 
 // Creating a new Blink

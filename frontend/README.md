@@ -1,96 +1,104 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# BARK | BlinkShare Frontend (MVP)
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+![BlinkShare Hero Image](/frontend/public/assets/landing-page.png)
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+![Bootstrapped][https://github.com/barkprotocol/blinkshare-platform]
 
-## Features
+## Overview
+**BlinkShare** is a platform designed to enable seamless blockchain interactions within social media communities, such as Discord. Built on **Next.js** and **TypeScript**, BlinkShare integrates **Solana web3.js**, **Shadcn/UI**, and **Supabase**, offering an advanced ecosystem for managing community roles and transactions using Solana Blinks.
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## Key Features
+- **Dialect Blinks**: Leverages Dialect for dynamic messaging and notifications in Solana transactions.
+- **Shadcn/UI**: Provides pre-built, customizable components for a visually stunning and user-friendly interface.
+- **BlinkShare Bot**: An interactive Discord bot to simplify blockchain interactions and manage server roles.
+- **Supabase Integration**: For robust database management and real-time updates.
+- **Seamless Role Management**: Automates the assignment and expiration of roles for efficient community management.
+- **Secure Transactions**: Built on Solana's fast and secure blockchain, with wallet management powered by **Privy.io**.
 
-## Demo
+---
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+## Tech Stack
+- **Frontend**: Next.js 15, React 19, Typescript, Solana/web3.js, Tailwind CSS, Shadcn/UI
+- **Backend**: Node.js with Solana web3.js, Supabase
+- **Package Manager**: pnpm
+- **Blockchain**: Solana
+- **Database**: Supabase
+- **Messaging**: Dialect, Resend
+- **Payments** Privy.io
 
-## Deploy to Vercel
+---
 
-Vercel deployment will guide you through creating a Supabase account and project.
+## Installation and Setup
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### Prerequisites
+- [Node.js](https://nodejs.org/) >= 20
+- [pnpm](https://pnpm.io/) installed globally
+- Solana CLI installed locally
+- Supabase project set up ([Supabase Documentation](https://supabase.com/docs))
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+### Clone the Repository
+```bash
+git clone https://github.com/your-repo/blinkshare.git
+cd frontend
+```
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+### Install Dependencies
+```bash
+pnpm install
+```
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### Configure Environment Variables
+Create a `.env.local` file and include the following:
+```env
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
+DIALECT_API_KEY=<your-dialect-api-key>
+JWT_SECRET=<your-jwt-secret>
+SECRET_KEY=<your-secret-key>
+```
 
-## Clone and run locally
+### Database Setup
+Run the following command to initialize Supabase:
+```bash
+pnpm run db:setup
+```
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### Development Server
+Start the development server:
+```bash
+pnpm dev
+```
+The app will be running at `http://localhost:3000`.
 
-2. Create a Next.js app using the Supabase Starter template npx command
+---
 
-   ```bash
-   npx create-next-app -e with-supabase
-   ```
+## BlinkShare Bot
+****Adding the Bot to Your Discord Server**
+1. Visit [BlinkShare Bot Invite Link](#).
+2. Select your server and grant the necessary permissions.
+3. Configure the bot using `/blinksetup` for roles and `/blinklink` for Solana wallet linking.
 
-3. Use `cd` to change into the app's directory
+---
 
-   ```bash
-   cd name-of-new-app
-   ```
+## Deployment
+BlinkShare is optimized for deployment on **Vercel**:
+1. Connect your repository to Vercel.
+2. Add environment variables to the Vercel dashboard.
+3. Deploy with a single click.
 
-4. Rename `.env.example` to `.env.local` and update the following:
+---
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
+## Contributing
+We welcome contributions! To get started:
+1. Fork the repository.
+2. Create a new branch: `git checkout -b feature-branch-name`.
+3. Make your changes and commit: `git commit -m "Description of changes"`.
+4. Push to the branch: `git push origin feature-branch-name`.
+5. Open a pull request.
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+---
 
-5. You can now run the Next.js local development server:
-
-   ```bash
-   npm run dev
-   ```
-
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
-
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
-
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
-
-## Feedback and issues
-
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
-
-## More Supabase examples
-
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+## License
+BlinkShare is open-source under the [MIT License](LICENSE).
