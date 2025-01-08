@@ -1,38 +1,46 @@
 'use client';
 
-import { useMemo } from 'react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { clusterApiUrl } from '@solana/web3.js';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  // Add other wallets here, e.g., BackpackWalletAdapter, if needed
+  TorusWalletAdapter,
+  LedgerWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { clusterApiUrl } from '@solana/web3.js';
+import { useMemo } from 'react';
 
-const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
-  const network = WalletAdapterNetwork.Mainnet; // Change to devnet/testnet if needed
+// Import wallet adapter styles
+import '@solana/wallet-adapter-react-ui/styles.css';
+
+interface WalletContextProviderProps {
+  children: React.ReactNode;
+}
+
+// Exporting as the default export to align with your layout's import
+export default function WalletContextProvider({ children }: WalletContextProviderProps) {
+  const network = WalletAdapterNetwork.Mainnet;
+
+  // You can also provide a custom RPC endpoint
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-  // Define available wallets
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-      // Optionally, add more wallets such as Backpack:
-      // new BackpackWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new TorusWalletAdapter(),
+      new LedgerWalletAdapter(),
     ],
-    [network]
+    []
   );
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect={false}>
+      <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
-};
-
-export default LayoutWrapper;
+}

@@ -27,13 +27,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (!privyAppId) {
-      console.error("Privy app ID is missing. Please set NEXT_PUBLIC_PRIVY_APP_ID in your environment variables.");
+      const errorMessage = "Privy app ID is missing. Please set NEXT_PUBLIC_PRIVY_APP_ID in your environment variables.";
+      console.error(errorMessage);
       toast.error("Configuration error. Please contact support.");
       setPrivyAppIdMissing(true);
-      router.push('https://doc.blinkshare.fun/support');
+      // Redirect to the support page for more details
+      router.push('https://docs.blinkshare.fun/support');
     }
   }, [privyAppId, router]);
 
+  // If Privy app ID is missing, return null to prevent the app from rendering
   if (isPrivyAppIdMissing) {
     return null;
   }

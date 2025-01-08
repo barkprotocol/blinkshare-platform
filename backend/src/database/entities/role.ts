@@ -6,6 +6,7 @@ import { BaseEntity } from './base-entity';
 @Unique(['guild', 'name'])  // Ensures unique constraint on the combination of guild and name
 @Index('guild_roles_idx', ['guild', 'name'])  // Composite index for faster lookups by both guild and name
 export class Role extends BaseEntity<Role> {
+  [x: string]: any;
   /**
    * Discord role ID (Primary Column is unique)
    */

@@ -20,7 +20,7 @@ export const WalletButton: FC = () => {
     }, [connected]);
 
     const handleWalletClick = () => {
-        if (!wallet || !connected) {
+        if (!connected) {
             console.log('Opening wallet modal...');
             setVisible(true); // Open wallet modal if not connected
         } else {
@@ -47,7 +47,7 @@ export const WalletButton: FC = () => {
     };
 
     return (
-        <div className="flex items-center space-x-2">
+        <div className="flex justify-center items-center space-x-4 py-4">
             {/* Connect/Disconnect Button */}
             <Button
                 onClick={handleWalletClick}
