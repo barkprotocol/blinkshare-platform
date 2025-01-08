@@ -1,10 +1,9 @@
 import { useWallet, WalletContextState } from "@solana/wallet-adapter-react";
 import { toast } from "sonner";
 
-export function useWalletActions() {
+export function useSolanaWalletAdapter(heliusUrl: string) {
   const wallet: WalletContextState = useWallet();
 
-  // Prompt the user to connect if not already connected
   const promptConnectWallet = async (): Promise<boolean> => {
     if (!wallet.connected) {
       toast.info("Connecting your wallet...");
@@ -21,7 +20,6 @@ export function useWalletActions() {
     return true;
   };
 
-  // Sign a message using the connected wallet
   const signMessage = async (message: string): Promise<string | null> => {
     if (!wallet.connected) {
       const connected = await promptConnectWallet();
@@ -30,7 +28,6 @@ export function useWalletActions() {
 
     const { signMessage: sign, publicKey, connected } = wallet;
 
-    // Type check for wallet connection and signing availability
     if (!connected || !publicKey || !sign) {
       console.error("Wallet is not connected or signing is unavailable");
       toast.error("Wallet is not properly connected or signing is unavailable");
@@ -48,7 +45,6 @@ export function useWalletActions() {
     }
   };
 
-  // Optional: Disconnect the wallet
   const disconnectWallet = async (): Promise<void> => {
     if (wallet.connected) {
       try {
@@ -68,3 +64,4 @@ export function useWalletActions() {
     disconnectWallet,
   };
 }
+

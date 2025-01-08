@@ -111,7 +111,7 @@ export default function Navbar() {
                 className="block flex items-center space-x-2 py-2 transition-colors duration-200 hover:text-white"
                 onClick={closeMenu}
               >
-                <item.icon size={20} /> <span>{item.label}</span>
+                <item.icon size={20} /> <span className="hidden md:inline">{item.label}</span>
               </Link>
             ))}
             <div className="pt-4">

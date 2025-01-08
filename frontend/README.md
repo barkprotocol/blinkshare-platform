@@ -1,8 +1,7 @@
-# BARK | BlinkShare Frontend (MVP)
+# BARK | BlinkShare Platform
+**MVP**
 
 ![BlinkShare Hero Image](/frontend/public/assets/landing-page.png)
-
-![Bootstrapped][https://github.com/barkprotocol/blinkshare-platform]
 
 ## Overview
 **BlinkShare** is a platform designed to enable seamless blockchain interactions within social media communities, such as Discord. Built on **Next.js** and **TypeScript**, BlinkShare integrates **Solana web3.js**, **Shadcn/UI**, and **Supabase**, offering an advanced ecosystem for managing community roles and transactions using Solana Blinks.
@@ -24,8 +23,7 @@
 - **Blockchain**: Solana
 - **Database**: Supabase
 - **Messaging**: Dialect, Resend
-- **Payments** Privy.io
-
+- **Payments** Privy.io and login
 ---
 
 ## Installation and Setup
@@ -38,7 +36,7 @@
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/your-repo/blinkshare.git
+git clone https://github.com/bark-protocol/blinkshare-platform.git
 cd frontend
 ```
 
@@ -54,9 +52,8 @@ NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
 NEXT_PUBLIC_SOLANA_NETWORK=devnet
 NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
-DIALECT_API_KEY=<your-dialect-api-key>
-JWT_SECRET=<your-jwt-secret>
-SECRET_KEY=<your-secret-key>
+NEXT_PUBLIC_HELIUS_URL=
+NEXT_PUBLIC_PRIVY_APP_ID=
 ```
 
 ### Database Setup

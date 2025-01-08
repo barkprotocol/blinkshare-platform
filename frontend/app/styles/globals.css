@@ -46,7 +46,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 0.25rem;  /* Smaller radius */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -116,15 +116,15 @@
   }
 
   .responsive-grid {
-    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
+    @apply grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4; /* Smaller gap */
   }
 
   .card {
-    @apply bg-card text-card-foreground rounded-lg shadow-md overflow-hidden;
+    @apply bg-card text-card-foreground rounded-lg shadow-sm overflow-hidden; /* Smaller shadow */
   }
 
   .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+    @apply inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background; /* Smaller font */
   }
 
   .btn-primary {
@@ -137,8 +137,8 @@
 }
 
 .tab-button {
-  padding: 10px;
-  margin-right: 10px;
+  padding: 8px; /* Reduced padding */
+  margin-right: 8px; /* Reduced margin */
   border: 1px solid #ccc;
   background-color: #f0f0f0;
   cursor: pointer;
@@ -151,30 +151,30 @@
 
 /* Responsive typography */
 html {
-  font-size: 16px;
+  font-size: 14px; /* Smaller base font size */
 }
 
 @media (min-width: 640px) {
   html {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 17px;
+    font-size: 16px;
   }
 }
 
 @media (min-width: 1024px) {
   html {
-    font-size: 18px;
+    font-size: 17px;
   }
 }
 
 @media (min-width: 1280px) {
   html {
-    font-size: 19px;
+    font-size: 18px;
   }
 }
 
@@ -184,31 +184,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  @apply text-4xl sm:text-5xl md:text-6xl;
+  @apply text-3xl sm:text-4xl md:text-5xl; /* Smaller text size */
 }
 
 h2 {
-  @apply text-3xl sm:text-4xl md:text-5xl;
-}
-
-h3 {
   @apply text-2xl sm:text-3xl md:text-4xl;
 }
 
-h4 {
+h3 {
   @apply text-xl sm:text-2xl md:text-3xl;
 }
 
-h5 {
+h4 {
   @apply text-lg sm:text-xl md:text-2xl;
 }
 
-h6 {
+h5 {
   @apply text-base sm:text-lg md:text-xl;
 }
 
+h6 {
+  @apply text-sm sm:text-base md:text-lg;
+}
+
 p {
-  @apply leading-relaxed;
+  @apply leading-normal; /* Reduced line height */
 }
 
 /* Mobile-friendly adjustments */
@@ -260,68 +260,9 @@ p {
 
 /* Form elements */
 input, textarea, select {
-  @apply w-full px-3 py-2 text-sm rounded-md border border-input bg-background;
+  @apply p-2 rounded-md border border-muted text-muted-foreground;
 }
 
 input:focus, textarea:focus, select:focus {
-  @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  @apply ring-2 ring-ring;
 }
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-muted;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-muted-foreground rounded-md;
-  transition: background-color 0.3s;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-foreground;
-}
-
-/* Animation tweaks */
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
-}
-
-/* Button Hover Lift Effect */
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Glass effect */
-.glass-effect {
-  backdrop-filter: blur(20px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-

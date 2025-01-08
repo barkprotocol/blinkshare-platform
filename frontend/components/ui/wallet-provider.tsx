@@ -7,11 +7,12 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
+  // Add other wallets here, e.g., BackpackWalletAdapter, if needed
 } from '@solana/wallet-adapter-wallets';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
-  const network = WalletAdapterNetwork.Mainnet; // Or use devnet/testnet as required
+  const network = WalletAdapterNetwork.Mainnet; // Change to devnet/testnet if needed
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
   // Define available wallets
@@ -27,10 +28,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect={true}>
-        <WalletModalProvider>
-          {children}
-        </WalletModalProvider>
+      <WalletProvider wallets={wallets} autoConnect={false}>
+        <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );

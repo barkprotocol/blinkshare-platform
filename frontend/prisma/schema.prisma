@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql"  // Change this to your actual database provider
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,122 +8,153 @@ generator client {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  username    String    @unique
-  email       String    @unique
-  passwordHash String
-  discordId   String    @unique
-  telegramId  String    @unique
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  servers     Server[]
-  roles       UserRole[]
-  transactions Transaction[]
+  id            String    @id @default(uuid())
+  username      String    @unique
+  email         String    @unique
+  passwordHash  String
+  discordId     String?   @unique
+  telegramId    String?   @unique
+  createdAt     DateTime  @default(now()) @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @db.Timestamptz
+  servers       Server[]
+  roles         UserRole[]
+  sentTransactions     Transaction[] @relation("TransactionFromUser")
+  receivedTransactions Transaction[] @relation("TransactionToUser")
+  wallets       Wallet[]
+  airdrops      Airdrop[]
+  discordInteractions DiscordBotInteraction[]
+  telegramInteractions TelegramBotInteraction[]
+  discordEvents DiscordBotEvent[]
+  telegramEvents TelegramBotEvent[]
+
+  @@index([discordId, telegramId])
 }
 
 model Server {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   name        String
   discordId   String    @unique
-  userId      Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  userId      String
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @db.Timestamptz
   user        User      @relation(fields: [userId], references: [id])
   roles       UserRole[]
   botInteractions DiscordBotInteraction[]
   botEvents   DiscordBotEvent[]
+
+  @@index([discordId])
 }
 
 model Guild {
   guildId     String    @id
   guildName   String
   guildOwnerId String
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime  @default(now()) @db.Timestamptz
+
+  @@index([guildOwnerId])
 }
 
 model Airdrop {
-  id        Int       @id @default(autoincrement())
-  blinkId   Int
-  userId    Int
+  id        String    @id @default(uuid())
+  blinkId   String
+  userId    String
   amount    Int
   status    String    @default("pending")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now()) @db.Timestamptz
+  updatedAt DateTime  @updatedAt @db.Timestamptz
   user      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
 }
 
 model Transaction {
-  id              Int       @id @default(autoincrement())
-  blinkId         Int
-  fromUserId      Int
-  toUserId        Int
+  id              String    @id @default(uuid())
+  blinkId         String
+  fromUserId      String
+  toUserId        String
   amount          Int
   transactionType String?
   status          String    @default("pending")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime  @default(now()) @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @db.Timestamptz
   fromUser        User      @relation("TransactionFromUser", fields: [fromUserId], references: [id])
   toUser          User      @relation("TransactionToUser", fields: [toUserId], references: [id])
+
+  @@index([fromUserId, toUserId, status])
 }
 
 model UserRole {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  serverId  Int
+  id        String    @id @default(uuid())
+  userId    String
+  serverId  String
   role      String
-  createdAt DateTime  @default(now())
+  createdAt DateTime  @default(now()) @db.Timestamptz
   user      User      @relation(fields: [userId], references: [id])
   server    Server    @relation(fields: [serverId], references: [id])
+
+  @@unique([userId, serverId, role])
+  @@index([userId, serverId])
 }
 
 model DiscordBotInteraction {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  serverId  Int
+  id        String    @id @default(uuid())
+  userId    String
+  serverId  String
   command   String
   response  String?
-  timestamp DateTime  @default(now())
+  timestamp DateTime  @default(now()) @db.Timestamptz
   user      User      @relation(fields: [userId], references: [id])
   server    Server    @relation(fields: [serverId], references: [id])
+
+  @@index([userId, serverId, command])
 }
 
 model TelegramBotInteraction {
-  id              Int       @id @default(autoincrement())
-  userId          Int
+  id              String    @id @default(uuid())
+  userId          String
   command         String
   response        String?
   telegramChatId  String
-  timestamp       DateTime  @default(now())
+  timestamp       DateTime  @default(now()) @db.Timestamptz
   user            User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, command])
 }
 
 model DiscordBotEvent {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   eventType String
-  serverId  Int
-  userId    Int
+  serverId  String
+  userId    String
   data      Json?
-  timestamp DateTime  @default(now())
+  timestamp DateTime  @default(now()) @db.Timestamptz
   user      User      @relation(fields: [userId], references: [id])
   server    Server    @relation(fields: [serverId], references: [id])
+
+  @@index([serverId, eventType])
 }
 
 model TelegramBotEvent {
-  id              Int       @id @default(autoincrement())
+  id              String    @id @default(uuid())
   eventType       String
   telegramChatId  String
-  userId          Int
+  userId          String
   data            Json?
-  timestamp       DateTime  @default(now())
+  timestamp       DateTime  @default(now()) @db.Timestamptz
   user            User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, eventType])
 }
 
 model Wallet {
-  id            Int       @id @default(autoincrement())
-  userId        Int
+  id            String    @id @default(uuid())
+  userId        String
   walletAddress String
   network       String    @default("solana")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now()) @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @db.Timestamptz
   user          User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, walletAddress, network])
+  @@index([userId, network])
 }

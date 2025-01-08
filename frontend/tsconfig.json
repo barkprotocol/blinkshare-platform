@@ -1,48 +1,48 @@
 {
   "compilerOptions": {
-    "target": "es6", // ES6 for better compatibility with modern JavaScript
+    "target": "es6",                          // ES6 for better compatibility with modern JavaScript
     "lib": [
-      "dom",                // DOM library for web APIs
-      "dom.iterable",       // Iterable DOM APIs
-      "esnext",              // Latest ECMAScript features
-      "webworker",           // Web Worker API support    
-      "scripthost"           // Script host APIs (Windows Script Host, etc.)
+      "dom",                                  // DOM library for web APIs
+      "dom.iterable",                         // Iterable DOM APIs
+      "esnext",                                // Latest ECMAScript features
+      "webworker",                             // Web Worker API support    
+      "scripthost"                             // Script host APIs (Windows Script Host, etc.)
     ],
-    "baseUrl": ".", // Base directory for non-relative imports
-    "allowJs": true, // Allow JavaScript files to be imported
-    "skipLibCheck": true, // Skip type checking of declaration files for faster builds
-    "strict": true, // Enable strict type-checking options
-    "forceConsistentCasingInFileNames": true, // Ensure file name casing consistency
-    "noEmit": true, // Prevent emitting output (useful for type-checking)
-    "esModuleInterop": true, // Enables compatibility with CommonJS-style modules
-    "module": "esnext", // Use the latest ECMAScript module syntax
-    "moduleResolution": "node", // Use Node's module resolution strategy
-    "resolveJsonModule": true, // Allow importing JSON files as modules
-    "isolatedModules": true, // Ensures every file can be safely transpiled independently
-    "jsx": "preserve", // Preserve JSX syntax for Next.js to handle
-    "incremental": true, // Enable incremental compilation for faster builds
+    "baseUrl": ".",                            // Base directory for non-relative imports
+    "allowJs": true,                           // Allow JavaScript files to be imported
+    "skipLibCheck": true,                      // Skip type checking of declaration files for faster builds
+    "strict": true,                            // Enable strict type-checking options
+    "forceConsistentCasingInFileNames": true,  // Ensure file name casing consistency
+    "noEmit": true,                            // Prevent emitting output (useful for type-checking)
+    "esModuleInterop": true,                   // Enables compatibility with CommonJS-style modules
+    "module": "esnext",                        // Use the latest ECMAScript module syntax
+    "moduleResolution": "node",                // Use Node's module resolution strategy
+    "resolveJsonModule": true,                 // Allow importing JSON files as modules
+    "isolatedModules": true,                   // Ensures every file can be safely transpiled independently
+    "jsx": "preserve",                        // Preserve JSX syntax for Next.js to handle
+    "incremental": true,                      // Enable incremental compilation for faster builds
     "plugins": [
       {
-        "name": "next" // Ensure the "next" plugin is used for Next.js support
+        "name": "next"                         // Ensure the "next" plugin is used for Next.js support
       }
     ],
     "paths": {
-      "@/*": ["./*"] // Alias '@' to refer to the root directory (useful for cleaner imports)
+      "@/*": ["./*"]                           // Alias '@' to refer to the root directory (useful for cleaner imports)
     },
     "types": [
-      "node",         // Node.js types for backend support
-      "react",        // React types for JSX/TSX support
-      "next",         // Next.js types for Next.js-specific features
-      "jest"          // Jest types for testing support
+      "node",                                  // Node.js types for backend support
+      "react",                                 // React types for JSX/TSX support
+      "next",                                  // Next.js types for Next.js-specific features
+      "jest"                                   // Jest types for testing support
     ]
   },
   "include": [
-    "next-env.d.ts", // Include Next.js environment types
-    "**/*.ts", // Include TypeScript files
-    "**/*.tsx", // Include TypeScript React files
-    ".next/types/**/*.ts" // Include Next.js types
+    "next-env.d.ts",                          // Include Next.js environment types
+    "**/*.ts",                                // Include TypeScript files
+    "**/*.tsx",                               // Include TypeScript React files
+    ".next/types/**/*.ts"                     // Include Next.js types
   ],
   "exclude": [
-    "node_modules" // Exclude node_modules from compilation
+    "node_modules"                            // Exclude node_modules from compilation
   ]
 }

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { useWalletActions } from "@/hooks/use-wallet-actions";
+import { useWalletActions } from "@/hooks/use-solana wallet-adapter";
 import { z } from "zod";
 import { useUserStore } from "@/lib/contexts/zustand/user-store";
 import { useWallet } from "@solana/wallet-adapter-react";

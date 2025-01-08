@@ -24,7 +24,7 @@ export function BlinkCard({ type, title, description, icon, onClick, isSelected 
       )}>
         <CardHeader>
           <div className="flex items-center space-x-4">
-            <div className="rounded-full bg-primary/10 p-2">
+            <div className="rounded-md bg-primary/10 p-2">
               <Image
                 src={icon}
                 alt={title}
