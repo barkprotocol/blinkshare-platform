@@ -1,13 +1,13 @@
-import { Entity, Column, ManyToOne, PrimaryColumn, UpdateDateColumn, Unique, DeleteDateColumn, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, PrimaryColumn, UpdateDateColumn, Unique, DeleteDateColumn, Index, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Guild } from './guild';
 import { BaseEntity } from './base-entity';
 
 @Entity()
-@Unique(["guild", "name"])
+@Unique(['guild', 'name'])  // Ensures unique constraint on the combination of guild and name
 @Index('guild_roles_idx', ['guild', 'name'])  // Composite index for faster lookups by both guild and name
 export class Role extends BaseEntity<Role> {
   /**
-   * Discord role ID
+   * Discord role ID (Primary Column is unique)
    */
   @PrimaryColumn({ type: 'varchar', unique: true })
   id: string;
@@ -27,8 +27,8 @@ export class Role extends BaseEntity<Role> {
   @UpdateDateColumn()
   updateTime: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date | null; // Soft delete functionality
+  @DeleteDateColumn({ nullable: true })
+  deletedAt: Date | null;  // Soft delete functionality
 
   /**
    * Validates if the amount for the role is correct.
@@ -41,7 +41,7 @@ export class Role extends BaseEntity<Role> {
   }
 
   /**
-   * Optionally add a lifecycle hook to validate the amount before insert or update.
+   * Validates the amount before saving or updating.
    */
   @BeforeInsert()  // Ensure valid amount before insertion
   @BeforeUpdate()  // Ensure valid amount before update

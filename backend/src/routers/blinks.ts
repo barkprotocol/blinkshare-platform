@@ -46,7 +46,6 @@ blinksRouter.get('/', (req: Request, res: Response) => res.json(generalAction));
 blinksRouter.get('/:guildId', async (req: Request, res: Response) => {
   const { guildId } = req.params;
 
-  // Validate the guildId format
   if (!/^\d{17,19}$/.test(guildId)) {
     return res.json(generalAction);
   }
@@ -62,27 +61,25 @@ blinksRouter.get('/:guildId', async (req: Request, res: Response) => {
     });
   }
 
-  console.info(`Sending action for guild ${guildId}`);
-
   const { code, showRoles } = req.query;
 
   const guildBlinkData = {
     title: guild.name,
-    description: `${guild.description}${guild.website ? `\n\n Website: ${guild.website}` : ''}${guild.limitedTimeRoles ? `\n\n Roles are valid for ${guild.limitedTimeQuantity} ${guild.limitedTimeUnit}` : ''}`,
+    description: `${guild.description}${guild.website ? `\n\nWebsite: ${guild.website}` : ''}${guild.limitedTimeRoles ? `\n\nRoles are valid for ${guild.limitedTimeQuantity} ${guild.limitedTimeUnit}` : ''}`,
     icon: guild.iconUrl,
   };
 
   if (!code && !showRoles) {
     return res.json({
       ...guildBlinkData,
-      label: `Go to blinkshare.fun`,
+      label: 'Go to blinkshare.fun',
       type: 'action',
       links: {
         actions: [
           {
             type: 'external-link',
             href: `${BASE_URL}/blinks/link/${guildId}`,
-            label: `Go to blinkshare.fun`,
+            label: 'Go to blinkshare.fun',
           },
         ],
       },
@@ -135,12 +132,10 @@ blinksRouter.post('/:guildId/buy', async (req: Request, res: Response) => {
     if (!accessToken) return res.status(403).json({ error: 'Unauthorized: access_token not found.' });
   }
 
-  console.info(`Generating transaction for guild ${guildId} and role ${roleId}`);
   try {
     const trackingInstruction = await blinkSights.getActionIdentityInstructionV2(account, req.url);
     const transaction = await generateSendTransaction(account, role.amount, guild, trackingInstruction);
 
-    // Run in async, no need to await
     blinkSights.trackActionV2(account, req.url);
 
     return res.json(
@@ -160,7 +155,7 @@ blinksRouter.post('/:guildId/buy', async (req: Request, res: Response) => {
     );
   } catch (error) {
     console.error('Error generating transaction:', error);
-    return res.status(400).send({ message: 'Error generating transaction' });
+    return res.status(400).json({ message: 'Error generating transaction' });
   }
 });
 
@@ -190,7 +185,6 @@ blinksRouter.post('/:guildId/confirm', async (req: Request, res: Response) => {
   try {
     const { token } = await findAccessTokenByCode(code);
     const access_token = decryptText(token);
-    console.info(`Guild join access token obtained, adding member to the server with roles...`);
 
     const { data: user } = await discordApi.get('/users/@me', {
       headers: { Authorization: `Bearer ${access_token}` },
@@ -202,8 +196,6 @@ blinksRouter.post('/:guildId/confirm', async (req: Request, res: Response) => {
       { headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` } },
     );
 
-    console.info(`Successfully added user ${user.username} to guild ${guild.name} with role ${role.name}`);
-
     const rolePurchase = new RolePurchase({ discordUserId: user.id, guild, role, signature }).setExpiresAt();
     await saveRolePurchase(rolePurchase);
 
@@ -211,14 +203,14 @@ blinksRouter.post('/:guildId/confirm', async (req: Request, res: Response) => {
       '1324299574336290866',
       'Role Purchase',
       `**User:** <@${user.id}>\n**Role:** ${role.name}\n**Server:** ${guild.name}`,
-    ).catch((err) => console.error(`Error sending role purchase log message: ${err}`));
+    );
 
     if (guild.notificationChannelId) {
       sendDiscordLogMessage(
         guild.notificationChannelId,
         'Role Purchase',
         `**User:** <@${user.id}>\n**Role:** ${role.name}\n**Server:** ${guild.name}`,
-      ).catch((err) => console.error(`Error sending role purchase log message to notification channel: ${err}`));
+      );
     }
 
     return res.json({
@@ -230,14 +222,14 @@ blinksRouter.post('/:guildId/confirm', async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Error while adding member to guild:', error);
-    res.json({
+    res.status(500).json({
       title: guild.name,
       icon: guild.iconUrl,
       description: `https://solscan.io/tx/${signature}`,
       label: null,
       type: 'completed',
       error: {
-        message: `An error occurred. Contact the server owner and present the transaction in the description`,
+        message: 'An error occurred. Contact the server owner and present the transaction in the description.',
       },
     });
   }

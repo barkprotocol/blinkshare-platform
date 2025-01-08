@@ -4,18 +4,23 @@ import { Guild } from '../database/entities/guild';
 import { isCorrectSignature as isValidSignature } from '../services/transaction';
 import env from '../services/env';
 
+// Extend Request interface to include `user`
+interface CustomRequest extends Request {
+  user?: { userId: string; guildIds: string[] };
+}
+
 /**
  * Middleware to verify JWT token from Authorization header
- * @param {Request} req
+ * @param {CustomRequest} req
  * @param {Response} res
  * @param {NextFunction} next
  */
-export const verifyJwt = async (req: Request, res: Response, next: NextFunction) => {
+export const verifyJwt = async (req: CustomRequest, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Token not provided' });
 
   try {
-    req['user'] = jwt.verify(token, env.JWT_SECRET) as { userId: string; guildIds: string[] };
+    req.user = jwt.verify(token, env.JWT_SECRET) as { userId: string; guildIds: string[] };
   } catch (error) {
     return res.status(401).json({ error: 'Invalid token' });
   }
@@ -24,11 +29,11 @@ export const verifyJwt = async (req: Request, res: Response, next: NextFunction)
 
 /**
  * Middleware to verify message signature and wallet address ownership
- * @param {Request} req - body must be of type { message: string; signature: string; address: string; data: Guild; }
+ * @param {CustomRequest} req - body must be of type { message: string; signature: string; address: string; data: Guild; }
  * @param {Response} res
  * @param {NextFunction} next
  */
-export const verifySignature = async (req: Request, res: Response, next: NextFunction) => {
+export const verifySignature = async (req: CustomRequest, res: Response, next: NextFunction) => {
   // Verify signature and ownership
   const { message, signature, address, data } = req.body as {
     message: string;
@@ -41,7 +46,7 @@ export const verifySignature = async (req: Request, res: Response, next: NextFun
     return res.status(401).json({ error: 'Invalid signature' });
   }
 
-  if (!req['user']?.guildIds?.includes(data?.id)) {
+  if (!req.user?.guildIds?.includes(data?.id)) {
     return res.status(403).json({ error: 'User is not an owner/admin of the guild' });
   }
 
@@ -50,14 +55,14 @@ export const verifySignature = async (req: Request, res: Response, next: NextFun
 
 /**
  * Middleware to check if the user is an owner/admin of the guild
- * @param {Request} req
+ * @param {CustomRequest} req
  * @param {Response} res
  * @param {NextFunction} next
  */
-export const checkGuildOwnership = async (req: Request, res: Response, next: NextFunction) => {
+export const checkGuildOwnership = async (req: CustomRequest, res: Response, next: NextFunction) => {
   const guildId = req.params.guildId;
 
-  if (!req['user']?.guildIds?.includes(guildId)) {
+  if (!req.user?.guildIds?.includes(guildId)) {
     return res.status(403).json({ error: 'User is not an owner/admin of the guild' });
   }
 

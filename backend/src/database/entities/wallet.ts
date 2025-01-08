@@ -1,5 +1,6 @@
 import { Entity, Column, CreateDateColumn, PrimaryColumn } from 'typeorm';
 import crypto from 'crypto';
+import { IsEmail } from 'class-validator';
 
 enum WalletType {
   GENERATED = 1,
@@ -109,5 +110,21 @@ export class Wallet {
    */
   public resetPrivateKey(newPrivateKey: string): void {
     this.privateKey = this.encryptPrivateKey(newPrivateKey); // Encrypt new private key
+  }
+
+  /**
+   * Validates the address and discordUserId format
+   */
+  public validate() {
+    // Add validation for Discord ID (e.g., must be a valid Discord User ID format)
+    const discordIdPattern = /^\d{17,19}$/;  // Assuming Discord IDs are numeric with 18-19 digits
+    if (!discordIdPattern.test(this.discordUserId)) {
+      throw new Error('Invalid Discord User ID format');
+    }
+
+    // Add validation for address if needed
+    if (!this.address || this.address.length === 0) {
+      throw new Error('Wallet address is required and must not be empty.');
+    }
   }
 }

@@ -10,7 +10,7 @@ schedule(
   '0 * * * *',
   async () => {
     // Skip execution in development environment
-    if (env.NODE_ENV === 'development') return;
+    if (env.NODE_ENV === 'production') return;
 
     // Initialize the database
     await initializeDatabase();
@@ -73,7 +73,7 @@ schedule(
         // Send a notification that the role has expired
         await sendDiscordMessage(
           discordUserId,
-          `Your role **${roleName}** on the server **${guildName}** has expired. \nRenew it on <https://blinkshare/${guildId}>`,
+          `Your role **${roleName}** on the server **${guildName}** has expired. \nRenew it on <https://blinkshare.fun/${guildId}>`,
         );
 
         // Log the role expiration event

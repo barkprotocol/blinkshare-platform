@@ -13,6 +13,9 @@ import { decodeUTF8 } from 'tweetnacl-util';
 import env from './env';
 import { createTransferInstruction, getAssociatedTokenAddress } from '@solana/spl-token';
 
+// BARK mint address (added here for reference)
+const BARK_MINT_ADDRESS = new PublicKey('2NTvEssJ2i998V2cMGT4Fy3JhyFnAzHFonDo9dbAkVrg');
+
 export async function generateSendTransaction(
   from: string,
   amount: number,
@@ -31,9 +34,10 @@ export async function generateSendTransaction(
   const connection = new Connection(env.SOLANA_RPC_URL);
   const { blockhash } = await connection.getLatestBlockhash();
 
+  // Prepare instructions based on whether we are using USDC or BARK/other tokens
   const instructions = guild.useUsdc
     ? await getTransferUsdcInstructions(fromPubkey, toPubKey, lamports)
-    : getTransferSolInstructions(fromPubkey, toPubKey, lamports);
+    : await getTransferBarkInstructions(fromPubkey, toPubKey, amount);
 
   if (trackingInstruction) instructions.push(trackingInstruction);
 
@@ -70,10 +74,26 @@ async function getTransferUsdcInstructions(
   const fromTokenAccount = await getAssociatedTokenAddress(mintAddress, fromPubkey);
   const toTokenAccount = await getAssociatedTokenAddress(mintAddress, toPubKey);
 
-  lamports /= 10 ** 3; // Convert SOL to USDC with 6 decimals
+  lamports /= 10 ** 3; // Convert SOL or BARK to USDC with 6 decimals
   console.log(`Transferring ${lamports} USDC from ${fromPubkey.toString()} to ${toPubKey.toString()}`);
 
   return [createTransferInstruction(fromTokenAccount, toTokenAccount, fromPubkey, lamports)];
+}
+
+// New function for BARK token transfer instructions
+async function getTransferBarkInstructions(
+  fromPubkey: PublicKey,
+  toPubKey: PublicKey,
+  amount: number,
+): Promise<TransactionInstruction[]> {
+  const barkAmount = amount * (10 ** 6); // Convert to smallest unit of BARK token (assuming 6 decimals)
+  console.log(`Transferring ${barkAmount} BARK from ${fromPubkey.toString()} to ${toPubKey.toString()}`);
+
+  // Get associated token accounts for BARK transfer
+  const fromTokenAccount = await getAssociatedTokenAddress(BARK_MINT_ADDRESS, fromPubkey);
+  const toTokenAccount = await getAssociatedTokenAddress(BARK_MINT_ADDRESS, toPubKey);
+
+  return [createTransferInstruction(fromTokenAccount, toTokenAccount, fromPubkey, barkAmount)];
 }
 
 function getTransferSolInstructions(

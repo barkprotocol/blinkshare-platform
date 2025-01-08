@@ -1,61 +1,47 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
-import bcrypt from 'bcryptjs';
+import { Entity, PrimaryColumn, Column, OneToMany, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Role } from './role';
 import { Guild } from './guild';
 import { BaseEntity } from './base-entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity()
 export class User extends BaseEntity<User> {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: 'varchar', unique: true })
-  username: string;
-
-  @Column({ type: 'varchar', unique: true })
-  email: string;
+  @PrimaryColumn({ type: 'varchar', unique: true })
+  id!: string;
 
   @Column({ type: 'varchar' })
-  password: string;
+  username!: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  discordId: string;
+  @Column({ type: 'varchar', unique: true })
+  email!: string;
+
+  @Column({ type: 'varchar' })
+  passwordHash!: string;
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean; // For checking if the user is active
 
   @Column({ type: 'boolean', default: false })
-  isAdmin: boolean;
+  isAdmin: boolean; // For checking if the user has admin rights
 
-  @OneToMany(() => Guild, (guild) => guild.createdBy)
-  createdGuilds: Guild[];
+  @OneToMany(() => Guild, (guild) => guild.createdBy, { onDelete: 'SET NULL' })
+  createdGuilds!: Guild[];
 
-  @OneToMany(() => Guild, (guild) => guild.members)
-  guilds: Guild[];
-
-  @CreateDateColumn()
-  createTime: Date;
+  @OneToMany(() => Role, (role) => role.user, { onDelete: 'CASCADE' })
+  roles!: Role[];
 
   @UpdateDateColumn()
-  updateTime: Date;
+  updateTime!: Date;
 
   @DeleteDateColumn()
-  deletedAt: Date | null; // Soft delete support
+  deletedAt?: Date | null;
 
-  // Hash password only if it's being updated or inserted
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    if (this.password) {
-      const salt = await bcrypt.genSalt(10); // Generate salt
-      this.password = await bcrypt.hash(this.password, salt);  // Hash the password
+  // Constructor to automatically generate the ID if not provided
+  constructor(data: Partial<User> = {}) {
+    super(data); // Call the constructor of BaseEntity to handle common fields
+    if (!this.id) {
+      this.id = uuidv4(); // Generate a UUID if not provided
     }
-  }
-
-  // Additional method to validate password when comparing with stored hash
-  async validatePassword(plainPassword: string): Promise<boolean> {
-    return bcrypt.compare(plainPassword, this.password); // Compare plain password with hash
-  }
-
-  // Optionally, exclude sensitive fields (like password) from JSON response
-  toJSON() {
-    const { password, ...user } = this;  // Remove password field from the response
-    return user;  // Return the rest of the user data
+    Object.assign(this, data); // Populate the entity with the rest of the fields
   }
 }

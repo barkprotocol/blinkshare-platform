@@ -1,5 +1,5 @@
 import { Entity, Column, OneToMany, UpdateDateColumn, DeleteDateColumn, ManyToOne, PrimaryColumn, Index } from 'typeorm';
-import { Role } from './role';
+import { Role } from './role'; 
 import { BaseEntity } from './base-entity';
 import { User } from './user';
 import { v4 as uuidv4 } from 'uuid';
@@ -55,6 +55,9 @@ export class Guild extends BaseEntity<Guild> {
 
   @Column({ type: 'enum', enum: TimeUnit, nullable: true })
   limitedTimeUnit?: TimeUnit;
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;  // New field for active status
 
   @UpdateDateColumn()
   updateTime!: Date;

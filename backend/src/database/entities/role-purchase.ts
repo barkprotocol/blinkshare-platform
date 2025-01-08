@@ -1,12 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, DeleteDateColumn, BeforeInsert } from 'typeorm';
 import { Guild } from './guild';
 import { Role } from './role';
 import { BaseEntity } from './base-entity';
 
 @Entity()
 export class RolePurchase extends BaseEntity<RolePurchase> {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   /**
    * Discord ID of the user purchaser
@@ -83,7 +83,7 @@ export class RolePurchase extends BaseEntity<RolePurchase> {
 
     this.expiresAt = expiryDate;
 
-    // Optional: Log expiry time (ensure you are using a robust logging system in production)
+    // Optional: Log expiry time using a logging library for production environments
     console.warn(`Role for user ${this.discordUserId} will expire at ${this.expiresAt}`);
 
     return this;
@@ -91,4 +91,19 @@ export class RolePurchase extends BaseEntity<RolePurchase> {
 
   @DeleteDateColumn()
   deletedAt: Date | null = null;
+
+  /**
+   * Validate discordUserId format
+   */
+  @BeforeInsert()  // Ensures that discordUserId is valid before insertion
+  validateDiscordUserId(): void {
+    if (!this.discordUserId || this.discordUserId.trim() === '') {
+      throw new Error('Discord User ID must not be empty.');
+    }
+    // You can also add regex validation here to ensure a valid Discord ID format.
+    const discordIdPattern = /^\d{17,19}$/;  // Assuming Discord IDs are numeric with 18-19 digits
+    if (!discordIdPattern.test(this.discordUserId)) {
+      throw new Error('Discord User ID is not valid.');
+    }
+  }
 }

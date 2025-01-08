@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Repository, DataSource, InsertResult, UpdateResult, MoreThan, Between, Not, IsNull } from 'typeorm';
+import { Repository, DataSource, InsertResult, UpdateResult, MoreThan } from 'typeorm';
 import { Guild } from './entities/guild';
 import { Role } from './entities/role';
 import { AccessToken } from './entities/access-token';
@@ -128,12 +128,30 @@ export async function findGuildById(id: string): Promise<Guild | undefined> {
   
   if (!guild) return undefined;
 
-  guild.roles.sort((a, b) => a.amount - b.amount);
+  // Ensure roles' amount is always treated as a number
   guild.roles.forEach((role) => {
-    role.amount = parseFloat(role.amount.toString()).toFixed(5).replace(/(\.0+|(\.\d+?)0+)$/, '$2');
+    if (typeof role.amount === 'string') {
+      // Convert string amount to number
+      role.amount = parseFloat(role.amount);
+    }
+    // Now ensure that amount is a number before rounding
+    if (!isNaN(role.amount)) {
+      // Round the amount to 5 decimal places for precision
+      role.amount = Math.round(role.amount * 100000) / 100000;
+    }
   });
 
-  guild.limitedTimeQuantity = guild.limitedTimeQuantity?.toString();
+  // Ensure that the guild's limitedTimeQuantity is treated consistently
+  if (guild.limitedTimeQuantity) {
+    if (typeof guild.limitedTimeQuantity === 'string') {
+      // If it's a string, ensure it's converted to a string
+      guild.limitedTimeQuantity = guild.limitedTimeQuantity.toString();
+    } else if (typeof guild.limitedTimeQuantity === 'number') {
+      // If it's already a number, leave it as it is
+      guild.limitedTimeQuantity = guild.limitedTimeQuantity;
+    }
+  }
+
   return guild;
 }
 
