@@ -31,7 +31,7 @@ const socialLinks = [
     ariaLabel: "Discord",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19.77 4.33c-2.41-.47-4.71-.9-7.04-.9-2.34 0-4.63.43-7.04.9C3.27 4.7 2 6.44 2 8.43v7.23c0 1.99 1.27 3.73 3.73 4.1 2.41.47 4.71.9 7.04.9s4.63-.43 7.04-.9c2.46-.37 3.73-2.11 3.73-4.1V8.43c0-1.99-1.27-3.73-3.73-4.1zM12 18.61c-1.72 0-3.47-.26-5.02-.72-.4-.11-.56-.57-.31-.9.41-.52.73-.94.73-.95s1.01-.72 1.84-1.13c.84-.42 1.54-.72 2.42-.72 1.58 0 3.17.9 4.21 2.15 1.5 1.51 1.85 3.62 1.15 5.33-.17.4-.64.58-1.03.43-.39-.17-.56-.64-.37-1.03-.1-.02-.42-.28-.64-.5-.36-.34-.69-.67-.93-1.03-.24-.36-.45-.73-.67-1.13-1.03-.27-2.16-.49-3.29-.7-.57-.15-.88-.61-.9-1.17-.02-.57.33-1.03.88-1.17 1.13-.23 2.27-.45 3.4-.71-.02-.07-.06-.15-.09-.22.07-.31.09-.62.09-.94 0-.94-.03-1.88-.08-2.81-.35-.3-.75-.65-1.21-.91-.45-.26-.9-.47-1.38-.7-.47-.23-.97-.42-1.47-.61-.23-.11-.45-.23-.69-.34-.53-.24-.98-.51-1.5-.78-.56-.29-.96-.83-.96-1.48 0-1.06.85-1.92 1.91-1.92s1.91.85 1.91 1.92c0 .65-.4 1.2-.96 1.48-.52.27-.97.54-1.5.78-.24.11-.46.23-.69.34-.5.19-.99.38-1.47.61-.48.23-.93.44-1.38.7-.46.26-.86.61-1.21.91-.04-.93-.07-1.87-.07-2.81 0-.31.02-.63.09-.94-.03-.07-.07-.14-.1-.22 1.13.26 2.27.48 3.4.71.55.14.89.61.87 1.17-.03.57-.33 1.02-.9 1.17-1.13.23-2.27.45-3.4.71.03-.07.07-.15.1-.22 1.02-.01 2.02-.08 3.03-.18 1.55-.17 2.95-.53 4.32-1.04 1.22-.45 2.16-1.31 2.68-2.37.29-.58.52-1.18.7-1.79-.49-.29-.96-.57-1.47-.87z"/>
+        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
       </svg>
     ),
   },
@@ -40,7 +40,7 @@ const socialLinks = [
     ariaLabel: "Instagram",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2.16a9.84 9.84 0 1 0 9.84 9.84A9.853 9.853 0 0 0 12 2.16zm0 18.72A8.88 8.88 0 1 1 20.88 12a8.891 8.891 0 0 1-8.88 8.88zM12 7.32a4.68 4.68 0 1 0 4.68 4.68A4.684 4.684 0 0 0 12 7.32zm0 7.08a2.4 2.4 0 1 1 2.4-2.4 2.397 2.397 0 0 1-2.4 2.4zM18.6 5.4a.9.9 0 1 0 .9.9.9.9 0 0 0-.9-.9z"/>
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
       </svg>
     ),
   },
@@ -58,12 +58,12 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-gray-950 text-gray-200 border-t border-gray-800">
+    <footer className="w-full bg-black text-gray-200 border-t border-gray-800">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           
           {/* Logo and Description */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="flex items-center space-x-2 mb-6">
               <Image
                 src="https://ucarecdn.com/bbc74eca-8e0d-4147-8a66-6589a55ae8d0/bark.webp"
@@ -77,9 +77,14 @@ export default function Footer() {
               </h2>
             </div>
             <p className="text-sm text-gray-400 mb-6">
-              BlinkShare is a powerful platform designed to enable seamless Solana blockchain transactions directly within Discord communities.
+            Seamlessly Connecting Communities with Solana Blockchain
             </p>
-            <div className="flex space-x-6">
+          </div>
+
+          {/* Social Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">Connect With Us</h3>
+            <div className="flex space-x-4">
               {socialLinks.map((link, index) => (
                 <a 
                   key={index} 
@@ -87,7 +92,7 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   aria-label={link.ariaLabel} 
-                  className="text-gray-400 hover:text-sand-300 transition-all"
+                  className="text-gray-400 hover:text-sand-300 transition-all duration-300"
                 >
                   {link.icon}
                 </a>
@@ -95,32 +100,35 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Links Section */}
-          <div className="space-y-4 text-sm">
-            <h3 className="text-lg font-semibold text-white">Quick Links</h3>
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href="/pages/about-us" className="hover:text-sand-300 transition-colors">About Us</Link></li>
-              <li><Link href="/pages/terms" className="hover:text-sand-300 transition-colors">Terms of Service</Link></li>
-              <li><Link href="/pages/privacy-policy" className="hover:text-sand-300 transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/pages/about-us" className="text-gray-400 hover:text-sand-300 transition-colors duration-300">About Us</Link></li>
+              <li><Link href="/pages/terms" className="text-gray-400 hover:text-sand-300 transition-colors duration-300">Terms of Service</Link></li>
+              <li><Link href="/pages/privacy-policy" className="text-gray-400 hover:text-sand-300 transition-colors duration-300">Privacy Policy</Link></li>
             </ul>
           </div>
 
           {/* Subscription Section */}
-          <div className="space-y-4 text-sm">
-            <h3 className="text-lg font-semibold text-white">Stay Updated</h3>
-            <p>Sign up for updates and news.</p>
-            <form onSubmit={handleSubscribe}>
-              <div className="flex flex-col sm:flex-row space-y-2 sm:space-x-2 sm:space-y-0">
-                <Input 
-                  type="email" 
-                  placeholder="Your email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-gray-800 border-0 rounded-md text-gray-300 placeholder-gray-500 py-2 px-3 w-full sm:w-2/3"
-                  required
-                />
-                <Button type="submit" className="mt-4 sm:mt-0 w-full sm:w-1/3 bg-white text-black hover:bg-sand-400 transition-colors">Subscribe</Button>
-              </div>
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">Stay Updated</h3>
+            <p className="text-sm text-gray-400 mb-4">Sign up for updates and news.</p>
+            <form onSubmit={handleSubscribe} className="space-y-4">
+              <Input 
+                type="email" 
+                placeholder="Your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:border-sand-300 focus:ring-sand-300"
+                required
+              />
+              <Button 
+                type="submit" 
+                className="w-full bg-transparent text-white border border-white hover:bg-white hover:text-black transition-colors duration-300"
+              >
+                Subscribe
+              </Button>
             </form>
           </div>
         </div>
